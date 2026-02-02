@@ -1,0 +1,43 @@
+# Dependencies
+node_modules/
+
+# Build outputs
+.next/
+dist/
+build/
+out/
+
+# Turborepo
+.turbo/
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# IDE
+.vscode/
+.idea/
+
+# OS
+.DS_Store
+
+# Testing
+coverage/
+
+# Storybook
+storybook-static/
+
+# TypeScript
+*.tsbuildinfo
+next-env.d.ts
+
+# Debug
+npm-debug.log*
+pnpm-debug.log*
+
+# Claude local settings
+.claude/settings.local.json
+
+# Project management (private)
+index.md
