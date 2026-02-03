@@ -1,6 +1,6 @@
 import { Button, cn } from "@repo/ui";
-
 import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@repo/ui";
+import * as math from "@repo/libs/math";
 
 export default function Home() {
   return (
@@ -36,6 +36,39 @@ export default function Home() {
             <div className={cn("rounded-lg border p-4", "bg-muted text-muted-foreground")}>
               Conditional classes
             </div>
+          </div>
+        </section>
+
+        <section className="mb-12">
+          <h2 className="text-xl font-semibold mb-4">@repo/libs — Math Utilities</h2>
+          <p className="text-sm text-muted-foreground mb-4">
+            Shared utility functions from @repo/libs, consumed across apps.
+          </p>
+          <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
+            <Card>
+              <CardContent className="pt-6">
+                <p className="text-xs text-muted-foreground">add(2, 3)</p>
+                <p className="text-2xl font-bold">{math.add(2, 3)}</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-6">
+                <p className="text-xs text-muted-foreground">multiply(4, 5)</p>
+                <p className="text-2xl font-bold">{math.multiply(4, 5)}</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-6">
+                <p className="text-xs text-muted-foreground">divide(10, 3)</p>
+                <p className="text-2xl font-bold">{math.divide(10, 3).toFixed(2)}</p>
+              </CardContent>
+            </Card>
+            <Card>
+              <CardContent className="pt-6">
+                <p className="text-xs text-muted-foreground">clamp(150, 0, 100)</p>
+                <p className="text-2xl font-bold">{math.clamp(150, 0, 100)}</p>
+              </CardContent>
+            </Card>
           </div>
         </section>
 
