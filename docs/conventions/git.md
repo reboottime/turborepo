@@ -76,7 +76,9 @@ hotfix/short-description     # Urgent production fixes
 
 ## Commit Message Format (Required)
 
-Use [Conventional Commits](https://www.conventionalcommits.org/) with **required Claude Code footer**:
+Use [Conventional Commits](https://www.conventionalcommits.org/) with **required Claude Code footer**.
+
+**Scope is REQUIRED** (except `merge:` type). Use the primary area of change (e.g., `docs`, `auth`, `ui`, `deps`).
 
 ```
 type(scope): Short description (max 72 chars)

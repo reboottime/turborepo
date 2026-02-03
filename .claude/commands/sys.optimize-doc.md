@@ -6,7 +6,7 @@ argument-hint: [file-path]
 ## Workflow
 
 1. Read file at $ARGUMENTS
-2. Read framework at `docs/doc-preference.md`
+2. Read framework at `docs/conventions/documentation.md`
 3. Check YAML frontmatter (add if missing, see Metadata Requirements below)
 4. Audit → Apply framework → Output optimized version
 

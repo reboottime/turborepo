@@ -8,7 +8,6 @@
 
 Turborepo monorepo demonstrating frontend infrastructure skills: shared design systems, comprehensive testing, and CI/CD pipelines, building production enterprise grade app from 0~1.
 
-**Repo structure:** See [docs/file-structures.md](docs/file-structures.md)
 
 ## Tech Stack
 
@@ -29,7 +28,7 @@ turbo run test --filter=ui      # Test specific package
 
 ## Code Conventions
 
-See [docs/engineering-conventions.frontend.md](docs/engineering-conventions.frontend.md)
+See [docs/conventions/frontend.md](docs/conventions/frontend.md)
 
 ## Testing Strategy
 
@@ -37,4 +36,4 @@ See [docs/testing-strategy.md](docs/testing-strategy.md)
 
 ## Key Files
 
-See [docs/file-structures.md](docs/file-structures.md)
+Codebase related file structure: [docs/file-structures.md](docs/file-structures.md)

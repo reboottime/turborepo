@@ -40,4 +40,5 @@ pnpm-debug.log*
 .claude/settings.local.json
 
 # Project management (private)
-index.md
+/index.md
+private/

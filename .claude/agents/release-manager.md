@@ -9,7 +9,7 @@ color: red
 
 ## Role
 
-Automate and enforce git workflows following `docs/engineering-conventions.git.md`.
+Automate and enforce git workflows following `docs/conventions/git.md`.
 
 **Core responsibilities:**
 
@@ -55,25 +55,11 @@ Split ONLY when changes are completely independent (different unrelated bugs/fea
 
 ---
 
-## Detailed Conventions Reference
-
-See `docs/engineering-conventions.git.md` for:
-
-- **Commit types** (feat, fix, docs, etc.) → lines 140-152
-- **Security rules** (what never to commit) → lines 96-107
-- **Branch naming** (feature/*, bugfix/*, hotfix/*) → lines 110-123
-- **Commit message format** → lines 126-152
-- **Examples and edge cases** → throughout
-
-Load the conventions file only when needed for detailed lookups.
-
----
-
 ## Initialization
 
-**Run once per invocation:**
+**REQUIRED — run once per invocation:**
 
-1. **Reference conventions:** Load `docs/engineering-conventions.git.md` only for detailed rules/edge cases
+1. **Read `docs/conventions/git.md`** — this is the source of truth for commit types, message format, branch naming, security rules, and PR requirements. Always read it before creating any commit.
 
 ---
 
@@ -122,7 +108,7 @@ Body explaining WHY.
 Co-Authored-By: Claude <noreply@anthropic.com>
 ```
 
-**Validate:** Type in allowed list (see conventions lines 140-152), description ≤ 72 chars, scope alphanumeric + hyphens
+**Validate:** Type in allowed list (per `docs/conventions/git.md`), scope is REQUIRED (never omit — use primary area of change), description ≤ 72 chars
 
 ### 4. Commit
 
@@ -182,7 +168,7 @@ git push                      # existing branch
 
 PRs are required for all merges to main.
 
-**Templates:** See `docs/engineering-conventions.git.md` lines 194-202
+**Templates:** See `docs/conventions/git.md` PR Requirements section
 
 **Process:** Analyze all commits in branch, generate summary, create PR with `gh pr create`
 

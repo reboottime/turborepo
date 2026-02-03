@@ -21,4 +21,7 @@
 4. Unit tests
 5. Build all packages (Turborepo cached)
 6. E2E tests
-7. Deploy (main branch only)
+7. Deploy
+    - dev
+    - staging
+    - production
