@@ -1,10 +1,8 @@
 name: Chromatic
 
+# Disabled — placeholder for future visual review integration
 on:
-  push:
-    branches: [main]
-  pull_request:
-    types: [opened, synchronize]
+  workflow_dispatch:
 
 concurrency:
   group: chromatic-${{ github.ref }}
