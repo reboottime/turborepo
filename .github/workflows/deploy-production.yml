@@ -2,7 +2,7 @@ name: Deploy Production
 
 on:
   workflow_run:
-    workflows: ["E2E Tests"]
+    workflows: ["CI"]
     types: [completed]
 
 concurrency:
