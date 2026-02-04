@@ -43,16 +43,16 @@ button/
 
 ## Key Files
 
-| File | Purpose |
-|------|---------|
-| `turbo.json` | Turborepo task config (build, lint, check-types, test, test:e2e, dev, storybook) |
-| `pnpm-workspace.yaml` | Workspace definitions (`apps/*`, `packages/*`) |
-| `packages/ui/src/styles.css` | Shared Tailwind v4 theme tokens |
-| `packages/ui/src/lib/cn.ts` | Class merge utility (clsx + tailwind-merge) |
-| `.github/actions/setup/action.yml` | Composite action — shared pnpm/Node/Turbo setup |
-| `.github/workflows/ci.yml` | CI pipeline (lint, type-check, unit tests, build) |
-| `.github/workflows/e2e.yml` | E2E tests (matrix per app, parallel) |
-| `.github/workflows/deploy-preview.yml` | Preview deploy on PR (Vercel) |
-| `.github/workflows/deploy-production.yml` | Production deploy on main (Vercel) |
-| `apps/web/playwright.config.ts` | Playwright config for web E2E tests |
-| `apps/portal/playwright.config.ts` | Playwright config for portal E2E tests |
+| File                                      | Purpose                                                                          |
+| ----------------------------------------- | -------------------------------------------------------------------------------- |
+| `turbo.json`                              | Turborepo task config (build, lint, check-types, test, test:e2e, dev, storybook) |
+| `pnpm-workspace.yaml`                     | Workspace definitions (`apps/*`, `packages/*`)                                   |
+| `packages/ui/src/styles.css`              | Shared Tailwind v4 theme tokens                                                  |
+| `packages/ui/src/lib/cn.ts`               | Class merge utility (clsx + tailwind-merge)                                      |
+| `.github/actions/setup/action.yml`        | Composite action — shared pnpm/Node/Turbo setup                                  |
+| `.github/workflows/ci.yml`                | CI pipeline (lint, type-check, unit tests, build)                                |
+| `.github/workflows/e2e.yml`               | E2E tests (matrix per app, parallel)                                             |
+| `.github/workflows/deploy-preview.yml`    | Preview deploy on PR (Vercel)                                                    |
+| `.github/workflows/deploy-production.yml` | Production deploy on main (Vercel)                                               |
+| `apps/web/playwright.config.ts`           | Playwright config for web E2E tests                                              |
+| `apps/portal/playwright.config.ts`        | Playwright config for portal E2E tests                                           |

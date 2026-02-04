@@ -37,16 +37,19 @@ Re-run this after Playwright version updates to pick up new tools and instructio
 Use Playwright's three-agent pipeline:
 
 ### 1. Planner
+
 - Input: wireframe/PRD + seed test (`tests/seed.spec.ts`)
 - Output: human-readable test plan in `specs/<feature>.md`
 - Review the generated spec — ensure all user flows from the wireframe are covered
 
 ### 2. Generator
+
 - Input: spec file from `specs/`
 - Output: executable test files in `tests/`, aligned one-to-one with specs
 - Each generated test references its source spec and seed test
 
 ### 3. Healer
+
 - Input: failing test name
 - Replays failing steps, inspects the UI, patches tests
 - Run until tests pass or confirm the app itself is broken
@@ -80,12 +83,15 @@ When you need changes to application code (e.g., adding accessibility attributes
 # Proposal: <Change Description>
 
 ## Found during
+
 <Which E2E test or flow exposed the issue>
 
 ## Problem
+
 <What's missing or broken>
 
 ## Suggested fix
+
 <What the app code should change>
 ```
 

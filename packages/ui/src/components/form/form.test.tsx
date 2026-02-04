@@ -83,13 +83,16 @@ describe("Form", () => {
     const handleSubmit = jest.fn();
     render(<TestForm onSubmit={handleSubmit} />);
 
-    await user.type(screen.getByPlaceholderText("you@example.com"), "kate@example.com");
+    await user.type(
+      screen.getByPlaceholderText("you@example.com"),
+      "kate@example.com",
+    );
     await user.click(screen.getByRole("button", { name: "Submit" }));
 
     await waitFor(() => {
       expect(handleSubmit).toHaveBeenCalledWith(
         { email: "kate@example.com" },
-        expect.anything()
+        expect.anything(),
       );
     });
   });

@@ -107,9 +107,7 @@ export const DefaultOpen: Story = {
       <DialogContent>
         <DialogHeader>
           <DialogTitle>Already Open</DialogTitle>
-          <DialogDescription>
-            This dialog is open by default.
-          </DialogDescription>
+          <DialogDescription>This dialog is open by default.</DialogDescription>
         </DialogHeader>
         <DialogFooter>
           <DialogClose asChild>

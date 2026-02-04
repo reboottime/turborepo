@@ -14,26 +14,32 @@ Then import components in your TSX files:
 
 ```tsx
 import { Button, cn } from "@repo/ui";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@repo/ui";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@repo/ui";
 ```
 
 ## Components
 
-| Component | Variants | Description |
-|-----------|----------|-------------|
-| `Button` | `default`, `outline`, `ghost` / `sm`, `default`, `lg` | Standard button with variant and size support |
-| `Card` | - | Container with border and background |
-| `CardHeader` | - | Card header section |
-| `CardTitle` | - | Card heading (`h3`) |
-| `CardDescription` | - | Card subtext |
-| `CardContent` | - | Card body with top padding |
+| Component         | Variants                                              | Description                                   |
+| ----------------- | ----------------------------------------------------- | --------------------------------------------- |
+| `Button`          | `default`, `outline`, `ghost` / `sm`, `default`, `lg` | Standard button with variant and size support |
+| `Card`            | -                                                     | Container with border and background          |
+| `CardHeader`      | -                                                     | Card header section                           |
+| `CardTitle`       | -                                                     | Card heading (`h3`)                           |
+| `CardDescription` | -                                                     | Card subtext                                  |
+| `CardContent`     | -                                                     | Card body with top padding                    |
 
 ## Utilities
 
-| Export | Description |
-|--------|-------------|
+| Export           | Description                                                    |
+| ---------------- | -------------------------------------------------------------- |
 | `cn(...classes)` | Merges Tailwind classes safely using `clsx` + `tailwind-merge` |
-| `buttonVariants` | CVA variant function for Button (useful for link styling) |
+| `buttonVariants` | CVA variant function for Button (useful for link styling)      |
 
 ## Package Design
 
@@ -51,12 +57,12 @@ Per-component entrypoints (`@repo/ui/button`) are not needed at this scale.
 
 ```jsonc
 {
-  "sideEffects": ["**/*.css"],       // Only CSS has side effects; rest is tree-shakeable
-  "imports": { "#lib/*": "./src/lib/*.ts" },  // Internal path aliases (Node.js subpath imports)
+  "sideEffects": ["**/*.css"], // Only CSS has side effects; rest is tree-shakeable
+  "imports": { "#lib/*": "./src/lib/*.ts" }, // Internal path aliases (Node.js subpath imports)
   "exports": {
-    ".": "./src/index.ts",           // import { Button } from "@repo/ui"
-    "./styles.css": "./src/styles.css" // @import "@repo/ui/styles.css"
-  }
+    ".": "./src/index.ts", // import { Button } from "@repo/ui"
+    "./styles.css": "./src/styles.css", // @import "@repo/ui/styles.css"
+  },
 }
 ```
 
@@ -114,10 +120,10 @@ export const Default: Story = {};
 
 ### Configuration
 
-| File | Purpose |
-|------|---------|
-| `.storybook/main.ts` | Framework, story globs, Vite config (`@tailwindcss/vite` plugin) |
-| `.storybook/preview.ts` | Global styles (`styles.css`), control matchers |
+| File                    | Purpose                                                          |
+| ----------------------- | ---------------------------------------------------------------- |
+| `.storybook/main.ts`    | Framework, story globs, Vite config (`@tailwindcss/vite` plugin) |
+| `.storybook/preview.ts` | Global styles (`styles.css`), control matchers                   |
 
 ## Adding a component
 

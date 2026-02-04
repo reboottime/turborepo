@@ -61,12 +61,12 @@ Backend team                         Frontend team
 
 ## What Each Layer Catches
 
-| Layer | Owned by | What it catches |
-|-------|----------|-----------------|
-| Backend unit/integration | Backend | Logic bugs, query errors, validation |
-| Frontend unit/integration | Frontend | UI rendering, state management, user interactions |
-| https://docs.pact.io/#what-is-contract-testing | Shared | API shape mismatches, mock drift, breaking changes |
-| True E2E | Shared | Full-stack integration failures, auth flows, data integrity |
+| Layer                                          | Owned by | What it catches                                             |
+| ---------------------------------------------- | -------- | ----------------------------------------------------------- |
+| Backend unit/integration                       | Backend  | Logic bugs, query errors, validation                        |
+| Frontend unit/integration                      | Frontend | UI rendering, state management, user interactions           |
+| https://docs.pact.io/#what-is-contract-testing | Shared   | API shape mismatches, mock drift, breaking changes          |
+| True E2E                                       | Shared   | Full-stack integration failures, auth flows, data integrity |
 
 ## Contract Tests: Bridging the Gap
 

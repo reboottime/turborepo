@@ -12,17 +12,17 @@
 
 For every section, ask: **"Does the LLM already know this from training data?"**
 
-| Content Type | LLM Knows? | Action | Reason |
-|--------------|------------|--------|--------|
-| React hooks (useState, useEffect) | ✅ Yes | ❌ Remove | Covered in training data |
-| Next.js App Router fundamentals | ✅ Yes | ❌ Remove | Official docs in training |
-| Generic best practices | ✅ Yes | ❌ Remove | Universal knowledge |
-| Zod validation basics | ✅ Yes | ❌ Remove | Library docs in training |
-| **Your Supabase setup** | ❌ No | ✅ **Keep** | Project-specific |
-| **Your auth pattern** (`getUser` not `getSession`) | ❌ No | ✅ **Keep** | Project convention |
-| **Your return type** (`{ success, error?, data? }`) | ❌ No | ✅ **Keep** | Project convention |
-| **Your file organization** (`app/actions/*.ts`) | ❌ No | ✅ **Keep** | Project-specific |
-| **iOS Safari gotchas** (button types) | ❌ No | ✅ **Keep** | Rare edge case |
+| Content Type                                        | LLM Knows? | Action      | Reason                    |
+| --------------------------------------------------- | ---------- | ----------- | ------------------------- |
+| React hooks (useState, useEffect)                   | ✅ Yes     | ❌ Remove   | Covered in training data  |
+| Next.js App Router fundamentals                     | ✅ Yes     | ❌ Remove   | Official docs in training |
+| Generic best practices                              | ✅ Yes     | ❌ Remove   | Universal knowledge       |
+| Zod validation basics                               | ✅ Yes     | ❌ Remove   | Library docs in training  |
+| **Your Supabase setup**                             | ❌ No      | ✅ **Keep** | Project-specific          |
+| **Your auth pattern** (`getUser` not `getSession`)  | ❌ No      | ✅ **Keep** | Project convention        |
+| **Your return type** (`{ success, error?, data? }`) | ❌ No      | ✅ **Keep** | Project convention        |
+| **Your file organization** (`app/actions/*.ts`)     | ❌ No      | ✅ **Keep** | Project-specific          |
+| **iOS Safari gotchas** (button types)               | ❌ No      | ✅ **Keep** | Rare edge case            |
 
 ### Evaluation Framework
 
@@ -56,12 +56,12 @@ For every section, ask: **"Does the LLM already know this from training data?"**
 
 ### Target Reductions by Doc Type
 
-| Doc Type | Target Reduction | Length Target | What to Keep |
-|----------|------------------|---------------|--------------|
-| Pattern/Guide docs | 60-80% | 100-250 lines | Project patterns only |
-| Reference docs | 40-60% | 100-250 lines | Code templates + conventions |
-| Architecture docs | 20-40% | 150-250 lines | Trees + decisions |
-| Troubleshooting | 50-70% | 80-150 lines | Project gotchas only |
+| Doc Type           | Target Reduction | Length Target | What to Keep                 |
+| ------------------ | ---------------- | ------------- | ---------------------------- |
+| Pattern/Guide docs | 60-80%           | 100-250 lines | Project patterns only        |
+| Reference docs     | 40-60%           | 100-250 lines | Code templates + conventions |
+| Architecture docs  | 20-40%           | 150-250 lines | Trees + decisions            |
+| Troubleshooting    | 50-70%           | 80-150 lines  | Project gotchas only         |
 
 ### Signal-to-Noise Calculation
 
@@ -90,6 +90,7 @@ For each file, record:
 
 ```markdown
 File: [name.md]
+
 - Current lines: [X]
 - Estimated generic content: [Y%]
 - Estimated project-specific: [Z%]
@@ -104,12 +105,14 @@ Create a "Keep List" of project-specific knowledge:
 
 ```markdown
 ✅ KEEP (Project-Specific):
+
 - Your specific setup/config
 - Your conventions/patterns
 - Your gotchas/edge cases
 - Your decisions (why this vs that)
 
 ❌ REMOVE (Generic/LLM Knows):
+
 - Framework/library explanations
 - Generic best practices
 - Multiple examples of same pattern (keep 1)
@@ -118,6 +121,7 @@ Create a "Keep List" of project-specific knowledge:
 ### Step 3: Create Minimal Reference
 
 **Rules:**
+
 - 70%+ code, 30% prose
 - Max 1 example per pattern
 - No framework explanations
@@ -172,30 +176,35 @@ Decision tree routing users to the right file.
 ### ❌ Don't Do This
 
 **1. Keeping Generic Examples**
+
 ```markdown
 ❌ BAD: "useState is a React hook that allows you to add state..."
 ✅ GOOD: [Just show YOUR usage in code]
 ```
 
 **2. Multiple Examples of Same Concept**
+
 ```markdown
 ❌ BAD: 5 useActionState examples for different forms
 ✅ GOOD: One example showing YOUR standard pattern
 ```
 
 **3. Verbose Explanations**
+
 ```markdown
 ❌ BAD: "Server Actions are a new feature introduced in Next.js 13 that enable..."
 ✅ GOOD: [Jump straight to code pattern]
 ```
 
 **4. Duplicate Content**
+
 ```markdown
 ❌ BAD: Same auth pattern in 3 different files
 ✅ GOOD: Show once, cross-reference elsewhere
 ```
 
 **5. Generic Best Practices**
+
 ```markdown
 ❌ BAD: "Always validate user input" / "Handle errors gracefully"
 ✅ GOOD: "Auth: Always getUser() not getSession() (security - RLS bypass risk)"
@@ -205,12 +214,12 @@ Decision tree routing users to the right file.
 
 ## Maintenance Strategy
 
-| Trigger | Action |
-|---------|--------|
-| New project pattern | Add to reference (if ≠ existing patterns) |
-| New gotcha discovered | Add to troubleshooting |
-| Convention changes | Update ALL affected references |
-| Framework updates | ONLY update if YOUR usage changes |
+| Trigger               | Action                                    |
+| --------------------- | ----------------------------------------- |
+| New project pattern   | Add to reference (if ≠ existing patterns) |
+| New gotcha discovered | Add to troubleshooting                    |
+| Convention changes    | Update ALL affected references            |
+| Framework updates     | ONLY update if YOUR usage changes         |
 
 ### Growth Rules
 
@@ -222,14 +231,14 @@ Decision tree routing users to the right file.
 
 ## Success Metrics
 
-| Metric | Target | Measurement |
-|--------|--------|-------------|
-| Line reduction | 50-80% | (Before - After) / Before × 100 |
-| Signal-to-noise | 90:10 | Project-specific lines / Total lines |
-| Generic content | <10% | Generic explanation lines / Total lines |
-| File length | <250 lines | Line count per reference file |
-| Redundancy | 0 | Duplicate patterns across files |
-| Irreducibility | 100% | Can't remove anything without losing critical info |
+| Metric          | Target     | Measurement                                        |
+| --------------- | ---------- | -------------------------------------------------- |
+| Line reduction  | 50-80%     | (Before - After) / Before × 100                    |
+| Signal-to-noise | 90:10      | Project-specific lines / Total lines               |
+| Generic content | <10%       | Generic explanation lines / Total lines            |
+| File length     | <250 lines | Line count per reference file                      |
+| Redundancy      | 0          | Duplicate patterns across files                    |
+| Irreducibility  | 100%       | Can't remove anything without losing critical info |
 
 ---
 

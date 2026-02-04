@@ -58,15 +58,19 @@ When you need a shared component or utility that doesn't exist yet, write a prop
 # Proposal: <Component/Utility Name>
 
 ## Type
+
 component | lib
 
 ## Requested by
+
 <app and feature context>
 
 ## Problem
+
 <What you're trying to do and why existing packages don't cover it>
 
 ## Suggested API
+
 <How you'd expect to consume it — import paths, props/params, usage example>
 ```
 

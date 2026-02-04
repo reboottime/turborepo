@@ -8,7 +8,6 @@
 
 Turborepo monorepo demonstrating frontend infrastructure skills: shared design systems, comprehensive testing, and CI/CD pipelines, building production enterprise grade app from 0~1.
 
-
 ## Tech Stack
 
 See [docs/tech-stack.md](docs/tech-stack.md) (includes architecture decisions)

@@ -3,6 +3,7 @@ Create Playwright E2E tests from a UX wireframe using Playwright's test agent pi
 Wireframe: $ARGUMENTS
 
 Steps:
+
 1. Read the wireframe file to understand all user flows, states, and validations
 2. Run the **Planner** agent with the wireframe as PRD context — output a spec to `specs/`
 3. Review the generated spec — ensure all flows from the wireframe are covered

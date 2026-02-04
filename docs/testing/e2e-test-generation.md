@@ -6,11 +6,11 @@ How we generate and maintain E2E tests using Playwright's AI-powered test agent 
 
 [Playwright Test Agents](https://playwright.dev/docs/test-agents) are three built-in AI agents that ship with Playwright. They work independently or sequentially to create and maintain E2E tests without hand-writing them:
 
-| Agent | Role | Input | Output |
-|-------|------|-------|--------|
-| **Planner** | Explores the app, designs test scenarios | User request + seed test + optional PRD/wireframe | Markdown test plan in `specs/` |
-| **Generator** | Converts plans into executable tests | Spec from `specs/` | Test files in `e2e/`, one-to-one with spec scenarios |
-| **Healer** | Debugs and fixes failing tests | Failing test name | Patched test code, or `test.fixme()` if app is broken |
+| Agent         | Role                                     | Input                                             | Output                                                |
+| ------------- | ---------------------------------------- | ------------------------------------------------- | ----------------------------------------------------- |
+| **Planner**   | Explores the app, designs test scenarios | User request + seed test + optional PRD/wireframe | Markdown test plan in `specs/`                        |
+| **Generator** | Converts plans into executable tests     | Spec from `specs/`                                | Test files in `e2e/`, one-to-one with spec scenarios  |
+| **Healer**    | Debugs and fixes failing tests           | Failing test name                                 | Patched test code, or `test.fixme()` if app is broken |
 
 Each agent connects to a real browser via an MCP server. They don't just generate code from templates — they interact with the live app, verify selectors, and validate assertions in real-time.
 
@@ -43,14 +43,14 @@ npx playwright init-agents --loop=claude
 
 This scaffolds:
 
-| File | Purpose |
-|------|---------|
-| `.mcp.json` | MCP server config — gives agents access to browser tools |
-| `.claude/agents/playwright-test-planner.md` | Planner agent definition |
-| `.claude/agents/playwright-test-generator.md` | Generator agent definition |
-| `.claude/agents/playwright-test-healer.md` | Healer agent definition |
-| `e2e/seed.spec.ts` | Seed test — environment bootstrap template |
-| `specs/README.md` | Specs directory marker |
+| File                                          | Purpose                                                  |
+| --------------------------------------------- | -------------------------------------------------------- |
+| `.mcp.json`                                   | MCP server config — gives agents access to browser tools |
+| `.claude/agents/playwright-test-planner.md`   | Planner agent definition                                 |
+| `.claude/agents/playwright-test-generator.md` | Generator agent definition                               |
+| `.claude/agents/playwright-test-healer.md`    | Healer agent definition                                  |
+| `e2e/seed.spec.ts`                            | Seed test — environment bootstrap template               |
+| `specs/README.md`                             | Specs directory marker                                   |
 
 Re-run after Playwright version updates to pick up new agent definitions and tools.
 

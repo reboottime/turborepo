@@ -50,8 +50,15 @@ export const AllVariants: Story = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
       {(["default", "outline", "ghost"] as const).map((variant) => (
-        <div key={variant} style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}>
-          <span style={{ width: "4rem", fontSize: "0.75rem", color: "#737373" }}>{variant}</span>
+        <div
+          key={variant}
+          style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}
+        >
+          <span
+            style={{ width: "4rem", fontSize: "0.75rem", color: "#737373" }}
+          >
+            {variant}
+          </span>
           {(["sm", "default", "lg"] as const).map((size) => (
             <Button key={size} variant={variant} size={size}>
               {size}

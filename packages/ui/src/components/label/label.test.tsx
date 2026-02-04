@@ -18,7 +18,7 @@ describe("Label", () => {
       <>
         <Label htmlFor="email">Email</Label>
         <input id="email" />
-      </>
+      </>,
     );
     expect(screen.getByText("Email")).toHaveAttribute("for", "email");
   });

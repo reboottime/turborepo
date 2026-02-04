@@ -49,7 +49,8 @@ const buttonVariants = cva(
     variants: {
       variant: {
         default: "bg-primary text-primary-foreground hover:bg-primary/90",
-        outline: "border border-border bg-background hover:bg-muted hover:text-foreground",
+        outline:
+          "border border-border bg-background hover:bg-muted hover:text-foreground",
         ghost: "hover:bg-muted hover:text-foreground",
       },
       size: {
@@ -59,11 +60,12 @@ const buttonVariants = cva(
       },
     },
     defaultVariants: { variant: "default", size: "default" },
-  }
+  },
 );
 
 export interface ButtonProps
-  extends ButtonHTMLAttributes<HTMLButtonElement>,
+  extends
+    ButtonHTMLAttributes<HTMLButtonElement>,
     VariantProps<typeof buttonVariants> {}
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
@@ -73,7 +75,7 @@ const Button = forwardRef<HTMLButtonElement, ButtonProps>(
       ref={ref}
       {...props}
     />
-  )
+  ),
 );
 Button.displayName = "Button";
 
@@ -99,7 +101,9 @@ export default meta;
 type Story = StoryObj<typeof Button>;
 
 export const Default: Story = { args: { children: "Button" } };
-export const Outline: Story = { args: { children: "Outline", variant: "outline" } };
+export const Outline: Story = {
+  args: { children: "Outline", variant: "outline" },
+};
 export const Ghost: Story = { args: { children: "Ghost", variant: "ghost" } };
 ```
 

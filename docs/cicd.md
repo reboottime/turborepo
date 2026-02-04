@@ -79,21 +79,21 @@ PR opened/sync                          Push to main
 
 ## Gate Summary
 
-| Condition | E2E | Deploy Preview | Deploy Production |
-|---|---|---|---|
-| CI fails | skip | skip | skip |
-| CI passes + PR | run | run | skip |
-| CI passes + main, E2E fails | run | skip | skip |
-| CI passes + main, E2E passes | run | skip | run |
+| Condition                    | E2E  | Deploy Preview | Deploy Production |
+| ---------------------------- | ---- | -------------- | ----------------- |
+| CI fails                     | skip | skip           | skip              |
+| CI passes + PR               | run  | run            | skip              |
+| CI passes + main, E2E fails  | run  | skip           | skip              |
+| CI passes + main, E2E passes | run  | skip           | run               |
 
 ## Workflow Files
 
-| File | Trigger | Purpose |
-|---|---|---|
-| `ci.yml` | push to main, PR | Lint, type check, unit test, build |
-| `e2e.yml` | after CI succeeds | Playwright E2E tests (matrix: web, portal) |
-| `deploy-preview.yml` | after CI succeeds (PR only) | Deploy preview to Vercel |
-| `deploy-production.yml` | after E2E succeeds (main only) | Deploy production to Vercel |
+| File                    | Trigger                        | Purpose                                    |
+| ----------------------- | ------------------------------ | ------------------------------------------ |
+| `ci.yml`                | push to main, PR               | Lint, type check, unit test, build         |
+| `e2e.yml`               | after CI succeeds              | Playwright E2E tests (matrix: web, portal) |
+| `deploy-preview.yml`    | after CI succeeds (PR only)    | Deploy preview to Vercel                   |
+| `deploy-production.yml` | after E2E succeeds (main only) | Deploy production to Vercel                |
 
 ## Shared Composite Action
 

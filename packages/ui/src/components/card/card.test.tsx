@@ -1,6 +1,12 @@
 import { createRef } from "react";
 import { render, screen } from "@testing-library/react";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "./index";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "./index";
 
 // -- Card --
 
@@ -27,7 +33,7 @@ describe("Card", () => {
     render(
       <Card data-testid="card" className="my-custom">
         content
-      </Card>
+      </Card>,
     );
     const card = screen.getByTestId("card");
     expect(card.className).toContain("my-custom");
@@ -44,9 +50,12 @@ describe("Card", () => {
     render(
       <Card data-testid="card" aria-label="info card">
         content
-      </Card>
+      </Card>,
     );
-    expect(screen.getByTestId("card")).toHaveAttribute("aria-label", "info card");
+    expect(screen.getByTestId("card")).toHaveAttribute(
+      "aria-label",
+      "info card",
+    );
   });
 });
 
@@ -69,7 +78,7 @@ describe("CardHeader", () => {
     render(
       <CardHeader data-testid="header" className="extra">
         content
-      </CardHeader>
+      </CardHeader>,
     );
     expect(screen.getByTestId("header").className).toContain("extra");
   });
@@ -106,7 +115,7 @@ describe("CardTitle", () => {
     render(
       <CardTitle data-testid="title" className="text-red-500">
         Title
-      </CardTitle>
+      </CardTitle>,
     );
     expect(screen.getByTestId("title").className).toContain("text-red-500");
   });
@@ -142,7 +151,7 @@ describe("CardDescription", () => {
     render(
       <CardDescription data-testid="desc" className="italic">
         text
-      </CardDescription>
+      </CardDescription>,
     );
     expect(screen.getByTestId("desc").className).toContain("italic");
   });
@@ -171,7 +180,7 @@ describe("CardContent", () => {
     render(
       <CardContent data-testid="content" className="px-8">
         content
-      </CardContent>
+      </CardContent>,
     );
     expect(screen.getByTestId("content").className).toContain("px-8");
   });
@@ -196,10 +205,12 @@ describe("Card composition", () => {
         <CardContent>
           <p>Details here</p>
         </CardContent>
-      </Card>
+      </Card>,
     );
 
-    expect(screen.getByRole("heading", { level: 3, name: "Project Alpha" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("heading", { level: 3, name: "Project Alpha" }),
+    ).toBeInTheDocument();
     expect(screen.getByText("A great project")).toBeInTheDocument();
     expect(screen.getByText("Details here")).toBeInTheDocument();
   });

@@ -18,13 +18,13 @@ import * as math from "@repo/libs/math";
 
 Arithmetic and numeric utilities.
 
-| Function | Signature | Description |
-|----------|-----------|-------------|
-| `add` | `(a: number, b: number) => number` | Addition |
-| `subtract` | `(a: number, b: number) => number` | Subtraction |
-| `multiply` | `(a: number, b: number) => number` | Multiplication |
-| `divide` | `(a: number, b: number) => number` | Division (throws on zero) |
-| `clamp` | `(value: number, min: number, max: number) => number` | Constrain value to range |
+| Function   | Signature                                             | Description               |
+| ---------- | ----------------------------------------------------- | ------------------------- |
+| `add`      | `(a: number, b: number) => number`                    | Addition                  |
+| `subtract` | `(a: number, b: number) => number`                    | Subtraction               |
+| `multiply` | `(a: number, b: number) => number`                    | Multiplication            |
+| `divide`   | `(a: number, b: number) => number`                    | Division (throws on zero) |
+| `clamp`    | `(value: number, min: number, max: number) => number` | Constrain value to range  |
 
 ## Structure
 

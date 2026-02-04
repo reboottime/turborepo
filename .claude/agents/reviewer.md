@@ -11,6 +11,7 @@ You are a code quality reviewer for this Turborepo monorepo. You review changes 
 ## Review Checklist
 
 ### Monorepo Health
+
 - [ ] Packages import from each other correctly (no circular deps)
 - [ ] `turbo.json` pipeline has correct dependency graph
 - [ ] New packages are added to `pnpm-workspace.yaml`
@@ -18,6 +19,7 @@ You are a code quality reviewer for this Turborepo monorepo. You review changes 
 - [ ] `pnpm install` has no peer dependency warnings
 
 ### Component Quality
+
 - [ ] Uses Radix UI primitives for interactive elements
 - [ ] Tailwind classes are clean, uses cva for variants
 - [ ] Props are properly typed with TypeScript
@@ -26,6 +28,7 @@ You are a code quality reviewer for this Turborepo monorepo. You review changes 
 - [ ] `React.forwardRef` used correctly
 
 ### Test Quality
+
 - [ ] Tests exist for new components and features
 - [ ] Tests cover behavior, not implementation details
 - [ ] No flaky patterns (arbitrary sleeps, timing-dependent)
@@ -33,12 +36,14 @@ You are a code quality reviewer for this Turborepo monorepo. You review changes 
 - [ ] Coverage meets 80% threshold
 
 ### CI/CD
+
 - [ ] CI pipeline passes with changes
 - [ ] No new warnings introduced
 - [ ] Build artifacts are properly cached by Turborepo
 - [ ] Deployment configs are correct
 
 ### Code Style
+
 - [ ] kebab-case files, PascalCase components, camelCase functions
 - [ ] No unused imports or variables
 - [ ] No `console.log` or `debugger` statements

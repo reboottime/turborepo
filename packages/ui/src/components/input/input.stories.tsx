@@ -66,7 +66,14 @@ export const Invalid: Story = {
 
 export const AllStates: Story = {
   render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem", maxWidth: "20rem" }}>
+    <div
+      style={{
+        display: "flex",
+        flexDirection: "column",
+        gap: "1.5rem",
+        maxWidth: "20rem",
+      }}
+    >
       <div style={{ display: "flex", flexDirection: "column", gap: "0.5rem" }}>
         <Label>Default</Label>
         <Input placeholder="Default input" />

@@ -7,7 +7,9 @@ import { Button } from "./index";
 describe("Button", () => {
   it("renders children", () => {
     render(<Button>Click me</Button>);
-    expect(screen.getByRole("button", { name: "Click me" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("button", { name: "Click me" }),
+    ).toBeInTheDocument();
   });
 
   it("renders as a button element", () => {
@@ -88,7 +90,7 @@ describe("Button", () => {
     render(
       <Button disabled onClick={handleClick}>
         Click
-      </Button>
+      </Button>,
     );
 
     await user.click(screen.getByRole("button"));
@@ -126,7 +128,7 @@ describe("Button", () => {
     render(
       <Button type="submit" aria-label="submit form">
         Submit
-      </Button>
+      </Button>,
     );
     const button = screen.getByRole("button");
     expect(button).toHaveAttribute("type", "submit");

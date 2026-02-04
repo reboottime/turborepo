@@ -20,12 +20,13 @@ You define tasks in `turbo.json`. You define packages in `pnpm-workspace.yaml`. 
 
 A monorepo has multiple **packages** (each with its own `package.json`). Two kinds:
 
-| Folder | Contains | Example |
-|--------|----------|---------|
-| `apps/` | Deployable applications | `apps/web`, `apps/portal` |
+| Folder      | Contains                         | Example                        |
+| ----------- | -------------------------------- | ------------------------------ |
+| `apps/`     | Deployable applications          | `apps/web`, `apps/portal`      |
 | `packages/` | Shared libraries, configs, tools | `packages/ui`, `packages/libs` |
 
 Defined in `pnpm-workspace.yaml`:
+
 ```yaml
 packages:
   - "apps/*"
@@ -35,6 +36,7 @@ packages:
 ### Internal Packages
 
 Packages reference each other with `workspace:*`:
+
 ```json
 {
   "dependencies": {
@@ -42,6 +44,7 @@ Packages reference each other with `workspace:*`:
   }
 }
 ```
+
 - `@repo/` is the namespace convention (unclaimable on npm, safe for internal use)
 - Never use `../` relative imports across packages — use the package name
 - Every package must have a unique `name` in its `package.json`
@@ -49,6 +52,7 @@ Packages reference each other with `workspace:*`:
 ### Task Graph
 
 When you run `turbo run build`, Turborepo:
+
 1. Reads `turbo.json` to understand task definitions
 2. Reads the lockfile to understand package dependencies
 3. Builds a task graph (what runs, in what order)
@@ -73,33 +77,33 @@ When you run `turbo run build`, Turborepo:
   "tasks": {
     "build": {
       "dependsOn": ["^build"],
-      "outputs": [".next/**", "!.next/cache/**", "dist/**"]
+      "outputs": [".next/**", "!.next/cache/**", "dist/**"],
     },
     "lint": {
-      "dependsOn": ["^lint"]
+      "dependsOn": ["^lint"],
     },
     "test": {
-      "dependsOn": ["^build"]
+      "dependsOn": ["^build"],
     },
     "dev": {
       "cache": false,
-      "persistent": true
-    }
-  }
+      "persistent": true,
+    },
+  },
 }
 ```
 
 ### Task Keys
 
-| Key | What it does | Example |
-|-----|-------------|---------|
-| `dependsOn` | Run these first | `["^build"]` |
-| `outputs` | Files to cache | `[".next/**", "dist/**"]` |
-| `inputs` | Files that affect the cache key | `["src/**"]` |
-| `cache` | Enable/disable caching | `false` for dev servers |
-| `persistent` | Long-running (never exits) | `true` for dev servers |
-| `env` | Env vars that affect cache key | `["API_URL"]` |
-| `outputLogs` | Log verbosity | `"full"`, `"errors-only"`, `"none"` |
+| Key          | What it does                    | Example                             |
+| ------------ | ------------------------------- | ----------------------------------- |
+| `dependsOn`  | Run these first                 | `["^build"]`                        |
+| `outputs`    | Files to cache                  | `[".next/**", "dist/**"]`           |
+| `inputs`     | Files that affect the cache key | `["src/**"]`                        |
+| `cache`      | Enable/disable caching          | `false` for dev servers             |
+| `persistent` | Long-running (never exits)      | `true` for dev servers              |
+| `env`        | Env vars that affect cache key  | `["API_URL"]`                       |
+| `outputLogs` | Log verbosity                   | `"full"`, `"errors-only"`, `"none"` |
 
 ### The `^` Prefix
 
@@ -110,19 +114,20 @@ When you run `turbo run build`, Turborepo:
 ### Root Tasks
 
 Tasks that only run at the repo root use `//#` prefix:
+
 ```json
 { "tasks": { "//#lint:root": {} } }
 ```
 
 ### Top-Level Config Keys
 
-| Key | Purpose |
-|-----|---------|
-| `$schema` | Schema validation URL |
-| `globalDependencies` | Files that invalidate ALL caches when changed |
-| `globalEnv` | Env vars that invalidate ALL caches |
-| `ui` | `"tui"` (interactive terminal) or `"stream"` |
-| `envMode` | `"strict"` (default, must declare env vars) or `"loose"` |
+| Key                  | Purpose                                                  |
+| -------------------- | -------------------------------------------------------- |
+| `$schema`            | Schema validation URL                                    |
+| `globalDependencies` | Files that invalidate ALL caches when changed            |
+| `globalEnv`          | Env vars that invalidate ALL caches                      |
+| `ui`                 | `"tui"` (interactive terminal) or `"stream"`             |
+| `envMode`            | `"strict"` (default, must declare env vars) or `"loose"` |
 
 ---
 
@@ -131,6 +136,7 @@ Tasks that only run at the repo root use `//#` prefix:
 Every internal package follows this pattern:
 
 **package.json:**
+
 ```json
 {
   "name": "@repo/ui",
@@ -151,6 +157,7 @@ Every internal package follows this pattern:
 - Scripts must match task names in `turbo.json`
 
 **tsconfig.json:**
+
 ```json
 {
   "extends": "../../tsconfig.json",
@@ -219,15 +226,15 @@ turbo prune --scope=web            # Create minimal subset for one app (useful f
 
 If you see old tutorials or code, watch for these:
 
-| Old (v1) | New (v2) | Notes |
-|----------|----------|-------|
-| `pipeline` | `tasks` | Config key in turbo.json |
-| `outputMode` | `outputLogs` | Matches CLI flag name |
-| `globalDotEnv` | use `globalDependencies` | Removed |
-| `dotEnv` | use `inputs` | Removed |
-| `--scope` | `--filter` | CLI flag |
-| Loose env mode default | Strict env mode default | Must declare env vars |
-| Cache in `node_modules/.cache` | Cache in `.turbo/cache` | Location changed |
+| Old (v1)                       | New (v2)                 | Notes                    |
+| ------------------------------ | ------------------------ | ------------------------ |
+| `pipeline`                     | `tasks`                  | Config key in turbo.json |
+| `outputMode`                   | `outputLogs`             | Matches CLI flag name    |
+| `globalDotEnv`                 | use `globalDependencies` | Removed                  |
+| `dotEnv`                       | use `inputs`             | Removed                  |
+| `--scope`                      | `--filter`               | CLI flag                 |
+| Loose env mode default         | Strict env mode default  | Must declare env vars    |
+| Cache in `node_modules/.cache` | Cache in `.turbo/cache`  | Location changed         |
 
 **Migration:** `npx @turbo/codemod migrate` handles most of these automatically.
 
@@ -247,6 +254,7 @@ If you see old tutorials or code, watch for these:
 ## References
 
 ### Official Docs
+
 - [Turborepo Documentation](https://turbo.build/repo/docs) — start here
 - [turbo.json Configuration Reference](https://turborepo.dev/docs/reference/configuration) — all config options
 - [Structuring a Repository](https://turborepo.dev/docs/crafting-your-repository/structuring-a-repository) — workspace layout
@@ -255,11 +263,13 @@ If you see old tutorials or code, watch for these:
 - [Upgrading to v2](https://turborepo.dev/docs/crafting-your-repository/upgrading) — migration guide
 
 ### Release Notes
+
 - [Turborepo 2.0](https://turborepo.dev/blog/turbo-2-0) — breaking changes, `pipeline` → `tasks`
 - [Turborepo 2.7](https://turborepo.dev/blog/turbo-2-7) — devtools, composable config
 - [Turborepo 2.8](https://turborepo.dev/blog/2-8) — git worktrees, agent skill, `description` field
 - [GitHub Releases](https://github.com/vercel/turborepo/releases) — all versions
 
 ### Guides
+
 - [Turborepo + pnpm setup](https://nhost.io/blog/how-we-configured-pnpm-and-turborepo-for-our-monorepo) — practical walkthrough
 - [Turborepo Examples](https://github.com/vercel/turborepo/tree/main/examples) — official example repos

@@ -32,7 +32,8 @@ When building a new component:
 5. **Test** `<component-name>.test.tsx` — Jest + RTL covering: render, variants, interaction, disabled, ref forwarding, className merging
 6. **Document** `<component-name>.stories.tsx` — Storybook stories showing every variant and key states (default, disabled, composed with other components)
 7. **Export** from `packages/ui/src/index.ts` barrel file — component, variants, and types
-8. **Verify** — Run `pnpm --filter @repo/ui test` and confirm all tests pass. If any test fails, fix before proceeding.
+8. **Register** — Update `packages/ui/index.md`: add the new component to the Components table with its exports and path
+9. **Verify** — Run `pnpm --filter @repo/ui test` and `pnpm --filter @repo/ui check-types` and confirm both pass. If anything fails, fix before proceeding.
 
 ## Testing
 

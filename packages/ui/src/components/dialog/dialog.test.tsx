@@ -36,7 +36,7 @@ function renderDialog({
           <DialogClose>Cancel</DialogClose>
         </DialogFooter>
       </DialogContent>
-    </Dialog>
+    </Dialog>,
   );
 }
 
@@ -116,7 +116,7 @@ describe("Dialog", () => {
           <DialogTitle>Ref Test</DialogTitle>
           <DialogDescription>Ref desc</DialogDescription>
         </DialogContent>
-      </Dialog>
+      </Dialog>,
     );
     expect(ref.current).toBeInstanceOf(HTMLDivElement);
   });
@@ -130,7 +130,7 @@ describe("Dialog", () => {
           <DialogTitle>Overlay Ref</DialogTitle>
           <DialogDescription>Overlay desc</DialogDescription>
         </DialogContent>
-      </Dialog>
+      </Dialog>,
     );
     expect(ref.current).toBeInstanceOf(HTMLDivElement);
   });
@@ -178,7 +178,7 @@ describe("Dialog", () => {
           <DialogTitle>Callback Test</DialogTitle>
           <DialogDescription>Callback desc</DialogDescription>
         </DialogContent>
-      </Dialog>
+      </Dialog>,
     );
 
     await user.click(screen.getByRole("button", { name: "Open" }));

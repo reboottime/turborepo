@@ -46,6 +46,7 @@ A clean, centered login form for the apps/portal. Minimal distractions, single p
 ## Component Specification
 
 ### Card Container
+
 - Centered both vertically and horizontally
 - Width: 400px (max), responsive down to full-width on mobile
 - Subtle shadow, rounded corners (8px)
@@ -53,11 +54,13 @@ A clean, centered login form for the apps/portal. Minimal distractions, single p
 - Padding: 32px
 
 ### App Logo
+
 - Centered at top of card
 - Size: 48px height
 - Margin-bottom: 24px
 
 ### Username Field
+
 - Label: "Username" (above field)
 - Input type: `text`
 - Placeholder: "Enter your username"
@@ -67,6 +70,7 @@ A clean, centered login form for the apps/portal. Minimal distractions, single p
 - Focus state: blue border (#3B82F6)
 
 ### Password Field
+
 - Label: "Password" (above field)
 - Input type: `password`
 - Placeholder: "Enter your password"
@@ -76,6 +80,7 @@ A clean, centered login form for the apps/portal. Minimal distractions, single p
 - Same border styling as username
 
 ### Sign In Button
+
 - Full width within card
 - Height: 44px
 - Background: primary blue (#3B82F6)
@@ -90,6 +95,7 @@ A clean, centered login form for the apps/portal. Minimal distractions, single p
 ## States & Behavior
 
 ### Validation
+
 - Both fields required
 - Show inline error below field on validation failure
 - Error text: red (#EF4444), 14px
@@ -131,7 +137,7 @@ A clean, centered login form for the apps/portal. Minimal distractions, single p
 ## Responsive Behavior
 
 | Breakpoint     | Behavior                          |
-|----------------|-----------------------------------|
+| -------------- | --------------------------------- |
 | Desktop (>768) | Card centered, 400px wide         |
 | Tablet (768)   | Card centered, 400px wide         |
 | Mobile (<480)  | Card full-width, 16px side margin |

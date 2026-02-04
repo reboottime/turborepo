@@ -27,7 +27,12 @@ function BasicFormDemo() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit((data) => alert(JSON.stringify(data)))}
-        style={{ maxWidth: "24rem", display: "flex", flexDirection: "column", gap: "1.5rem" }}
+        style={{
+          maxWidth: "24rem",
+          display: "flex",
+          flexDirection: "column",
+          gap: "1.5rem",
+        }}
       >
         <FormField
           control={form.control}
@@ -77,7 +82,12 @@ function MultiFieldFormDemo() {
     <Form {...form}>
       <form
         onSubmit={form.handleSubmit((data) => alert(JSON.stringify(data)))}
-        style={{ maxWidth: "24rem", display: "flex", flexDirection: "column", gap: "1.5rem" }}
+        style={{
+          maxWidth: "24rem",
+          display: "flex",
+          flexDirection: "column",
+          gap: "1.5rem",
+        }}
       >
         <FormField
           control={form.control}
@@ -109,7 +119,9 @@ function MultiFieldFormDemo() {
               <FormControl>
                 <Input type="email" placeholder="you@example.com" {...field} />
               </FormControl>
-              <FormDescription>We&apos;ll never share your email.</FormDescription>
+              <FormDescription>
+                We&apos;ll never share your email.
+              </FormDescription>
               <FormMessage />
             </FormItem>
           )}

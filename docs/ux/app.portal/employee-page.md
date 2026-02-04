@@ -42,6 +42,7 @@ A data-driven page for managing employees in the apps/portal app. Supports viewi
 ## Component Specification
 
 ### Top Navigation Bar
+
 - Left: App logo
 - Center/Left: Page title "Employee Management"
 - Right: Username display + Logout button
@@ -49,37 +50,42 @@ A data-driven page for managing employees in the apps/portal app. Supports viewi
 - Height: 56px
 
 ### Page Header
+
 - Title: "Employees" (24px, bold)
 - "Add Employee" button: right-aligned, primary blue, icon `+` prefix
 - Margin-bottom: 16px
 
 ### Toolbar
+
 - Search input: 300px wide, placeholder "Search by name or email..."
 - Department filter: dropdown, default "All Departments"
 - Background: #F9FAFB, padding 12px, rounded 8px
 
 ### Employee Table
+
 - Full width
 - Header row: bold, background #F9FAFB
 - Columns:
 
-| Column   | Width | Alignment | Sortable |
-|----------|-------|-----------|----------|
-| #        | 60px  | Center    | Yes      |
-| Name     | flex  | Left      | Yes      |
-| Email    | flex  | Left      | Yes      |
-| Dept     | 120px | Left      | Yes      |
-| Actions  | 120px | Center    | No       |
+| Column  | Width | Alignment | Sortable |
+| ------- | ----- | --------- | -------- |
+| #       | 60px  | Center    | Yes      |
+| Name    | flex  | Left      | Yes      |
+| Email   | flex  | Left      | Yes      |
+| Dept    | 120px | Left      | Yes      |
+| Actions | 120px | Center    | No       |
 
 - Row height: 48px
 - Hover state: light blue background (#F0F7FF)
 - Alternating row colors optional (white / #FAFAFA)
 
 ### Action Buttons (per row)
+
 - Edit: icon button (pencil icon), tooltip "Edit employee"
 - Delete: icon button (trash icon), tooltip "Delete employee", red on hover
 
 ### Pagination
+
 - Bottom of table
 - Shows: "Showing X-Y of Z employees"
 - Page buttons: numbered, max 5 visible
@@ -130,6 +136,7 @@ Triggered by clicking "+ Add Employee" button.
 ```
 
 ### Modal Specification
+
 - Width: 480px, centered
 - Background overlay: black at 50% opacity
 - Close: X button or Cancel button or click overlay
@@ -137,15 +144,16 @@ Triggered by clicking "+ Add Employee" button.
 
 ### Form Fields
 
-| Field      | Type     | Required | Validation                 |
-|------------|----------|----------|----------------------------|
-| First Name | text     | Yes      | Min 1 char, max 50         |
-| Last Name  | text     | Yes      | Min 1 char, max 50         |
+| Field      | Type     | Required | Validation                  |
+| ---------- | -------- | -------- | --------------------------- |
+| First Name | text     | Yes      | Min 1 char, max 50          |
+| Last Name  | text     | Yes      | Min 1 char, max 50          |
 | Email      | email    | Yes      | Valid email format, unique  |
 | Department | dropdown | Yes      | Must select one             |
 | Phone      | tel      | No       | Valid phone format if given |
 
 ### Buttons
+
 - Cancel: secondary style (outlined), closes modal
 - Save: primary blue, submits form
 - Save disabled until all required fields valid
@@ -185,6 +193,7 @@ Triggered by clicking the delete (trash) icon on a row.
 ```
 
 ### Dialog Specification
+
 - Width: 400px, centered
 - Employee name in bold
 - Warning text: #6B7280 (gray)
@@ -221,16 +230,19 @@ Triggered by clicking the delete (trash) icon on a row.
 ```
 
 ### Loading State
+
 - Table body shows skeleton rows (5 rows of animated placeholders)
 - Toolbar and header remain visible
 
 ### Success Feedback
+
 - After Add: green toast notification "Employee added successfully"
 - After Edit: green toast notification "Employee updated successfully"
 - After Delete: green toast notification "Employee deleted successfully"
 - Toast: bottom-right, auto-dismiss after 3 seconds
 
 ### Error Feedback
+
 - API errors: red toast notification with error message
 - Form validation: inline errors below each field (same pattern as login page)
 
@@ -238,11 +250,11 @@ Triggered by clicking the delete (trash) icon on a row.
 
 ## Responsive Behavior
 
-| Breakpoint      | Behavior                                      |
-|-----------------|-----------------------------------------------|
-| Desktop (>1024) | Full table, all columns visible               |
-| Tablet (768)    | Hide Phone column, compact padding            |
-| Mobile (<480)   | Card layout instead of table (see below)      |
+| Breakpoint      | Behavior                                 |
+| --------------- | ---------------------------------------- |
+| Desktop (>1024) | Full table, all columns visible          |
+| Tablet (768)    | Hide Phone column, compact padding       |
+| Mobile (<480)   | Card layout instead of table (see below) |
 
 ### Mobile Card Layout
 

@@ -92,16 +92,16 @@ Co-Authored-By: Claude <noreply@anthropic.com>
 
 ### Commit Types (Enforced)
 
-| Type | When to Use | Example |
-|------|-------------|---------|
-| `feat` | New feature | `feat(auth): add JWT authentication` |
-| `fix` | Bug fix | `fix(login): resolve redirect loop` |
-| `docs` | Documentation changes | `docs(readme): update setup instructions` |
-| `style` | Code formatting, no logic changes | `style(components): fix indentation` |
-| `refactor` | Code refactoring | `refactor(api): simplify error handling` |
-| `test` | Adding or updating tests | `test(auth): add login flow tests` |
-| `chore` | Maintenance tasks, dependencies, config | `chore(deps): update react to 18.3` |
-| `merge` | Merging branches | `merge: feature/auth into main` |
+| Type       | When to Use                             | Example                                   |
+| ---------- | --------------------------------------- | ----------------------------------------- |
+| `feat`     | New feature                             | `feat(auth): add JWT authentication`      |
+| `fix`      | Bug fix                                 | `fix(login): resolve redirect loop`       |
+| `docs`     | Documentation changes                   | `docs(readme): update setup instructions` |
+| `style`    | Code formatting, no logic changes       | `style(components): fix indentation`      |
+| `refactor` | Code refactoring                        | `refactor(api): simplify error handling`  |
+| `test`     | Adding or updating tests                | `test(auth): add login flow tests`        |
+| `chore`    | Maintenance tasks, dependencies, config | `chore(deps): update react to 18.3`       |
+| `merge`    | Merging branches                        | `merge: feature/auth into main`           |
 
 ---
 

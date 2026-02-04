@@ -16,9 +16,9 @@ Use **"dialog"** (not "modal") in file and component names — aligned with Radi
 
 Every dialog file must include the **entity** it operates on:
 
-| Pattern | Example file | Example component |
-|---------|-------------|-------------------|
+| Pattern                        | Example file                 | Example component      |
+| ------------------------------ | ---------------------------- | ---------------------- |
 | `<entity>-<action>-dialog.tsx` | `employee-delete-dialog.tsx` | `EmployeeDeleteDialog` |
-| `<entity>-form-dialog.tsx` | `employee-form-dialog.tsx` | `EmployeeFormDialog` |
+| `<entity>-form-dialog.tsx`     | `employee-form-dialog.tsx`   | `EmployeeFormDialog`   |
 
 Bad: `delete-dialog.tsx` (delete what?), `form-modal.tsx` (wrong term + no entity).

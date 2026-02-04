@@ -40,12 +40,12 @@ The bundler sees which named exports are actually imported by the consuming app 
 {
   "sideEffects": ["**/*.css"],
   "imports": {
-    "#lib/*": "./src/lib/*.ts"
+    "#lib/*": "./src/lib/*.ts",
   },
   "exports": {
     ".": "./src/index.ts",
-    "./styles.css": "./src/styles.css"
-  }
+    "./styles.css": "./src/styles.css",
+  },
 }
 ```
 
@@ -98,11 +98,11 @@ For a solo app with 2 components, Storybook would be overkill. For a shared desi
 
 Storybook needs its own bundler to serve the component development environment. The options are:
 
-| Framework | Builder | Use when |
-|-----------|---------|----------|
-| `@storybook/react-vite` | Vite | Standalone component libraries |
-| `@storybook/react-webpack5` | Webpack 5 | Legacy or webpack-dependent setups |
-| `@storybook/nextjs` | Webpack (Next.js) | Storybook lives inside a Next.js app |
+| Framework                   | Builder           | Use when                             |
+| --------------------------- | ----------------- | ------------------------------------ |
+| `@storybook/react-vite`     | Vite              | Standalone component libraries       |
+| `@storybook/react-webpack5` | Webpack 5         | Legacy or webpack-dependent setups   |
+| `@storybook/nextjs`         | Webpack (Next.js) | Storybook lives inside a Next.js app |
 
 `packages/ui` is a standalone component library, not a Next.js app — `@storybook/nextjs` doesn't apply. Between Vite and Webpack:
 

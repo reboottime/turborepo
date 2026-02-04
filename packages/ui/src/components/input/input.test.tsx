@@ -7,7 +7,9 @@ import { Input } from "./index";
 describe("Input", () => {
   it("renders with default props", () => {
     render(<Input aria-label="test input" />);
-    expect(screen.getByRole("textbox", { name: "test input" })).toBeInTheDocument();
+    expect(
+      screen.getByRole("textbox", { name: "test input" }),
+    ).toBeInTheDocument();
   });
 
   it("renders as an input element", () => {
@@ -101,7 +103,12 @@ describe("Input", () => {
 
   it("passes through HTML attributes", () => {
     render(
-      <Input type="email" name="email" aria-label="email" autoComplete="email" />
+      <Input
+        type="email"
+        name="email"
+        aria-label="email"
+        autoComplete="email"
+      />,
     );
     const input = screen.getByRole("textbox");
     expect(input).toHaveAttribute("type", "email");
@@ -110,7 +117,9 @@ describe("Input", () => {
   });
 
   it("renders with password type", () => {
-    const { container } = render(<Input type="password" aria-label="password" />);
+    const { container } = render(
+      <Input type="password" aria-label="password" />,
+    );
     const input = container.querySelector("input");
     expect(input).toHaveAttribute("type", "password");
   });

@@ -3,6 +3,7 @@ Review the current state of the project for quality and correctness.
 Scope: $ARGUMENTS (or "all" if not specified)
 
 Steps:
+
 1. Run `pnpm lint && pnpm type-check && pnpm test && pnpm build`
 2. Check monorepo health (imports, turbo.json, workspace config)
 3. Check component quality (Radix, Tailwind, cva, accessibility, exports)
