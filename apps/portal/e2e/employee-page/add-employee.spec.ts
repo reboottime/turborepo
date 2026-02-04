@@ -1,22 +1,12 @@
 // spec: specs/employee-page.plan.md
 // seed: e2e/seed.spec.ts
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures";
 
 test.describe("Add Employee", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto("/login");
-    await page.waitForLoadState("networkidle");
-    await page.getByLabel("Username").fill("testuser");
-    await page.getByPlaceholder("Enter your password").fill("testpass");
-    await page.getByRole("button", { name: "Sign In" }).click();
-    await page.waitForURL("/employees", { timeout: 5000 });
-    await expect(
-      page.getByRole("heading", { name: /employees/i }),
-    ).toBeVisible();
-  });
-
-  test("should open Add Employee modal", async ({ page }) => {
+  test("should open Add Employee modal", async ({
+    authenticatedPage: page,
+  }) => {
     await page.getByRole("button", { name: "Add Employee" }).click();
 
     // Verify modal structure
@@ -38,7 +28,9 @@ test.describe("Add Employee", () => {
     await expect(dialog.getByRole("button", { name: "Cancel" })).toBeVisible();
   });
 
-  test("should close modal when clicking Cancel", async ({ page }) => {
+  test("should close modal when clicking Cancel", async ({
+    authenticatedPage: page,
+  }) => {
     await page.getByRole("button", { name: "Add Employee" }).click();
     await expect(page.getByRole("dialog")).toBeVisible();
 
@@ -46,7 +38,9 @@ test.describe("Add Employee", () => {
     await expect(page.getByRole("dialog")).not.toBeVisible();
   });
 
-  test("should close modal when pressing Escape", async ({ page }) => {
+  test("should close modal when pressing Escape", async ({
+    authenticatedPage: page,
+  }) => {
     await page.getByRole("button", { name: "Add Employee" }).click();
     await expect(page.getByRole("dialog")).toBeVisible();
 
@@ -55,7 +49,7 @@ test.describe("Add Employee", () => {
   });
 
   test("should successfully add a new employee with all fields", async ({
-    page,
+    authenticatedPage: page,
   }) => {
     await page.getByRole("button", { name: "Add Employee" }).click();
     const dialog = page.getByRole("dialog");
@@ -86,7 +80,9 @@ test.describe("Add Employee", () => {
     await expect(page.getByText("Showing 1-5 of 25 employees")).toBeVisible();
   });
 
-  test("should add employee without optional phone", async ({ page }) => {
+  test("should add employee without optional phone", async ({
+    authenticatedPage: page,
+  }) => {
     await page.getByRole("button", { name: "Add Employee" }).click();
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();
@@ -109,7 +105,7 @@ test.describe("Add Employee", () => {
     await expect(page.getByText("Employee added successfully")).toBeVisible();
   });
 
-  test("should validate email format", async ({ page }) => {
+  test("should validate email format", async ({ authenticatedPage: page }) => {
     await page.getByRole("button", { name: "Add Employee" }).click();
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();
@@ -130,7 +126,7 @@ test.describe("Add Employee", () => {
   });
 
   test("should enable Save only when all required fields valid", async ({
-    page,
+    authenticatedPage: page,
   }) => {
     await page.getByRole("button", { name: "Add Employee" }).click();
     const dialog = page.getByRole("dialog");

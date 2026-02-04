@@ -1,22 +1,12 @@
 // spec: specs/employee-page.plan.md
 // seed: e2e/seed.spec.ts
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures";
 
 test.describe("Search Functionality", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto("/login");
-    await page.waitForLoadState("networkidle");
-    await page.getByLabel("Username").fill("testuser");
-    await page.getByPlaceholder("Enter your password").fill("testpass");
-    await page.getByRole("button", { name: "Sign In" }).click();
-    await page.waitForURL("/employees", { timeout: 5000 });
-    await expect(
-      page.getByRole("heading", { name: /employees/i }),
-    ).toBeVisible();
-  });
-
-  test("should search employees by name", async ({ page }) => {
+  test("should search employees by name", async ({
+    authenticatedPage: page,
+  }) => {
     const searchInput = page.getByPlaceholder("Search by name or email...");
     await searchInput.fill("Alice");
 
@@ -26,7 +16,9 @@ test.describe("Search Functionality", () => {
     await expect(page.getByText("Showing 1-1 of 1 employees")).toBeVisible();
   });
 
-  test("should search employees by email", async ({ page }) => {
+  test("should search employees by email", async ({
+    authenticatedPage: page,
+  }) => {
     const searchInput = page.getByPlaceholder("Search by name or email...");
     await searchInput.fill("bob@company.com");
 
@@ -37,7 +29,7 @@ test.describe("Search Functionality", () => {
   });
 
   test("should show partial match results (case-insensitive)", async ({
-    page,
+    authenticatedPage: page,
   }) => {
     const searchInput = page.getByPlaceholder("Search by name or email...");
     await searchInput.fill("chen");
@@ -47,7 +39,9 @@ test.describe("Search Functionality", () => {
     await expect(tableRows.first()).toContainText("Alice Chen");
   });
 
-  test("should clear search and restore all employees", async ({ page }) => {
+  test("should clear search and restore all employees", async ({
+    authenticatedPage: page,
+  }) => {
     const searchInput = page.getByPlaceholder("Search by name or email...");
     await searchInput.fill("Alice");
 
@@ -59,7 +53,9 @@ test.describe("Search Functionality", () => {
     await expect(page.getByText("Showing 1-5 of 24 employees")).toBeVisible();
   });
 
-  test("should display no results message", async ({ page }) => {
+  test("should display no results message", async ({
+    authenticatedPage: page,
+  }) => {
     const searchInput = page.getByPlaceholder("Search by name or email...");
     await searchInput.fill("nonexistentname123");
 

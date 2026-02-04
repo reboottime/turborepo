@@ -1,20 +1,11 @@
 // spec: specs/employee-page.plan.md
 // seed: e2e/seed.spec.ts
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures";
 
 test.describe("Table Rendering", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto("/login");
-    await page.waitForLoadState("networkidle");
-    await page.getByLabel("Username").fill("testuser");
-    await page.getByPlaceholder("Enter your password").fill("testpass");
-    await page.getByRole("button", { name: "Sign In" }).click();
-    await page.waitForURL("/employees", { timeout: 5000 });
-  });
-
   test("should display the employee table with correct structure", async ({
-    page,
+    authenticatedPage: page,
   }) => {
     await expect(
       page.getByRole("heading", { name: /employees/i }),
@@ -54,7 +45,7 @@ test.describe("Table Rendering", () => {
   });
 
   test("should display correct employee count and pagination info", async ({
-    page,
+    authenticatedPage: page,
   }) => {
     await expect(page.getByText("Showing 1-5 of 24 employees")).toBeVisible();
 
@@ -76,7 +67,9 @@ test.describe("Table Rendering", () => {
     ).toBeVisible();
   });
 
-  test("should display the search and filter controls", async ({ page }) => {
+  test("should display the search and filter controls", async ({
+    authenticatedPage: page,
+  }) => {
     const searchInput = page.getByPlaceholder("Search by name or email...");
     await expect(searchInput).toBeVisible();
 

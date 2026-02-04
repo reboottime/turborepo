@@ -1,22 +1,12 @@
 // spec: specs/employee-page.plan.md
 // seed: e2e/seed.spec.ts
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures";
 
 test.describe("Delete Employee", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto("/login");
-    await page.waitForLoadState("networkidle");
-    await page.getByLabel("Username").fill("testuser");
-    await page.getByPlaceholder("Enter your password").fill("testpass");
-    await page.getByRole("button", { name: "Sign In" }).click();
-    await page.waitForURL("/employees", { timeout: 5000 });
-    await expect(
-      page.getByRole("heading", { name: /employees/i }),
-    ).toBeVisible();
-  });
-
-  test("should open delete confirmation dialog", async ({ page }) => {
+  test("should open delete confirmation dialog", async ({
+    authenticatedPage: page,
+  }) => {
     await page.getByRole("button", { name: "Delete Alice Chen" }).click();
 
     const dialog = page.getByRole("dialog");
@@ -33,7 +23,9 @@ test.describe("Delete Employee", () => {
     await expect(dialog.getByRole("button", { name: "Delete" })).toBeVisible();
   });
 
-  test("should cancel delete operation", async ({ page }) => {
+  test("should cancel delete operation", async ({
+    authenticatedPage: page,
+  }) => {
     await page.getByRole("button", { name: "Delete Alice Chen" }).click();
     await expect(page.getByRole("dialog")).toBeVisible();
 
@@ -44,7 +36,9 @@ test.describe("Delete Employee", () => {
     await expect(page.getByText("Showing 1-5 of 24 employees")).toBeVisible();
   });
 
-  test("should successfully delete an employee", async ({ page }) => {
+  test("should successfully delete an employee", async ({
+    authenticatedPage: page,
+  }) => {
     await expect(page.getByText("Showing 1-5 of 24 employees")).toBeVisible();
 
     await page.getByRole("button", { name: "Delete Alice Chen" }).click();
@@ -62,7 +56,9 @@ test.describe("Delete Employee", () => {
     await expect(page.getByText("Showing 1-5 of 23 employees")).toBeVisible();
   });
 
-  test("should close dialog with Escape key", async ({ page }) => {
+  test("should close dialog with Escape key", async ({
+    authenticatedPage: page,
+  }) => {
     await page.getByRole("button", { name: "Delete Bob Smith" }).click();
     await expect(page.getByRole("dialog")).toBeVisible();
 

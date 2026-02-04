@@ -1,23 +1,11 @@
 // spec: specs/employee-page.plan.md
 // seed: e2e/seed.spec.ts
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures";
 
 test.describe("Department Filter", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto("/login");
-    await page.waitForLoadState("networkidle");
-    await page.getByLabel("Username").fill("testuser");
-    await page.getByPlaceholder("Enter your password").fill("testpass");
-    await page.getByRole("button", { name: "Sign In" }).click();
-    await page.waitForURL("/employees", { timeout: 5000 });
-    await expect(
-      page.getByRole("heading", { name: /employees/i }),
-    ).toBeVisible();
-  });
-
   test("should filter employees by Engineering department", async ({
-    page,
+    authenticatedPage: page,
   }) => {
     // Engineering has 7 employees: Alice, David, Henry, Karen, Olivia, Sam, Wendy
     await page.locator("select").selectOption("Engineering");
@@ -33,7 +21,9 @@ test.describe("Department Filter", () => {
     }
   });
 
-  test("should filter employees by Sales department", async ({ page }) => {
+  test("should filter employees by Sales department", async ({
+    authenticatedPage: page,
+  }) => {
     // Sales has 4: Bob, Iris, Peter, Victor
     await page.locator("select").selectOption("Sales");
 
@@ -50,7 +40,9 @@ test.describe("Department Filter", () => {
     ).toBeDisabled();
   });
 
-  test("should reset to all departments", async ({ page }) => {
+  test("should reset to all departments", async ({
+    authenticatedPage: page,
+  }) => {
     await page.locator("select").selectOption("Sales");
     await expect(page.getByText("Showing 1-4 of 4 employees")).toBeVisible();
 
@@ -60,7 +52,9 @@ test.describe("Department Filter", () => {
     await expect(page.locator("table tbody tr")).toHaveCount(5);
   });
 
-  test("should combine department filter with search", async ({ page }) => {
+  test("should combine department filter with search", async ({
+    authenticatedPage: page,
+  }) => {
     await page.locator("select").selectOption("Engineering");
     await expect(page.getByText("Showing 1-5 of 7 employees")).toBeVisible();
 

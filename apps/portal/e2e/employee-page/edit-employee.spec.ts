@@ -1,23 +1,11 @@
 // spec: specs/employee-page.plan.md
 // seed: e2e/seed.spec.ts
 
-import { test, expect } from "@playwright/test";
+import { test, expect } from "../fixtures";
 
 test.describe("Edit Employee", () => {
-  test.beforeEach(async ({ page }) => {
-    await page.goto("/login");
-    await page.waitForLoadState("networkidle");
-    await page.getByLabel("Username").fill("testuser");
-    await page.getByPlaceholder("Enter your password").fill("testpass");
-    await page.getByRole("button", { name: "Sign In" }).click();
-    await page.waitForURL("/employees", { timeout: 5000 });
-    await expect(
-      page.getByRole("heading", { name: /employees/i }),
-    ).toBeVisible();
-  });
-
   test("should open Edit Employee modal with pre-populated data", async ({
-    page,
+    authenticatedPage: page,
   }) => {
     await page.getByRole("button", { name: "Edit Alice Chen" }).click();
 
@@ -38,7 +26,9 @@ test.describe("Edit Employee", () => {
     ).toBeEnabled();
   });
 
-  test("should close edit modal without saving changes", async ({ page }) => {
+  test("should close edit modal without saving changes", async ({
+    authenticatedPage: page,
+  }) => {
     await page.getByRole("button", { name: "Edit Alice Chen" }).click();
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();
@@ -54,7 +44,9 @@ test.describe("Edit Employee", () => {
     await expect(page.locator("table")).toContainText("Alice Chen");
   });
 
-  test("should successfully update employee information", async ({ page }) => {
+  test("should successfully update employee information", async ({
+    authenticatedPage: page,
+  }) => {
     await page.getByRole("button", { name: "Edit Bob Smith" }).click();
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();
@@ -77,7 +69,9 @@ test.describe("Edit Employee", () => {
     await expect(page.locator("table")).toContainText("Marketing");
   });
 
-  test("should validate email format in edit mode", async ({ page }) => {
+  test("should validate email format in edit mode", async ({
+    authenticatedPage: page,
+  }) => {
     await page.getByRole("button", { name: "Edit Alice Chen" }).click();
     const dialog = page.getByRole("dialog");
     await expect(dialog).toBeVisible();
@@ -94,7 +88,7 @@ test.describe("Edit Employee", () => {
   });
 
   test("should not allow empty required fields in edit mode", async ({
-    page,
+    authenticatedPage: page,
   }) => {
     await page.getByRole("button", { name: "Edit Alice Chen" }).click();
     const dialog = page.getByRole("dialog");
