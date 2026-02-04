@@ -47,5 +47,5 @@ When building a new component:
 Follow all patterns and conventions in these docs:
 
 - **Tech stack & versions**: [docs/tech-stack.md](../../docs/tech-stack.md) — pinned versions, architecture decisions, official doc links
-- **Component conventions**: [docs/conventions/frontend.md](../../docs/conventions/frontend.md) — implementation pattern, folder structure, `cn` utility, Storybook pattern, test template, component checklist
+- **Component conventions**: [docs/conventions/design-system.md](../../docs/conventions/design-system.md) — implementation pattern, folder structure, `cn` utility, Storybook pattern, test template, component checklist
 - **Theme tokens**: `packages/ui/src/styles.css` — the design system's token definitions

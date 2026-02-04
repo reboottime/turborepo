@@ -27,7 +27,7 @@ turbo run test --filter=ui      # Test specific package
 
 ## Code Conventions
 
-See [docs/conventions/frontend.md](docs/conventions/frontend.md)
+See [docs/conventions/index.md](docs/conventions/index.md)
 
 ## Testing Strategy
 
