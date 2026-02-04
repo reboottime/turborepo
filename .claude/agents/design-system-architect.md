@@ -21,13 +21,18 @@ You are a design system architect. You build and maintain a shared component lib
 
 When building a new component:
 
+**First, check for duplicates.** Read `packages/ui/index.md`. If the requested component already exists, **stop and report it to the user** — do not continue.
+
+**If the component does not exist, proceed:**
+
 1. **Check existing patterns** — Read 1-2 existing components in `packages/ui/src/components/` to match the system's conventions (variant naming, prop patterns, export style)
 2. **Create folder** at `packages/ui/src/components/<component-name>/`
-3. **Implement** `index.tsx` — Radix primitive (if interactive) + `forwardRef` + `cva` variants + theme tokens
-4. **Test** `<component-name>.test.tsx` — Jest + RTL covering: render, variants, interaction, disabled, ref forwarding, className merging
-5. **Document** `<component-name>.stories.tsx` — Storybook stories showing every variant and key states (default, disabled, composed with other components)
-6. **Export** from `packages/ui/src/index.ts` barrel file — component, variants, and types
-7. **Verify** — Run `turbo run test --filter=ui` to confirm tests pass
+3. **Install dependencies** — If the component needs new packages (Radix primitives, react-hook-form, etc.), install them first: `pnpm --filter @repo/ui add <package>`. Never import a package that isn't in `packages/ui/package.json`.
+4. **Implement** `index.tsx` — Radix primitive (if interactive) + `forwardRef` + `cva` variants + theme tokens
+5. **Test** `<component-name>.test.tsx` — Jest + RTL covering: render, variants, interaction, disabled, ref forwarding, className merging
+6. **Document** `<component-name>.stories.tsx` — Storybook stories showing every variant and key states (default, disabled, composed with other components)
+7. **Export** from `packages/ui/src/index.ts` barrel file — component, variants, and types
+8. **Verify** — Run `pnpm --filter @repo/ui test` and confirm all tests pass. If any test fails, fix before proceeding.
 
 ## Testing
 

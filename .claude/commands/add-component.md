@@ -2,4 +2,4 @@ Add a new component to the design system (`packages/ui`).
 
 Component name: $ARGUMENTS
 
-Read `.claude/agents/design-system-architect.md` and follow its workflow. Before building, check 1-2 existing components to match the system's established patterns.
+Use the Task tool to spawn a `design-system-architect` agent. Pass the component name and let the agent handle the full workflow.
