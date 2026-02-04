@@ -13,14 +13,14 @@ test.describe("Portal App Smoke Tests", () => {
 
   test("subtitle renders", async ({ page }) => {
     await page.goto("/");
-    await expect(
-      page.getByText("Admin dashboard")
-    ).toBeVisible();
+    await expect(page.getByText("Admin dashboard")).toBeVisible();
   });
 
   test("action buttons render", async ({ page }) => {
     await page.goto("/");
-    await expect(page.getByRole("button", { name: "Create New" })).toBeVisible();
+    await expect(
+      page.getByRole("button", { name: "Create New" }),
+    ).toBeVisible();
     await expect(page.getByRole("button", { name: "Export" })).toBeVisible();
     await expect(page.getByRole("button", { name: "Settings" })).toBeVisible();
   });

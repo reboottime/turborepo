@@ -1,13 +1,23 @@
 import { Button, cn } from "@repo/ui";
-import { Card, CardHeader, CardTitle, CardDescription, CardContent } from "@repo/ui";
+import {
+  Card,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+} from "@repo/ui";
 import * as math from "@repo/libs/math";
 
 export default function Home() {
   return (
     <div className="min-h-screen bg-background text-foreground">
       <main className="mx-auto max-w-4xl px-8 py-16">
-        <h1 className="text-4xl font-bold tracking-tigh
-        b-2">Web App</h1>
+        <h1
+          className="text-4xl font-bold tracking-tigh
+        b-2"
+        >
+          Web App
+        </h1>
         <p className="text-muted-foreground mb-12">
           Turborepo monorepo demo — shared UI components from @repo/ui
         </p>
@@ -30,17 +40,29 @@ export default function Home() {
             conditional classes, overrides, and deduplication all handled.
           </p>
           <div className="flex gap-4">
-            <div className={cn("rounded-lg border p-4", "bg-primary text-primary-foreground")}>
+            <div
+              className={cn(
+                "rounded-lg border p-4",
+                "bg-primary text-primary-foreground",
+              )}
+            >
               Merged classes
             </div>
-            <div className={cn("rounded-lg border p-4", "bg-muted text-muted-foreground")}>
+            <div
+              className={cn(
+                "rounded-lg border p-4",
+                "bg-muted text-muted-foreground",
+              )}
+            >
               Conditional classes
             </div>
           </div>
         </section>
 
         <section className="mb-12">
-          <h2 className="text-xl font-semibold mb-4">@repo/libs — Math Utilities</h2>
+          <h2 className="text-xl font-semibold mb-4">
+            @repo/libs — Math Utilities
+          </h2>
           <p className="text-sm text-muted-foreground mb-4">
             Shared utility functions from @repo/libs, consumed across apps.
           </p>
@@ -60,12 +82,16 @@ export default function Home() {
             <Card>
               <CardContent className="pt-6">
                 <p className="text-xs text-muted-foreground">divide(10, 3)</p>
-                <p className="text-2xl font-bold">{math.divide(10, 3).toFixed(2)}</p>
+                <p className="text-2xl font-bold">
+                  {math.divide(10, 3).toFixed(2)}
+                </p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="pt-6">
-                <p className="text-xs text-muted-foreground">clamp(150, 0, 100)</p>
+                <p className="text-xs text-muted-foreground">
+                  clamp(150, 0, 100)
+                </p>
                 <p className="text-2xl font-bold">{math.clamp(150, 0, 100)}</p>
               </CardContent>
             </Card>
@@ -84,17 +110,15 @@ export default function Home() {
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">
-                  Components are exported from @repo/ui and consumed by both
-                  web and portal apps.
+                  Components are exported from @repo/ui and consumed by both web
+                  and portal apps.
                 </p>
               </CardContent>
             </Card>
             <Card>
               <CardHeader>
                 <CardTitle>Turborepo Caching</CardTitle>
-                <CardDescription>
-                  Build once, cache everywhere
-                </CardDescription>
+                <CardDescription>Build once, cache everywhere</CardDescription>
               </CardHeader>
               <CardContent>
                 <p className="text-sm text-muted-foreground">

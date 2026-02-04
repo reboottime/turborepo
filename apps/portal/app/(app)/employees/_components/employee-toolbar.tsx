@@ -1,0 +1,61 @@
+"use client";
+
+import { Input, cn } from "@repo/ui";
+import type { Department } from "../_lib/types";
+
+interface EmployeeToolbarProps {
+  searchTerm: string;
+  onSearchChange: (value: string) => void;
+  departmentFilter: Department | "all";
+  onDepartmentChange: (value: Department | "all") => void;
+}
+
+const DEPARTMENTS: Array<{ value: Department | "all"; label: string }> = [
+  { value: "all", label: "All Departments" },
+  { value: "Engineering", label: "Engineering" },
+  { value: "Sales", label: "Sales" },
+  { value: "Design", label: "Design" },
+  { value: "HR", label: "HR" },
+  { value: "Marketing", label: "Marketing" },
+  { value: "Finance", label: "Finance" },
+];
+
+export function EmployeeToolbar({
+  searchTerm,
+  onSearchChange,
+  departmentFilter,
+  onDepartmentChange,
+}: EmployeeToolbarProps) {
+  return (
+    <div className="bg-muted/50 px-4 py-3 rounded-lg flex gap-4 items-center flex-wrap">
+      <div className="flex-1 min-w-[300px]">
+        <Input
+          type="search"
+          placeholder="Search by name or email..."
+          value={searchTerm}
+          onChange={(e) => onSearchChange(e.target.value)}
+          className="bg-background"
+        />
+      </div>
+      <div>
+        <select
+          value={departmentFilter}
+          onChange={(e) =>
+            onDepartmentChange(e.target.value as Department | "all")
+          }
+          className={cn(
+            "h-10 rounded-md border border-border bg-background px-3 py-2 text-sm",
+            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
+            "transition-colors",
+          )}
+        >
+          {DEPARTMENTS.map((dept) => (
+            <option key={dept.value} value={dept.value}>
+              {dept.label}
+            </option>
+          ))}
+        </select>
+      </div>
+    </div>
+  );
+}

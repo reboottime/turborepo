@@ -33,12 +33,14 @@ jobs:
           name: web-build
           path: apps/web/.next
           retention-days: 1
+          include-hidden-files: true
 
       - uses: actions/upload-artifact@v4
         with:
           name: portal-build
           path: apps/portal/.next
           retention-days: 1
+          include-hidden-files: true
 
   e2e:
     name: E2E (${{ matrix.app }})

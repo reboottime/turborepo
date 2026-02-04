@@ -1,0 +1,26 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(turbo run:*)",
+      "Bash(kill:*)",
+      "Bash(pnpm test:e2e:*)",
+      "Bash(lsof:*)",
+      "Bash(xargs kill:*)",
+      "Bash(npx playwright test:*)",
+      "Bash(npx playwright --version)",
+      "Bash(npx playwright:*)",
+      "Bash(curl:*)",
+      "Bash(code --list-extensions:*)",
+      "mcp__playwright-test__planner_setup_page",
+      "mcp__playwright-test__browser_navigate",
+      "mcp__playwright-test__browser_click",
+      "mcp__playwright-test__browser_type",
+      "mcp__playwright-test__browser_snapshot",
+      "mcp__playwright-test__browser_select_option",
+      "mcp__playwright-test__browser_run_code",
+      "mcp__playwright-test__planner_save_plan",
+      "Bash(npm run test:e2e:*)"
+    ]
+  },
+  "enabledMcpjsonServers": ["playwright-test"]
+}
