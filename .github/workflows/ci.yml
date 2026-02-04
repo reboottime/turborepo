@@ -65,3 +65,34 @@ jobs:
           path: apps/portal/.next
           retention-days: 1
           include-hidden-files: true
+
+  e2e:
+    name: E2E (${{ matrix.app }})
+    needs: [build]
+    runs-on: ubuntu-latest
+    strategy:
+      fail-fast: false
+      matrix:
+        app: [portal]
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/setup
+
+      - uses: actions/download-artifact@v4
+        with:
+          name: ${{ matrix.app }}-build
+          path: apps/${{ matrix.app }}/.next
+
+      - name: Install Playwright browsers
+        run: pnpm --filter @repo/${{ matrix.app }} exec playwright install --with-deps chromium
+
+      - name: Run E2E tests
+        run: pnpm --filter @repo/${{ matrix.app }} test:e2e
+
+      - uses: actions/upload-artifact@v4
+        if: failure()
+        with:
+          name: playwright-report-${{ matrix.app }}
+          path: apps/${{ matrix.app }}/playwright-report
+          retention-days: 7
