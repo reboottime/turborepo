@@ -25,7 +25,7 @@ jobs:
 
       - uses: ./.github/actions/setup
 
-      - run: turbo run lint check-types
+      - run: pnpm turbo run lint check-types
 
   test:
     name: Unit Tests
@@ -37,7 +37,7 @@ jobs:
 
       - uses: ./.github/actions/setup
 
-      - run: turbo run test
+      - run: pnpm turbo run test
 
   build:
     name: Build
@@ -50,7 +50,7 @@ jobs:
 
       - uses: ./.github/actions/setup
 
-      - run: turbo run build
+      - run: pnpm turbo run build
 
       - uses: actions/upload-artifact@v4
         with:

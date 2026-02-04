@@ -5,16 +5,11 @@ inputs:
   node-version:
     description: Node.js version
     default: "18"
-  pnpm-version:
-    description: pnpm version
-    default: "9"
 
 runs:
   using: composite
   steps:
     - uses: pnpm/action-setup@v4
-      with:
-        version: ${{ inputs.pnpm-version }}
 
     - uses: actions/setup-node@v4
       with:
