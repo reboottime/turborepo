@@ -40,7 +40,7 @@ export const WithCustomClass: Story = {
       <CardHeader>
         <CardTitle>Custom Background</CardTitle>
         <CardDescription>
-          This card uses <code>className="bg-muted"</code> merged via <code>cn()</code>.
+          This card uses <code>className=&quot;bg-muted&quot;</code> merged via <code>cn()</code>.
         </CardDescription>
       </CardHeader>
       <CardContent>
