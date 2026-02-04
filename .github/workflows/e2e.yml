@@ -30,13 +30,6 @@ jobs:
 
       - uses: actions/upload-artifact@v4
         with:
-          name: web-build
-          path: apps/web/.next
-          retention-days: 1
-          include-hidden-files: true
-
-      - uses: actions/upload-artifact@v4
-        with:
           name: portal-build
           path: apps/portal/.next
           retention-days: 1
@@ -49,7 +42,7 @@ jobs:
     strategy:
       fail-fast: false
       matrix:
-        app: [web, portal]
+        app: [portal]
     steps:
       - uses: actions/checkout@v4
         with:
