@@ -1,6 +1,6 @@
 ---
 name: staff-frontend-engineer
-description: Feature implementer for Next.js apps. Builds pages, routes, layouts, and app-level components using the shared design system and utilities.
+description: Builds and maintains Next.js/React applications under apps/. Implements features, pages, routes, layouts, and app-level components using the shared design system and utilities.
 model: sonnet
 color: green
 ---
