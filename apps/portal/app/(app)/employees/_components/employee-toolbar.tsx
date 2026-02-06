@@ -1,6 +1,13 @@
 "use client";
 
-import { Input, cn } from "@repo/ui";
+import {
+  Input,
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
+} from "@repo/ui";
 import type { Department } from "../_lib/types";
 
 interface EmployeeToolbarProps {
@@ -27,34 +34,34 @@ export function EmployeeToolbar({
   onDepartmentChange,
 }: EmployeeToolbarProps) {
   return (
-    <div className="bg-muted/50 px-4 py-3 rounded-lg flex gap-4 items-center flex-wrap">
+    <div className="flex gap-4 items-center flex-wrap">
       <div className="flex-1 min-w-[300px]">
         <Input
           type="search"
           placeholder="Search by name or email..."
           value={searchTerm}
           onChange={(e) => onSearchChange(e.target.value)}
-          className="bg-background"
+          className="bg-surface-base"
         />
       </div>
-      <div>
-        <select
+      <div className="min-w-[200px]">
+        <Select
           value={departmentFilter}
-          onChange={(e) =>
-            onDepartmentChange(e.target.value as Department | "all")
+          onValueChange={(value) =>
+            onDepartmentChange(value as Department | "all")
           }
-          className={cn(
-            "h-10 rounded-md border border-border bg-background px-3 py-2 text-sm",
-            "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-            "transition-colors",
-          )}
         >
-          {DEPARTMENTS.map((dept) => (
-            <option key={dept.value} value={dept.value}>
-              {dept.label}
-            </option>
-          ))}
-        </select>
+          <SelectTrigger>
+            <SelectValue placeholder="Select department" />
+          </SelectTrigger>
+          <SelectContent>
+            {DEPARTMENTS.map((dept) => (
+              <SelectItem key={dept.value} value={dept.value}>
+                {dept.label}
+              </SelectItem>
+            ))}
+          </SelectContent>
+        </Select>
       </div>
     </div>
   );

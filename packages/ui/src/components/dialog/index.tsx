@@ -6,6 +6,7 @@ import {
   type ComponentRef,
 } from "react";
 import * as DialogPrimitive from "@radix-ui/react-dialog";
+import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "#lib/cn";
 
 const Dialog = DialogPrimitive.Root;
@@ -20,7 +21,7 @@ const DialogOverlay = forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      "fixed inset-0 z-50 bg-black/50 data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+      "fixed inset-0 z-dialog bg-[var(--color-overlay-backdrop)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
       className,
     )}
     {...props}
@@ -28,18 +29,57 @@ const DialogOverlay = forwardRef<
 ));
 DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 
+/**
+ * Dialog size variants following industry best practices:
+ * - sm: Simple confirmations, alerts (384px)
+ * - md: Default forms, basic content (448px)
+ * - lg: Complex forms, more content (512px)
+ * - xl: Large layouts, tables (640px)
+ * - full: Full screen dialog
+ */
+const dialogContentVariants = cva(
+  [
+    // Base styles
+    "fixed left-1/2 top-1/2 z-dialog -translate-x-1/2 -translate-y-1/2",
+    "grid w-[calc(100%-var(--dialog-mobile-margin)*2)] gap-[var(--spacing-4)]",
+    "rounded-lg border border-border-default bg-surface-base p-[var(--spacing-6)] shadow-lg",
+    // Height constraint with scrollable support
+    "max-h-[var(--dialog-max-height)] overflow-y-auto",
+    // Animations
+    "data-[state=open]:animate-in data-[state=closed]:animate-out",
+    "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
+    "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+  ],
+  {
+    variants: {
+      size: {
+        sm: "max-w-[var(--dialog-width-sm)]",
+        md: "max-w-[var(--dialog-width-md)]",
+        lg: "max-w-[var(--dialog-width-lg)]",
+        xl: "max-w-[var(--dialog-width-xl)]",
+        full: "max-w-none h-screen max-h-screen rounded-none",
+      },
+    },
+    defaultVariants: {
+      size: "md",
+    },
+  },
+);
+
+interface DialogContentProps
+  extends
+    ComponentPropsWithoutRef<typeof DialogPrimitive.Content>,
+    VariantProps<typeof dialogContentVariants> {}
+
 const DialogContent = forwardRef<
   ComponentRef<typeof DialogPrimitive.Content>,
-  ComponentPropsWithoutRef<typeof DialogPrimitive.Content>
->(({ className, children, ...props }, ref) => (
+  DialogContentProps
+>(({ className, children, size, ...props }, ref) => (
   <DialogPortal>
     <DialogOverlay />
     <DialogPrimitive.Content
       ref={ref}
-      className={cn(
-        "fixed left-1/2 top-1/2 z-50 w-full max-w-lg -translate-x-1/2 -translate-y-1/2 rounded-lg border border-border bg-background p-6 shadow-lg data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0 data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
-        className,
-      )}
+      className={cn(dialogContentVariants({ size, className }))}
       {...props}
     >
       {children}
@@ -54,11 +94,26 @@ const DialogHeader = forwardRef<
 >(({ className, ...props }, ref) => (
   <div
     ref={ref}
-    className={cn("flex flex-col gap-1.5 text-center sm:text-left", className)}
+    className={cn(
+      "flex flex-col gap-[var(--spacing-1-5)] text-center sm:text-left",
+      className,
+    )}
     {...props}
   />
 ));
 DialogHeader.displayName = "DialogHeader";
+
+const DialogBody = forwardRef<
+  HTMLDivElement,
+  React.HTMLAttributes<HTMLDivElement>
+>(({ className, ...props }, ref) => (
+  <div
+    ref={ref}
+    className={cn("flex-1 overflow-y-auto", className)}
+    {...props}
+  />
+));
+DialogBody.displayName = "DialogBody";
 
 const DialogFooter = forwardRef<
   HTMLDivElement,
@@ -67,7 +122,7 @@ const DialogFooter = forwardRef<
   <div
     ref={ref}
     className={cn(
-      "flex flex-col-reverse sm:flex-row sm:justify-end sm:gap-2",
+      "flex flex-col-reverse sm:flex-row sm:justify-end sm:gap-[var(--spacing-2)]",
       className,
     )}
     {...props}
@@ -96,7 +151,7 @@ const DialogDescription = forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
-    className={cn("text-sm text-muted-foreground", className)}
+    className={cn("text-sm text-text-secondary", className)}
     {...props}
   />
 ));
@@ -109,8 +164,12 @@ export {
   DialogPortal,
   DialogOverlay,
   DialogContent,
+  dialogContentVariants,
   DialogHeader,
+  DialogBody,
   DialogFooter,
   DialogTitle,
   DialogDescription,
 };
+
+export type { DialogContentProps };

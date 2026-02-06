@@ -7,6 +7,7 @@ import {
   DialogTrigger,
   DialogContent,
   DialogHeader,
+  DialogBody,
   DialogFooter,
   DialogTitle,
   DialogDescription,
@@ -103,7 +104,61 @@ describe("Dialog", () => {
     });
     const dialog = screen.getByRole("dialog");
     expect(dialog.className).toContain("custom-content");
-    expect(dialog.className).toContain("bg-background");
+    expect(dialog.className).toContain("bg-surface-base");
+  });
+
+  // -- Size variants (via CVA) --
+
+  it("applies default md size", () => {
+    renderDialog({ defaultOpen: true });
+    const dialog = screen.getByRole("dialog");
+    expect(dialog.className).toMatch(/max-w-\[var\(--dialog-width-md\)\]/);
+  });
+
+  it("applies sm size class", () => {
+    renderDialog({
+      defaultOpen: true,
+      contentProps: { size: "sm" },
+    });
+    const dialog = screen.getByRole("dialog");
+    expect(dialog.className).toMatch(/max-w-\[var\(--dialog-width-sm\)\]/);
+  });
+
+  it("applies lg size class", () => {
+    renderDialog({
+      defaultOpen: true,
+      contentProps: { size: "lg" },
+    });
+    const dialog = screen.getByRole("dialog");
+    expect(dialog.className).toMatch(/max-w-\[var\(--dialog-width-lg\)\]/);
+  });
+
+  it("applies xl size class", () => {
+    renderDialog({
+      defaultOpen: true,
+      contentProps: { size: "xl" },
+    });
+    const dialog = screen.getByRole("dialog");
+    expect(dialog.className).toMatch(/max-w-\[var\(--dialog-width-xl\)\]/);
+  });
+
+  it("applies full size class", () => {
+    renderDialog({
+      defaultOpen: true,
+      contentProps: { size: "full" },
+    });
+    const dialog = screen.getByRole("dialog");
+    expect(dialog.className).toMatch(/max-w-none/);
+    expect(dialog.className).toMatch(/h-screen/);
+  });
+
+  // -- Max height constraint --
+
+  it("applies max-height constraint for scrolling", () => {
+    renderDialog({ defaultOpen: true });
+    const dialog = screen.getByRole("dialog");
+    expect(dialog.className).toMatch(/max-h-\[var\(--dialog-max-height\)\]/);
+    expect(dialog.className).toMatch(/overflow-y-auto/);
   });
 
   // -- Ref forwarding --
@@ -140,6 +195,19 @@ describe("Dialog", () => {
   it("renders DialogHeader with children", () => {
     renderDialog({ defaultOpen: true });
     expect(screen.getByText("Test Title")).toBeInTheDocument();
+  });
+
+  it("renders DialogBody with children", () => {
+    render(
+      <Dialog defaultOpen>
+        <DialogContent>
+          <DialogTitle>Body Test</DialogTitle>
+          <DialogDescription>Body desc</DialogDescription>
+          <DialogBody>Body content here</DialogBody>
+        </DialogContent>
+      </Dialog>,
+    );
+    expect(screen.getByText("Body content here")).toBeInTheDocument();
   });
 
   it("renders DialogFooter with close button", () => {

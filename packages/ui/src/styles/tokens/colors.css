@@ -1,0 +1,52 @@
+/* =============================================================================
+   COLOR TOKENS
+   Uses CSS light-dark() for theming (Tailwind 4.x compatible)
+   ============================================================================= */
+
+@theme inline {
+  /* Surface System (replaces bg-primary/secondary/tertiary) */
+  /* Warm off-white palette for softer, less sterile feel */
+  --color-surface-base: light-dark(#fafaf9, #0c0a09);
+  --color-surface-raised: light-dark(#ffffff, #1c1917);
+  --color-surface-overlay: light-dark(#ffffff, #292524);
+  --color-surface-sunken: light-dark(#f5f5f4, #0a0908);
+
+  /* Text Colors (increased contrast) */
+  --color-text-primary: light-dark(#0f0f0f, #fafafa);
+  --color-text-secondary: light-dark(#525252, #a1a1a1);
+  --color-text-tertiary: light-dark(#a3a3a3, #525252);
+  --color-text-inverse: light-dark(#fafafa, #0f0f0f);
+
+  /* Borders (warm tint to match surfaces) */
+  --color-border-default: light-dark(#e7e5e4, #292524);
+  --color-border-subtle: light-dark(#f5f5f4, #1c1917);
+  --color-border-strong: light-dark(#d6d3d1, #44403c);
+
+  /* Status & Alerts */
+  --color-status-success: light-dark(#22c55e, #4ade80);
+  --color-status-warning: light-dark(#f59e0b, #fbbf24);
+  --color-status-error: light-dark(#ef4444, #f87171);
+  --color-status-info: light-dark(#3b82f6, #60a5fa);
+
+  /* Action Colors */
+  --color-primary: light-dark(#2563eb, #3b82f6);
+  --color-primary-hover: light-dark(#1d4ed8, #2563eb);
+  --color-primary-active: light-dark(#1e40af, #1d4ed8);
+  --color-secondary: transparent;
+  --color-secondary-hover: light-dark(#f5f5f4, #1c1917);
+  --color-destructive: light-dark(#dc2626, #ef4444);
+  --color-destructive-hover: light-dark(#b91c1c, #dc2626);
+
+  /* Focus & Selection */
+  --color-focus-ring: light-dark(#3b82f6, #60a5fa);
+  --color-selection-bg: light-dark(#dbeafe, #1e3a8a);
+
+  /* Icon Colors */
+  --color-icon-default: light-dark(#525252, #a1a1a1);
+  --color-icon-hover: light-dark(#0f0f0f, #fafafa);
+  --color-icon-active: light-dark(#2563eb, #3b82f6);
+  --color-icon-muted: light-dark(#a3a3a3, #525252);
+
+  /* Overlays & Backdrops */
+  --color-overlay-backdrop: rgb(0 0 0 / 0.6);
+}

@@ -63,11 +63,11 @@ export default function LoginPage() {
   const isSubmitDisabled = !username || !password || isLoading;
 
   return (
-    <div className="min-h-screen flex items-center justify-center bg-background px-4">
+    <div className="min-h-screen flex items-center justify-center bg-surface-base px-4">
       <Card className="w-full max-w-[400px] shadow-lg">
         <CardHeader className="flex items-center pb-6">
           {/* App Logo Placeholder */}
-          <div className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center text-primary-foreground text-2xl font-bold mb-6">
+          <div className="w-12 h-12 rounded-lg bg-primary flex items-center justify-center text-text-inverse text-2xl font-bold mb-6">
             P
           </div>
         </CardHeader>
@@ -76,7 +76,7 @@ export default function LoginPage() {
             <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-6">
               {/* Server Error Banner */}
               {serverError && (
-                <div className="bg-[#FEF2F2] border border-destructive rounded-md p-3 text-sm text-destructive flex items-start gap-2">
+                <div className="bg-[#FEF2F2] border border-status-error rounded-md p-3 text-sm text-status-error flex items-start gap-2">
                   <span className="flex-shrink-0 text-lg leading-none">!</span>
                   <span>{serverError}</span>
                 </div>
@@ -125,7 +125,7 @@ export default function LoginPage() {
                           aria-label={
                             showPassword ? "Hide password" : "Show password"
                           }
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-muted-foreground hover:text-foreground transition-colors"
+                          className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary transition-colors"
                         >
                           {showPassword ? <EyeOffIcon /> : <EyeIcon />}
                         </button>

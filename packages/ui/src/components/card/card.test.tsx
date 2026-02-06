@@ -26,7 +26,44 @@ describe("Card", () => {
     const card = screen.getByTestId("card");
     expect(card.className).toContain("rounded-lg");
     expect(card.className).toContain("border");
-    expect(card.className).toContain("bg-background");
+  });
+
+  it("applies default raised surface variant", () => {
+    render(<Card data-testid="card">content</Card>);
+    const card = screen.getByTestId("card");
+    expect(card.className).toContain("bg-surface-raised");
+    expect(card.className).toContain("shadow-sm");
+  });
+
+  it("applies base surface variant", () => {
+    render(
+      <Card data-testid="card" surface="base">
+        content
+      </Card>,
+    );
+    const card = screen.getByTestId("card");
+    expect(card.className).toContain("shadow-xs");
+  });
+
+  it("applies overlay surface variant", () => {
+    render(
+      <Card data-testid="card" surface="overlay">
+        content
+      </Card>,
+    );
+    const card = screen.getByTestId("card");
+    expect(card.className).toContain("shadow-md");
+  });
+
+  it("applies sunken surface variant", () => {
+    render(
+      <Card data-testid="card" surface="sunken">
+        content
+      </Card>,
+    );
+    const card = screen.getByTestId("card");
+    expect(card.className).toContain("bg-surface-sunken");
+    expect(card.className).toContain("shadow-none");
   });
 
   it("merges custom className", () => {
@@ -144,7 +181,7 @@ describe("CardDescription", () => {
     render(<CardDescription data-testid="desc">text</CardDescription>);
     const desc = screen.getByTestId("desc");
     expect(desc.className).toContain("text-sm");
-    expect(desc.className).toContain("text-muted-foreground");
+    expect(desc.className).toContain("text-text-secondary");
   });
 
   it("merges custom className", () => {

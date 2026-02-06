@@ -1,0 +1,43 @@
+/* =============================================================================
+   FORM FIELD UTILITIES
+   Shared styles for Input, Select, Textarea, and other form controls
+   ============================================================================= */
+
+@layer components {
+  /* Base structure and appearance for all form fields */
+  .form-field-base {
+    @apply flex h-10 w-full rounded-[var(--radius-md)] border border-border-default
+           bg-surface-base px-3 py-2 text-[length:var(--font-size-sm)]
+           leading-[var(--line-height-sm)] transition-colors duration-[var(--duration-fast)]
+           placeholder:text-text-secondary;
+  }
+
+  /* Focus ring styles - keyboard navigation only */
+  .form-field-focus {
+    @apply focus-visible:outline-none focus-visible:border-primary
+           focus-visible:ring-1 focus-visible:ring-primary/[var(--opacity-focus-ring)];
+  }
+
+  /* Open/expanded state - for Select, Combobox, etc. */
+  .form-field-open {
+    @apply data-[state=open]:outline-none data-[state=open]:border-primary
+           data-[state=open]:ring-1 data-[state=open]:ring-primary/[var(--opacity-focus-ring)];
+  }
+
+  /* Open state with error - override ring color */
+  .form-field-open-error {
+    @apply data-[state=open]:border-status-error
+           data-[state=open]:ring-status-error/[var(--opacity-focus-ring)];
+  }
+
+  /* Disabled state */
+  .form-field-disabled {
+    @apply disabled:cursor-not-allowed disabled:opacity-[var(--opacity-disabled)];
+  }
+
+  /* Error state via aria-invalid */
+  .form-field-error {
+    @apply aria-[invalid=true]:border-status-error
+           aria-[invalid=true]:focus-visible:ring-status-error/[var(--opacity-focus-ring)];
+  }
+}

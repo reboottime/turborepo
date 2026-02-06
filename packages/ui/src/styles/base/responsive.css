@@ -1,0 +1,37 @@
+/* =============================================================================
+   RESPONSIVE OVERRIDES
+   ============================================================================= */
+
+/* Mobile: enable dark mode based on system preference */
+@media (max-width: 767px) and (prefers-color-scheme: dark) {
+  :root {
+    color-scheme: dark;
+    --popover: var(--color-surface-overlay);
+  }
+}
+
+/* Mobile overrides (<768px) */
+@media (max-width: 767px) {
+  :root {
+    /* Faster durations on mobile */
+    --duration-instant: 50ms;
+    --duration-fast: 100ms;
+    --duration-base: 200ms;
+    --duration-moderate: 250ms;
+    --duration-slow: 350ms;
+
+    /* Reduced shadows on mobile */
+    --shadow-sm: none;
+    --shadow-md: 0 1px 2px rgba(0, 0, 0, 0.05);
+
+    /* iOS input zoom prevention */
+    --font-size-base: 1rem;
+  }
+}
+
+/* Tablet overrides (768-1023px) */
+@media (min-width: 768px) and (max-width: 1023px) {
+  :root {
+    --duration-base: 225ms;
+  }
+}

@@ -14,14 +14,14 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
   };
 
   return (
-    <div className="min-h-screen bg-background">
+    <div className="min-h-screen bg-surface-base">
       {/* Navigation Header */}
-      <header className="border-b border-border bg-card">
+      <header className="border-b border-border-default bg-surface-raised">
         <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
           <div className="flex h-16 items-center justify-between">
             <div className="flex items-center gap-8">
               <div className="flex items-center gap-2">
-                <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-primary-foreground text-lg font-bold">
+                <div className="w-8 h-8 rounded-lg bg-primary flex items-center justify-center text-text-inverse text-lg font-bold">
                   P
                 </div>
                 <span className="text-xl font-semibold">Portal</span>
@@ -29,7 +29,7 @@ export default function AppLayout({ children }: { children: React.ReactNode }) {
               <nav className="hidden md:flex items-center gap-6">
                 <a
                   href="/employees"
-                  className="text-sm font-medium text-foreground hover:text-primary transition-colors"
+                  className="text-sm font-medium text-text-primary hover:text-primary transition-colors"
                 >
                   Employees
                 </a>

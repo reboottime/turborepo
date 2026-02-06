@@ -7,7 +7,6 @@ import * as yup from "yup";
 import {
   Button,
   Input,
-  cn,
   Dialog,
   DialogContent,
   DialogFooter,
@@ -19,6 +18,11 @@ import {
   FormLabel,
   FormControl,
   FormMessage,
+  Select,
+  SelectTrigger,
+  SelectValue,
+  SelectContent,
+  SelectItem,
 } from "@repo/ui";
 import type { Employee, EmployeeFormData, Department } from "../_lib/types";
 
@@ -90,14 +94,24 @@ export function EmployeeFormDialog({
   });
 
   useEffect(() => {
-    if (isOpen && employee) {
-      form.reset({
-        firstName: employee.firstName,
-        lastName: employee.lastName,
-        email: employee.email,
-        department: employee.department,
-        phone: employee.phone || "",
-      });
+    if (isOpen) {
+      form.reset(
+        employee
+          ? {
+              firstName: employee.firstName,
+              lastName: employee.lastName,
+              email: employee.email,
+              department: employee.department,
+              phone: employee.phone || "",
+            }
+          : {
+              firstName: "",
+              lastName: "",
+              email: "",
+              department: "",
+              phone: "",
+            },
+      );
     }
   }, [isOpen, employee, form]);
 
@@ -124,7 +138,7 @@ export function EmployeeFormDialog({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      First Name <span className="text-destructive">*</span>
+                      First Name <span className="text-status-error">*</span>
                     </FormLabel>
                     <FormControl>
                       <Input type="text" {...field} />
@@ -140,7 +154,7 @@ export function EmployeeFormDialog({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Last Name <span className="text-destructive">*</span>
+                      Last Name <span className="text-status-error">*</span>
                     </FormLabel>
                     <FormControl>
                       <Input type="text" {...field} />
@@ -156,7 +170,7 @@ export function EmployeeFormDialog({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Email <span className="text-destructive">*</span>
+                      Email <span className="text-status-error">*</span>
                     </FormLabel>
                     <FormControl>
                       <Input type="email" {...field} />
@@ -172,24 +186,24 @@ export function EmployeeFormDialog({
                 render={({ field }) => (
                   <FormItem>
                     <FormLabel>
-                      Department <span className="text-destructive">*</span>
+                      Department <span className="text-status-error">*</span>
                     </FormLabel>
                     <FormControl>
-                      <select
-                        {...field}
-                        className={cn(
-                          "h-10 w-full rounded-md border border-border bg-background px-3 py-2 text-sm",
-                          "focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring",
-                          "transition-colors",
-                        )}
+                      <Select
+                        value={field.value}
+                        onValueChange={field.onChange}
                       >
-                        <option value="">Select department</option>
-                        {DEPARTMENTS.map((dept) => (
-                          <option key={dept} value={dept}>
-                            {dept}
-                          </option>
-                        ))}
-                      </select>
+                        <SelectTrigger>
+                          <SelectValue placeholder="Select department" />
+                        </SelectTrigger>
+                        <SelectContent>
+                          {DEPARTMENTS.map((dept) => (
+                            <SelectItem key={dept} value={dept}>
+                              {dept}
+                            </SelectItem>
+                          ))}
+                        </SelectContent>
+                      </Select>
                     </FormControl>
                     <FormMessage />
                   </FormItem>

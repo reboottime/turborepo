@@ -1,14 +1,32 @@
 import { forwardRef, type HTMLAttributes } from "react";
+import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "#lib/cn";
 
-const Card = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
-  ({ className, ...props }, ref) => (
+const cardVariants = cva(
+  "rounded-lg border border-border-default bg-surface-raised text-text-primary p-6",
+  {
+    variants: {
+      surface: {
+        base: "shadow-xs bg-surface-base",
+        raised: "shadow-sm",
+        overlay: "shadow-md bg-surface-overlay",
+        sunken: "shadow-none bg-surface-sunken",
+      },
+    },
+    defaultVariants: {
+      surface: "raised",
+    },
+  },
+);
+
+interface CardProps
+  extends HTMLAttributes<HTMLDivElement>, VariantProps<typeof cardVariants> {}
+
+const Card = forwardRef<HTMLDivElement, CardProps>(
+  ({ className, surface, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn(
-        "rounded-lg border border-border bg-background p-6",
-        className,
-      )}
+      className={cn(cardVariants({ surface }), className)}
       {...props}
     />
   ),
@@ -47,7 +65,7 @@ const CardDescription = forwardRef<
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn("text-sm text-muted-foreground", className)}
+    className={cn("text-sm text-text-secondary", className)}
     {...props}
   />
 ));
@@ -60,4 +78,12 @@ const CardContent = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
 );
 CardContent.displayName = "CardContent";
 
-export { Card, CardHeader, CardTitle, CardDescription, CardContent };
+export {
+  Card,
+  cardVariants,
+  CardHeader,
+  CardTitle,
+  CardDescription,
+  CardContent,
+  type CardProps,
+};

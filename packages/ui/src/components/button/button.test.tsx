@@ -29,14 +29,20 @@ describe("Button", () => {
     render(<Button variant="outline">Outline</Button>);
     const button = screen.getByRole("button");
     expect(button.className).toContain("border");
-    expect(button.className).toContain("bg-background");
+    expect(button.className).toContain("bg-surface-base");
   });
 
   it("applies ghost variant classes", () => {
     render(<Button variant="ghost">Ghost</Button>);
     const button = screen.getByRole("button");
     expect(button.className).not.toContain("bg-primary");
-    expect(button.className).not.toContain("border");
+    expect(button.className).toContain("border-transparent");
+  });
+
+  it("applies destructive variant classes", () => {
+    render(<Button variant="destructive">Delete</Button>);
+    const button = screen.getByRole("button");
+    expect(button.className).toContain("bg-destructive");
   });
 
   // -- Sizes --
@@ -70,7 +76,9 @@ describe("Button", () => {
     render(<Button disabled>Disabled</Button>);
     const button = screen.getByRole("button");
     expect(button.className).toContain("disabled:pointer-events-none");
-    expect(button.className).toContain("disabled:opacity-50");
+    expect(button.className).toContain(
+      "disabled:opacity-[var(--opacity-disabled)]",
+    );
   });
 
   // -- Click handling --

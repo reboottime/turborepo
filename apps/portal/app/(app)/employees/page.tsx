@@ -122,7 +122,7 @@ export default function EmployeesPage() {
       {/* Page Header */}
       <div className="flex items-center justify-between mb-6">
         <h1 className="text-2xl font-bold tracking-tight">Employees</h1>
-        <Button onClick={() => setIsAddModalOpen(true)}>
+        <Button onClick={() => setIsAddModalOpen(true)} className="flex">
           <svg
             className="w-4 h-4 mr-2"
             fill="none"
@@ -136,7 +136,7 @@ export default function EmployeesPage() {
               d="M12 4v16m8-8H4"
             />
           </svg>
-          Add Employee
+          <span className="whitespace-nowrap ">Add Employee</span>
         </Button>
       </div>
 
@@ -151,7 +151,7 @@ export default function EmployeesPage() {
       </div>
 
       {/* Table */}
-      <div className="mb-0">
+      <div className="mb-6">
         <EmployeeTable
           employees={paginatedEmployees}
           onEdit={setEditingEmployee}

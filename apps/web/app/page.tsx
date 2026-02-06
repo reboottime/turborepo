@@ -10,15 +10,10 @@ import * as math from "@repo/libs/math";
 
 export default function Home() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-surface-base text-text-primary">
       <main className="mx-auto max-w-4xl px-8 py-16">
-        <h1
-          className="text-4xl font-bold tracking-tigh
-        b-2"
-        >
-          Web App
-        </h1>
-        <p className="text-muted-foreground mb-12">
+        <h1 className="text-4xl font-bold tracking-tight mb-2">Web App</h1>
+        <p className="text-text-secondary mb-12">
           Turborepo monorepo demo — shared UI components from @repo/ui
         </p>
 
@@ -35,23 +30,23 @@ export default function Home() {
 
         <section className="mb-12">
           <h2 className="text-xl font-semibold mb-4">cn() Utility</h2>
-          <p className="text-sm text-muted-foreground mb-4">
+          <p className="text-sm text-text-secondary mb-4">
             The cn() function from @repo/ui merges Tailwind classes safely —
             conditional classes, overrides, and deduplication all handled.
           </p>
           <div className="flex gap-4">
             <div
               className={cn(
-                "rounded-lg border p-4",
-                "bg-primary text-primary-foreground",
+                "rounded-lg border border-border-default p-4",
+                "bg-primary text-text-inverse",
               )}
             >
               Merged classes
             </div>
             <div
               className={cn(
-                "rounded-lg border p-4",
-                "bg-muted text-muted-foreground",
+                "rounded-lg border border-border-default p-4",
+                "bg-surface-sunken text-text-secondary",
               )}
             >
               Conditional classes
@@ -63,25 +58,25 @@ export default function Home() {
           <h2 className="text-xl font-semibold mb-4">
             @repo/libs — Math Utilities
           </h2>
-          <p className="text-sm text-muted-foreground mb-4">
+          <p className="text-sm text-text-secondary mb-4">
             Shared utility functions from @repo/libs, consumed across apps.
           </p>
           <div className="grid grid-cols-2 md:grid-cols-4 gap-4">
             <Card>
               <CardContent className="pt-6">
-                <p className="text-xs text-muted-foreground">add(2, 3)</p>
+                <p className="text-xs text-text-secondary">add(2, 3)</p>
                 <p className="text-2xl font-bold">{math.add(2, 3)}</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="pt-6">
-                <p className="text-xs text-muted-foreground">multiply(4, 5)</p>
+                <p className="text-xs text-text-secondary">multiply(4, 5)</p>
                 <p className="text-2xl font-bold">{math.multiply(4, 5)}</p>
               </CardContent>
             </Card>
             <Card>
               <CardContent className="pt-6">
-                <p className="text-xs text-muted-foreground">divide(10, 3)</p>
+                <p className="text-xs text-text-secondary">divide(10, 3)</p>
                 <p className="text-2xl font-bold">
                   {math.divide(10, 3).toFixed(2)}
                 </p>
@@ -89,7 +84,7 @@ export default function Home() {
             </Card>
             <Card>
               <CardContent className="pt-6">
-                <p className="text-xs text-muted-foreground">
+                <p className="text-xs text-text-secondary">
                   clamp(150, 0, 100)
                 </p>
                 <p className="text-2xl font-bold">{math.clamp(150, 0, 100)}</p>
@@ -109,7 +104,7 @@ export default function Home() {
                 </CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-text-secondary">
                   Components are exported from @repo/ui and consumed by both web
                   and portal apps.
                 </p>
@@ -121,7 +116,7 @@ export default function Home() {
                 <CardDescription>Build once, cache everywhere</CardDescription>
               </CardHeader>
               <CardContent>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-sm text-text-secondary">
                   Turborepo caches build outputs so unchanged packages skip
                   rebuilding entirely.
                 </p>
