@@ -12,8 +12,8 @@ PR opened/sync                          Push to main
 ══════════════════════════════════════════════════
 
 ┌──────────────────┐     ┌──────────────────┐
-│    quality        │     │      test        │
-│  (lint + types)  │     │  (unit tests)    │
+│     quality      │     │       test       │
+│  (lint + types)  │     │   (unit tests)   │
 └────────┬─────────┘     └────────┬─────────┘
          │      both must pass    │
          └───────────┬────────────┘
@@ -25,12 +25,23 @@ PR opened/sync                          Push to main
             │ uploads:         │
             │  - web-build     │
             │  - portal-build  │
+            │  - api-build     │
             └────────┬─────────┘
-                     │
                      ▼
             ┌──────────────────┐
-            │   e2e (portal)   │
+            │  build-api-image │
+            │                  │
+            │ - download api   │
+            │ - docker build   │
+            │ - push to GHCR   │
+            └────────┬─────────┘
+                     ▼
+            ┌──────────────────┐
+            │       e2e        │
             │   (playwright)   │
+            │                  │
+            │ real integration │
+            │ API + Postgres   │
             └────────┬─────────┘
                      │
               CI completed
@@ -55,6 +66,57 @@ PR opened/sync                          Push to main
 
             chromatic.yml (disabled — manual only)
 ```
+
+## E2E Integration Architecture
+
+The E2E job runs Playwright tests against a real API backend:
+
+```
+┌─────────────────────────────────────────────────────────────┐
+│  GitHub Actions Runner (ubuntu-latest)                      │
+│  Network: host                                              │
+│                                                             │
+│  ┌─────────────┐   localhost:3002   ┌─────────────────────┐│
+│  │   Portal    │ ─────────────────► │   API Container     ││
+│  │   :3001     │                    │   --network host    ││
+│  │             │                    │   PORT=3002         ││
+│  └─────────────┘                    └──────────┬──────────┘│
+│        ▲                                       │           │
+│        │                                       ▼           │
+│  ┌─────────────┐                    ┌─────────────────────┐│
+│  │  Playwright │                    │   Postgres          ││
+│  │  (browser)  │                    │   :5432 (service)   ││
+│  └─────────────┘                    └─────────────────────┘│
+└─────────────────────────────────────────────────────────────┘
+```
+
+**Flow:**
+
+1. Postgres starts as GitHub Actions service
+2. API image pulled from GHCR, runs on host network
+3. Prisma migrations + seed data applied
+4. Portal starts via Playwright webServer
+5. Playwright tests run against real API
+
+## API Docker Image
+
+The API uses pre-built artifacts (not multi-stage build):
+
+```
+build job                    build-api-image job
+─────────                    ───────────────────
+turbo run build              download api-build artifact
+     │                              │
+     ▼                              ▼
+apps/api/dist ──────────►    Dockerfile (just COPY)
+apps/api/prisma                     │
+apps/api/package.json               ▼
+                             push to GHCR
+```
+
+**Why pre-built:** Turborepo caching. Building in Docker would lose cache benefits.
+
+**Image location:** `ghcr.io/<owner>/<repo>/api:<sha>`
 
 ## Gate Summary
 
@@ -81,7 +143,7 @@ To prevent merging PRs until CI passes, configure GitHub branch protection:
 1. **Settings** → **Branches** → **Add branch protection rule**
 2. Branch name pattern: `main`
 3. Enable **Require status checks to pass before merging**
-4. Select required jobs: `quality`, `test`, `build`, `e2e`
+4. Select required jobs: `quality`, `test`, `build`, `build-api-image`, `e2e`
 5. Enable **Require branches to be up to date before merging**
 
 Note: Status checks only appear in the dropdown after the workflow has run at least once.
@@ -91,5 +153,17 @@ Note: Status checks only appear in the dropdown after the workflow has run at le
 All workflows use `.github/actions/setup/action.yml`:
 
 - pnpm install (v9)
-- Node.js setup (v18)
+- Node.js setup (v22)
 - Turbo cache
+
+## Required Permissions
+
+For GHCR push, the workflow needs:
+
+```yaml
+permissions:
+  contents: read
+  packages: write
+```
+
+`GITHUB_TOKEN` is used automatically — no secrets setup needed.
