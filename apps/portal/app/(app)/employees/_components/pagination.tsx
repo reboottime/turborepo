@@ -69,8 +69,8 @@ export function Pagination({
   };
 
   return (
-    <div className="flex items-center justify-between px-4 py-3 border-t border-border">
-      <div className="text-sm text-muted-foreground">
+    <div className="flex items-center justify-between px-4 py-3 border-t border-border-default">
+      <div className="text-sm text-text-secondary">
         Showing {startItem}-{endItem} of {totalItems} employees
       </div>
       <div className="flex items-center gap-2">
@@ -88,7 +88,7 @@ export function Pagination({
             return (
               <span
                 key={`ellipsis-${index}`}
-                className="px-2 text-muted-foreground"
+                className="px-2 text-text-secondary"
               >
                 ...
               </span>

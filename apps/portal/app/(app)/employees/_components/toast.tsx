@@ -26,8 +26,8 @@ export function Toast({ message, type = "success", onClose }: ToastProps) {
         "fixed bottom-6 right-6 z-50 rounded-lg px-4 py-3 text-sm font-medium shadow-lg",
         "animate-in slide-in-from-bottom-2 fade-in duration-300",
         type === "success"
-          ? "bg-green-50 text-green-900 border border-green-200"
-          : "bg-red-50 text-red-900 border border-red-200",
+          ? "bg-status-success/10 text-status-success border border-status-success/20"
+          : "bg-status-error/10 text-status-error border border-status-error/20",
       )}
     >
       {message}

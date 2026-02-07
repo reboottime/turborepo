@@ -24,7 +24,7 @@ export function EmployeeDeleteDialog({
 }: EmployeeDeleteDialogProps) {
   return (
     <Dialog open={!!employee} onOpenChange={(open) => !open && onCancel()}>
-      <DialogContent className="sm:max-w-md">
+      <DialogContent size="md">
         <DialogHeader>
           <DialogTitle>Delete Employee</DialogTitle>
           <DialogDescription>
@@ -39,10 +39,7 @@ export function EmployeeDeleteDialog({
           <Button variant="outline" onClick={onCancel}>
             Cancel
           </Button>
-          <Button
-            onClick={onConfirm}
-            className="bg-destructive text-white hover:bg-destructive/90"
-          >
+          <Button onClick={onConfirm} variant="destructive">
             Delete
           </Button>
         </DialogFooter>

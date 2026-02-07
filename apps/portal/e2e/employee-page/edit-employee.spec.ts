@@ -17,7 +17,7 @@ test.describe("Edit Employee", () => {
     await expect(dialog.getByLabel(/first name/i)).toHaveValue("Alice");
     await expect(dialog.getByLabel(/last name/i)).toHaveValue("Chen");
     await expect(dialog.getByLabel(/email/i)).toHaveValue("alice@company.com");
-    await expect(dialog.getByLabel(/department/i)).toHaveValue("Engineering");
+    await expect(dialog.getByLabel(/department/i)).toContainText("Engineering");
     await expect(dialog.getByLabel(/phone/i)).toHaveValue("+1-555-0101");
 
     // Save Changes button is enabled
@@ -55,9 +55,8 @@ test.describe("Edit Employee", () => {
     await dialog.getByLabel(/first name/i).fill("Robert");
 
     // Change department
-    await dialog.getByLabel(/department/i).selectOption("Marketing");
-    // Blur to trigger validation
-    await dialog.getByLabel(/first name/i).focus();
+    await dialog.getByLabel(/department/i).click();
+    await page.getByRole("option", { name: "Marketing" }).click();
 
     await page.getByRole("button", { name: "Save Changes" }).click();
 

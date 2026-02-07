@@ -22,8 +22,8 @@ describe("Input", () => {
   it("applies default styling classes", () => {
     render(<Input aria-label="test" />);
     const input = screen.getByRole("textbox");
-    expect(input.className).toContain("border-border");
-    expect(input.className).toContain("h-10");
+    expect(input.className).toContain("form-field-base");
+    expect(input.className).toContain("form-field-focus");
   });
 
   // -- Disabled state --
@@ -36,8 +36,7 @@ describe("Input", () => {
   it("applies disabled styling classes", () => {
     render(<Input disabled aria-label="test" />);
     const input = screen.getByRole("textbox");
-    expect(input.className).toContain("disabled:cursor-not-allowed");
-    expect(input.className).toContain("disabled:opacity-50");
+    expect(input.className).toContain("form-field-disabled");
   });
 
   // -- aria-invalid (error state from Form) --
@@ -45,7 +44,7 @@ describe("Input", () => {
   it("applies aria-invalid error styling classes", () => {
     render(<Input aria-invalid="true" aria-label="test" />);
     const input = screen.getByRole("textbox");
-    expect(input.className).toContain("aria-[invalid=true]:border-destructive");
+    expect(input.className).toContain("form-field-error");
   });
 
   // -- User input --
@@ -81,14 +80,14 @@ describe("Input", () => {
     render(<Input className="custom-class" aria-label="test" />);
     const input = screen.getByRole("textbox");
     expect(input.className).toContain("custom-class");
-    expect(input.className).toContain("border-border");
+    expect(input.className).toContain("form-field-base");
   });
 
-  it("allows custom className to override default classes", () => {
+  it("allows custom className to be appended", () => {
     render(<Input className="h-12" aria-label="test" />);
     const input = screen.getByRole("textbox");
     expect(input.className).toContain("h-12");
-    expect(input.className).not.toContain("h-10");
+    expect(input.className).toContain("form-field-base");
   });
 
   // -- Ref forwarding --

@@ -8,7 +8,9 @@ test.describe("Department Filter", () => {
     authenticatedPage: page,
   }) => {
     // Engineering has 7 employees: Alice, David, Henry, Karen, Olivia, Sam, Wendy
-    await page.locator("select").selectOption("Engineering");
+    const departmentFilter = page.getByLabel(/filter by department/i);
+    await departmentFilter.click();
+    await page.getByRole("option", { name: "Engineering" }).click();
 
     // First page shows 5 of 7
     const tableRows = page.locator("table tbody tr");
@@ -25,7 +27,9 @@ test.describe("Department Filter", () => {
     authenticatedPage: page,
   }) => {
     // Sales has 4: Bob, Iris, Peter, Victor
-    await page.locator("select").selectOption("Sales");
+    const departmentFilter = page.getByLabel(/filter by department/i);
+    await departmentFilter.click();
+    await page.getByRole("option", { name: "Sales" }).click();
 
     const tableRows = page.locator("table tbody tr");
     await expect(tableRows).toHaveCount(4);
@@ -43,10 +47,13 @@ test.describe("Department Filter", () => {
   test("should reset to all departments", async ({
     authenticatedPage: page,
   }) => {
-    await page.locator("select").selectOption("Sales");
+    const departmentFilter = page.getByLabel(/filter by department/i);
+    await departmentFilter.click();
+    await page.getByRole("option", { name: "Sales" }).click();
     await expect(page.getByText("Showing 1-4 of 4 employees")).toBeVisible();
 
-    await page.locator("select").selectOption("all");
+    await departmentFilter.click();
+    await page.getByRole("option", { name: "All Departments" }).click();
 
     await expect(page.getByText("Showing 1-5 of 24 employees")).toBeVisible();
     await expect(page.locator("table tbody tr")).toHaveCount(5);
@@ -55,7 +62,9 @@ test.describe("Department Filter", () => {
   test("should combine department filter with search", async ({
     authenticatedPage: page,
   }) => {
-    await page.locator("select").selectOption("Engineering");
+    const departmentFilter = page.getByLabel(/filter by department/i);
+    await departmentFilter.click();
+    await page.getByRole("option", { name: "Engineering" }).click();
     await expect(page.getByText("Showing 1-5 of 7 employees")).toBeVisible();
 
     const searchInput = page.getByPlaceholder("Search by name or email...");
@@ -67,7 +76,8 @@ test.describe("Department Filter", () => {
     await expect(tableRows.first()).toContainText("David Park");
 
     // Switch to Sales — David is not in Sales
-    await page.locator("select").selectOption("Sales");
+    await departmentFilter.click();
+    await page.getByRole("option", { name: "Sales" }).click();
     await expect(page.getByText(/No employees match "David"/)).toBeVisible();
 
     // Search term persists

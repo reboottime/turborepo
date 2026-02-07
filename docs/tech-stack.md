@@ -27,6 +27,20 @@
 - Internal packages use `"main"` and `"types"` exports — not published to npm
 - `cn` utility (clsx + tailwind-merge) for class merging
 
+## Browser Support
+
+Tailwind CSS v4.0 requires modern browsers with support for `@property` and `color-mix()`:
+
+| Browser | Minimum Version |
+| ------- | --------------- |
+| Chrome  | 111+            |
+| Firefox | 128+            |
+| Safari  | 16.4+           |
+
+Internet Explorer is not supported.
+
+If older browser support is required, downgrade to Tailwind v3.4.
+
 ## References
 
 Consult these before generating code. LLM training data may be outdated — always verify against official docs.

@@ -19,7 +19,15 @@
       "mcp__playwright-test__browser_select_option",
       "mcp__playwright-test__browser_run_code",
       "mcp__playwright-test__planner_save_plan",
-      "Bash(npm run test:e2e:*)"
+      "Bash(npm run test:e2e:*)",
+      "Bash(pnpm --filter @repo/portal build:*)",
+      "Bash(pnpm turbo run build:*)",
+      "Bash(pnpm turbo run test:*)",
+      "Bash(pnpm --filter @repo/ui list:*)",
+      "Bash(pnpm --filter @repo/ui add:*)",
+      "Bash(pnpm --filter @repo/ui test:*)",
+      "Bash(pnpm --filter @repo/ui check-types:*)",
+      "Bash(pnpm test:*)"
     ]
   },
   "enabledMcpjsonServers": ["playwright-test"]

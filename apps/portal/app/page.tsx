@@ -3,10 +3,10 @@ import { Card, CardHeader, CardTitle, CardDescription } from "@repo/ui";
 
 export default function Dashboard() {
   return (
-    <div className="min-h-screen bg-background text-foreground">
+    <div className="min-h-screen bg-surface-base text-text-primary">
       <main className="mx-auto max-w-4xl px-8 py-16">
         <h1 className="text-4xl font-bold tracking-tight mb-2">Portal</h1>
-        <p className="text-muted-foreground mb-12">
+        <p className="text-text-secondary mb-12">
           Admin dashboard — same shared components, different app
         </p>
 

@@ -7,7 +7,7 @@ const meta: Meta<typeof Button> = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["default", "outline", "ghost"],
+      options: ["default", "destructive", "outline", "ghost"],
     },
     size: {
       control: "select",
@@ -34,6 +34,10 @@ export const Ghost: Story = {
   args: { variant: "ghost" },
 };
 
+export const Destructive: Story = {
+  args: { variant: "destructive", children: "Delete" },
+};
+
 export const Small: Story = {
   args: { size: "sm" },
 };
@@ -49,26 +53,28 @@ export const Disabled: Story = {
 export const AllVariants: Story = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-      {(["default", "outline", "ghost"] as const).map((variant) => (
-        <div
-          key={variant}
-          style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}
-        >
-          <span
-            style={{ width: "4rem", fontSize: "0.75rem", color: "#737373" }}
+      {(["default", "destructive", "outline", "ghost"] as const).map(
+        (variant) => (
+          <div
+            key={variant}
+            style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}
           >
-            {variant}
-          </span>
-          {(["sm", "default", "lg"] as const).map((size) => (
-            <Button key={size} variant={variant} size={size}>
-              {size}
+            <span
+              style={{ width: "5rem", fontSize: "0.75rem", color: "#737373" }}
+            >
+              {variant}
+            </span>
+            {(["sm", "default", "lg"] as const).map((size) => (
+              <Button key={size} variant={variant} size={size}>
+                {size}
+              </Button>
+            ))}
+            <Button variant={variant} disabled>
+              disabled
             </Button>
-          ))}
-          <Button variant={variant} disabled>
-            disabled
-          </Button>
-        </div>
-      ))}
+          </div>
+        ),
+      )}
     </div>
   ),
 };

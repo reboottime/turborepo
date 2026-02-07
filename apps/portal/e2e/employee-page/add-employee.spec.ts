@@ -58,7 +58,8 @@ test.describe("Add Employee", () => {
     await dialog.getByLabel(/first name/i).fill("John");
     await dialog.getByLabel(/last name/i).fill("Doe");
     await dialog.getByLabel(/email/i).fill("john.doe@company.com");
-    await dialog.getByLabel(/department/i).selectOption("Engineering");
+    await dialog.getByLabel(/department/i).click();
+    await page.getByRole("option", { name: "Engineering" }).click();
     await dialog.getByLabel(/phone/i).fill("+1-555-9999");
     // Blur the last field to trigger validation
     await dialog.getByLabel(/first name/i).focus();
@@ -90,9 +91,8 @@ test.describe("Add Employee", () => {
     await dialog.getByLabel(/first name/i).fill("Jane");
     await dialog.getByLabel(/last name/i).fill("Smith");
     await dialog.getByLabel(/email/i).fill("jane.smith@company.com");
-    await dialog.getByLabel(/department/i).selectOption("Sales");
-    // Blur to trigger validation on department
-    await dialog.getByLabel(/first name/i).focus();
+    await dialog.getByLabel(/department/i).click();
+    await page.getByRole("option", { name: "Sales" }).click();
 
     const saveButton = dialog.getByRole("button", {
       name: "Save",
@@ -150,8 +150,8 @@ test.describe("Add Employee", () => {
     await dialog.getByLabel(/department/i).focus(); // blur email
     await expect(saveButton).toBeDisabled();
 
-    await dialog.getByLabel(/department/i).selectOption("Engineering");
-    await dialog.getByLabel(/first name/i).focus(); // blur department
+    await dialog.getByLabel(/department/i).click();
+    await page.getByRole("option", { name: "Engineering" }).click();
     await expect(saveButton).toBeEnabled();
   });
 });

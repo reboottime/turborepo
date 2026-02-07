@@ -1,0 +1,41 @@
+@import "tailwindcss";
+
+/* CRITICAL: Tells Tailwind to scan this package's source files for class names.
+   Without this, consuming apps won't generate CSS for classes used in UI components. */
+@source "..";
+
+/* =============================================================================
+   DESIGN SYSTEM TOKENS
+   ============================================================================= */
+@import "./tokens/colors.css";
+@import "./tokens/typography.css";
+@import "./tokens/spacing.css";
+@import "./tokens/motion.css";
+@import "./tokens/elevation.css";
+@import "./tokens/components.css";
+
+/* =============================================================================
+   BASE STYLES
+   ============================================================================= */
+@import "./base/reset.css";
+@import "./base/responsive.css";
+@import "./base/accessibility.css";
+
+/* =============================================================================
+   INTERACTIVE STATES
+   ============================================================================= */
+@import "./interactive/cursor.css";
+@import "./interactive/scrollbar.css";
+@import "./interactive/focus.css";
+
+/* =============================================================================
+   COMPONENT UTILITIES
+   ============================================================================= */
+@import "./components/forms.css";
+
+/* =============================================================================
+   ANIMATIONS & UTILITIES
+   ============================================================================= */
+@import "./animations/keyframes.css";
+@import "./animations/utilities.css";
+@import "./utilities/helpers.css";

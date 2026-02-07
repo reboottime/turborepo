@@ -130,7 +130,7 @@ describe("Form", () => {
 
     await waitFor(() => {
       const label = screen.getByText("Email");
-      expect(label.className).toContain("text-destructive");
+      expect(label.className).toContain("text-status-error");
     });
   });
 

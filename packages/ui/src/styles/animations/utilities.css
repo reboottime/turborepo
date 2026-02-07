@@ -1,0 +1,37 @@
+/* =============================================================================
+   ANIMATION UTILITY CLASSES
+   ============================================================================= */
+
+.animate-slide-in-from-right {
+  animation: slide-in-from-right var(--duration-base) var(--ease-out) forwards;
+}
+
+.animate-fade-in {
+  animation: fade-in var(--duration-fast) var(--ease-out) forwards;
+}
+
+.animate-check-complete {
+  animation: checkComplete var(--duration-fast) var(--ease-spring);
+}
+
+/* =============================================================================
+   MICRO-INTERACTIONS
+   ============================================================================= */
+
+/* Button press / lift effect */
+.interactive-lift {
+  transition:
+    background-color var(--duration-instant) var(--ease-out),
+    transform var(--duration-instant) var(--ease-out),
+    box-shadow var(--duration-instant) var(--ease-out);
+}
+
+.interactive-lift:hover {
+  transform: translateY(-1px);
+  box-shadow: var(--shadow-sm);
+}
+
+.interactive-lift:active {
+  transform: translateY(0);
+  box-shadow: var(--shadow-xs);
+}

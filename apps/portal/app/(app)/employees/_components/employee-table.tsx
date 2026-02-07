@@ -22,10 +22,10 @@ export function EmployeeTable({
 }: EmployeeTableProps) {
   if (isEmpty) {
     return (
-      <div className="border border-border rounded-lg p-12 text-center">
+      <div className="border border-border-default rounded-lg p-12 text-center">
         <div className="max-w-md mx-auto">
           <svg
-            className="w-16 h-16 mx-auto mb-4 text-muted-foreground"
+            className="w-16 h-16 mx-auto mb-4 text-text-secondary"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -37,10 +37,10 @@ export function EmployeeTable({
               d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
             />
           </svg>
-          <p className="text-foreground font-medium mb-1">
+          <p className="text-text-primary font-medium mb-1">
             No employees found.
           </p>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-text-secondary">
             Click &quot;+ Add Employee&quot; to get started.
           </p>
         </div>
@@ -50,10 +50,10 @@ export function EmployeeTable({
 
   if (isSearching && employees.length === 0) {
     return (
-      <div className="border border-border rounded-lg p-12 text-center">
+      <div className="border border-border-default rounded-lg p-12 text-center">
         <div className="max-w-md mx-auto">
           <svg
-            className="w-16 h-16 mx-auto mb-4 text-muted-foreground"
+            className="w-16 h-16 mx-auto mb-4 text-text-secondary"
             fill="none"
             stroke="currentColor"
             viewBox="0 0 24 24"
@@ -65,10 +65,10 @@ export function EmployeeTable({
               d="M21 21l-6-6m2-5a7 7 0 11-14 0 7 7 0 0114 0z"
             />
           </svg>
-          <p className="text-foreground font-medium mb-1">
+          <p className="text-text-primary font-medium mb-1">
             No employees match &quot;{searchTerm}&quot;.
           </p>
-          <p className="text-sm text-muted-foreground">
+          <p className="text-sm text-text-secondary">
             Try a different search term.
           </p>
         </div>
@@ -79,10 +79,10 @@ export function EmployeeTable({
   return (
     <>
       {/* Desktop table view */}
-      <div className="hidden md:block border border-border rounded-lg overflow-hidden">
+      <div className="hidden md:block border border-border-default rounded-lg overflow-hidden">
         <table className="w-full">
           <thead>
-            <tr className="bg-muted/50 border-b border-border">
+            <tr className="bg-surface-sunken/50 border-b border-border-default">
               <th className="text-center font-semibold text-sm px-4 py-3 w-[60px]">
                 #
               </th>
@@ -105,17 +105,17 @@ export function EmployeeTable({
               <tr
                 key={employee.id}
                 className={cn(
-                  "border-b border-border last:border-b-0",
-                  "hover:bg-blue-50 transition-colors",
+                  "border-b border-border-default last:border-b-0",
+                  "hover:shadow-sm transition-shadow",
                 )}
               >
-                <td className="text-center text-sm px-4 py-3 text-muted-foreground">
+                <td className="text-center text-sm px-4 py-3 text-text-secondary">
                   {index + 1}
                 </td>
                 <td className="text-sm px-4 py-3">
                   {employee.firstName} {employee.lastName}
                 </td>
-                <td className="text-sm px-4 py-3 text-muted-foreground">
+                <td className="text-sm px-4 py-3 text-text-secondary">
                   {employee.email}
                 </td>
                 <td className="text-sm px-4 py-3">{employee.department}</td>
@@ -123,12 +123,12 @@ export function EmployeeTable({
                   <div className="flex items-center justify-center gap-2">
                     <button
                       onClick={() => onEdit(employee)}
-                      className="p-1.5 rounded hover:bg-muted transition-colors"
+                      className="p-1.5 rounded hover:bg-surface-sunken transition-colors"
                       title="Edit employee"
                       aria-label={`Edit ${employee.firstName} ${employee.lastName}`}
                     >
                       <svg
-                        className="w-4 h-4 text-muted-foreground hover:text-foreground"
+                        className="w-4 h-4 text-text-secondary hover:text-text-primary"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -143,12 +143,12 @@ export function EmployeeTable({
                     </button>
                     <button
                       onClick={() => onDelete(employee)}
-                      className="p-1.5 rounded hover:bg-red-50 transition-colors"
+                      className="p-1.5 rounded hover:bg-destructive/10 transition-colors"
                       title="Delete employee"
                       aria-label={`Delete ${employee.firstName} ${employee.lastName}`}
                     >
                       <svg
-                        className="w-4 h-4 text-muted-foreground hover:text-destructive"
+                        className="w-4 h-4 text-text-secondary hover:text-status-error"
                         fill="none"
                         stroke="currentColor"
                         viewBox="0 0 24 24"
@@ -174,14 +174,14 @@ export function EmployeeTable({
         {employees.map((employee) => (
           <div
             key={employee.id}
-            className="border border-border rounded-lg p-4 bg-background hover:bg-blue-50 transition-colors"
+            className="border border-border-default rounded-lg p-4 bg-surface-base hover:bg-blue-50 transition-colors"
           >
             <div className="flex items-start justify-between gap-3">
               <div className="flex-1 min-w-0">
                 <h3 className="font-medium text-sm mb-1 truncate">
                   {employee.firstName} {employee.lastName}
                 </h3>
-                <p className="text-sm text-muted-foreground mb-1 truncate">
+                <p className="text-sm text-text-secondary mb-1 truncate">
                   {employee.email}
                 </p>
                 <p className="text-sm">{employee.department}</p>
@@ -189,12 +189,12 @@ export function EmployeeTable({
               <div className="flex items-center gap-2 shrink-0">
                 <button
                   onClick={() => onEdit(employee)}
-                  className="p-1.5 rounded hover:bg-muted transition-colors"
+                  className="p-1.5 rounded hover:bg-surface-sunken transition-colors"
                   title="Edit employee"
                   aria-label={`Edit ${employee.firstName} ${employee.lastName}`}
                 >
                   <svg
-                    className="w-4 h-4 text-muted-foreground"
+                    className="w-4 h-4 text-text-secondary"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
@@ -209,12 +209,12 @@ export function EmployeeTable({
                 </button>
                 <button
                   onClick={() => onDelete(employee)}
-                  className="p-1.5 rounded hover:bg-red-50 transition-colors"
+                  className="p-1.5 rounded hover:bg-destructive/10 transition-colors"
                   title="Delete employee"
                   aria-label={`Delete ${employee.firstName} ${employee.lastName}`}
                 >
                   <svg
-                    className="w-4 h-4 text-destructive"
+                    className="w-4 h-4 text-status-error"
                     fill="none"
                     stroke="currentColor"
                     viewBox="0 0 24 24"
