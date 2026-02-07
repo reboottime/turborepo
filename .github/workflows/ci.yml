@@ -54,6 +54,12 @@ jobs:
 
       - run: pnpm turbo run build
 
+      - name: Prune API for Docker
+        run: |
+          pnpm turbo prune --scope=@repo/api --docker
+          cp out/json/apps/api/package.json apps/api/package.json
+          cp out/pnpm-lock.yaml apps/api/pnpm-lock.yaml
+
       - uses: actions/upload-artifact@v4
         with:
           name: web-build
@@ -75,6 +81,7 @@ jobs:
             apps/api/dist
             apps/api/prisma
             apps/api/package.json
+            apps/api/pnpm-lock.yaml
           retention-days: 1
 
   build-api-image:
