@@ -9,7 +9,7 @@
     },
     "lint": {
       "dependsOn": ["^lint"],
-      "env": ["CI"]
+      "env": ["CI", "JWT_SECRET", "ADMIN_EMAIL", "ADMIN_PASSWORD", "PORT"]
     },
     "check-types": {
       "dependsOn": ["^check-types"]

@@ -10,7 +10,8 @@
     "test": "turbo run test",
     "test:e2e": "turbo run test:e2e",
     "storybook": "pnpm --filter ui storybook",
-    "prepare": "husky"
+    "prepare": "husky",
+    "postinstall": "rm -rf apps/*/.next"
   },
   "devDependencies": {
     "husky": "^9.1.7",
