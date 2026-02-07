@@ -1,18 +1,14 @@
-# Production image - uses pre-built artifacts from turbo prune
+# Production image - uses pre-built artifacts
 FROM node:22-alpine
-
-RUN corepack enable && corepack prepare pnpm@latest --activate
 
 WORKDIR /app
 
 ENV NODE_ENV=production
 ENV PORT=3002
 
-# Copy pruned package.json and lockfile (workspace: refs resolved by turbo prune)
-COPY package.json pnpm-lock.yaml ./
-
-# Install production dependencies
-RUN pnpm install --prod --frozen-lockfile
+# Copy package.json and install production dependencies
+COPY package.json ./
+RUN npm install --omit=dev
 
 # Copy pre-built application
 COPY dist ./dist

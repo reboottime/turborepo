@@ -66,18 +66,15 @@ importers:
         specifier: ^7.8.2
         version: 7.8.2
     devDependencies:
+      '@eslint/js':
+        specifier: ^9.28.0
+        version: 9.39.1
       '@nestjs/cli':
         specifier: ^11.0.0
         version: 11.0.16(@types/node@22.15.3)
       '@nestjs/schematics':
         specifier: ^11.0.0
         version: 11.0.9(chokidar@4.0.3)(typescript@5.9.2)
-      '@repo/config.eslint':
-        specifier: workspace:*
-        version: link:../../packages/config.eslint
-      '@repo/config.typescript':
-        specifier: workspace:*
-        version: link:../../packages/config.typescript
       '@types/node':
         specifier: ^22.15.3
         version: 22.15.3
@@ -87,6 +84,9 @@ importers:
       eslint:
         specifier: ^9.39.1
         version: 9.39.1(jiti@2.6.1)
+      globals:
+        specifier: ^16.2.0
+        version: 16.5.0
       prisma:
         specifier: ^6.10.1
         version: 6.19.2(typescript@5.9.2)
@@ -96,6 +96,9 @@ importers:
       typescript:
         specifier: 5.9.2
         version: 5.9.2
+      typescript-eslint:
+        specifier: ^8.34.1
+        version: 8.50.0(eslint@9.39.1(jiti@2.6.1))(typescript@5.9.2)
 
   apps/portal:
     dependencies:

@@ -1,4 +1,25 @@
-import { nodeConfig } from "@repo/config.eslint/node";
+// @ts-check
+import eslint from "@eslint/js";
+import globals from "globals";
+import tseslint from "typescript-eslint";
 
-/** @type {import("eslint").Linter.Config[]} */
-export default nodeConfig;
+export default tseslint.config(
+  {
+    ignores: ["eslint.config.mjs", "dist/**"],
+  },
+  eslint.configs.recommended,
+  ...tseslint.configs.recommended,
+  {
+    languageOptions: {
+      globals: {
+        ...globals.node,
+      },
+      sourceType: "commonjs",
+    },
+  },
+  {
+    rules: {
+      "@typescript-eslint/no-explicit-any": "off",
+    },
+  }
+);
