@@ -1,14 +1,17 @@
 # Production image - uses pre-built artifacts
 FROM node:22-alpine
 
+# Install pnpm
+RUN corepack enable && corepack prepare pnpm@latest --activate
+
 WORKDIR /app
 
 ENV NODE_ENV=production
 ENV PORT=3002
 
-# Install production dependencies only
+# Copy package.json and install production dependencies
 COPY package.json ./
-RUN npm install --omit=dev
+RUN pnpm install --prod --ignore-workspace
 
 # Copy pre-built application
 COPY dist ./dist
