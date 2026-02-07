@@ -8,7 +8,7 @@ ENV PORT=3002
 
 # Copy package.json and install production dependencies
 COPY package.json ./
-RUN npm install --omit=dev
+RUN npm install --omit=dev --ignore-scripts
 
 # Copy pre-built application
 COPY dist ./dist
