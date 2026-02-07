@@ -51,7 +51,7 @@ export function EmployeeToolbar({
             onDepartmentChange(value as Department | "all")
           }
         >
-          <SelectTrigger>
+          <SelectTrigger aria-label="Filter by department">
             <SelectValue placeholder="Select department" />
           </SelectTrigger>
           <SelectContent>

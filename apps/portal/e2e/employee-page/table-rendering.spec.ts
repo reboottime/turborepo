@@ -74,9 +74,9 @@ test.describe("Table Rendering", () => {
     await expect(searchInput).toBeVisible();
 
     // Verify department dropdown with default value
-    const departmentDropdown = page.locator("select");
+    const departmentDropdown = page.getByLabel(/filter by department/i);
     await expect(departmentDropdown).toBeVisible();
-    await expect(departmentDropdown).toHaveValue("all");
+    await expect(departmentDropdown).toContainText("All Departments");
 
     // Verify 'Add Employee' button
     const addButton = page.getByRole("button", { name: "Add Employee" });
