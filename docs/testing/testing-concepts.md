@@ -11,15 +11,16 @@ Tests with mocked APIs are **integration tests**, not E2E tests. The industry st
 | Unit Test        | Isolated source code tested to validate expected behavior. Tests one unit (function, component, module) in isolation from the rest of the system. | Heavy — mock all external dependencies (APIs, services, sibling modules, 3rd party libs with side effects). Only pure utility functions are called directly. |
 | Integration test | Frontend + mocked API (e.g., `page.route()`, MSW)                                                                                                 | Heavy                                                                                                                                                        |
 | E2E test         | Full stack, real backend, minimal mocking                                                                                                         | Minimal                                                                                                                                                      |
-| Contract test    | Verify API shape agreement between consumer & provider                                                                                            | N/A                                                                                                                                                          |
+| Contract test    | Verify API shape agreement between consumer & provider                                                                                            | N/A — tests schema/contract, not runtime behavior                                                                                                            |
+| Smoke test       | Quick, shallow tests verifying core functionality works at all. Fast gate before deeper testing — if smoke fails, skip the rest.                  | Varies                                                                                                                                                       |
 
 Calling mocked-API browser tests "E2E" contradicts standard definitions from Kent C. Dodds, Martin Fowler, and Google's testing guidance.
 
 ## What Playwright Actually Recommends
 
-- Mock **third-party dependencies you don't control** (OAuth, external APIs)
-- For your own backend: _"Test against a staging environment and make sure it doesn't change"_
-- `page.route()` is a capability, not the recommended default
+- **Don't test what you don't control** — avoid testing external sites/third-party servers
+- **Use `page.route()`** to intercept external requests and fulfill with controlled test data (this is the recommended approach, not just a capability)
+- **For databases** — test against a staging environment with stable data
 
 Source: [Playwright Best Practices](https://playwright.dev/docs/best-practices)
 

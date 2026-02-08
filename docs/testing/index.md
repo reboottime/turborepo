@@ -7,3 +7,5 @@
 | [e2e-mock-vs-real-api.md](e2e-mock-vs-real-api.md)                     | Mock vs real API in E2E tests — terminology, tradeoffs, layered approach        |
 | [frontend-backend-test-workflow.md](frontend-backend-test-workflow.md) | How frontend & backend testing converge — contract tests, E2E, the full picture |
 | [e2e-test-generation.md](e2e-test-generation.md)                       | E2E test generation pipeline — Planner, Generator, Healer agents, how to run it |
+| [visual-testing.md](visual-testing.md)                                 | Visual testing — two layers (component + page), CI gating, tool options         |
+| [playwright.md](playwright.md)                                         | Playwright notes — learnings, patterns, gotchas                                 |
