@@ -92,7 +92,11 @@ const FormItem = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
 
     return (
       <FormItemContext.Provider value={{ id }}>
-        <div ref={ref} className={cn("grid gap-2", className)} {...props} />
+        <div
+          ref={ref}
+          className={cn("grid gap-[var(--spacing-2)]", className)}
+          {...props}
+        />
       </FormItemContext.Provider>
     );
   },
@@ -153,7 +157,10 @@ const FormDescription = forwardRef<
     <p
       ref={ref}
       id={formDescriptionId}
-      className={cn("text-sm text-text-secondary", className)}
+      className={cn(
+        "text-[length:var(--font-size-sm)] text-text-secondary",
+        className,
+      )}
       {...props}
     />
   );
@@ -177,7 +184,10 @@ const FormMessage = forwardRef<
     <p
       ref={ref}
       id={formMessageId}
-      className={cn("text-sm text-status-error", className)}
+      className={cn(
+        "text-[length:var(--font-size-sm)] text-status-error",
+        className,
+      )}
       {...props}
     >
       {body}

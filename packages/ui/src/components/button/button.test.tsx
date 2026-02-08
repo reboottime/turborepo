@@ -50,19 +50,19 @@ describe("Button", () => {
   it("applies default size classes", () => {
     render(<Button>Default Size</Button>);
     const button = screen.getByRole("button");
-    expect(button.className).toContain("h-10");
+    expect(button.className).toContain("h-[var(--spacing-10)]");
   });
 
   it("applies sm size classes", () => {
     render(<Button size="sm">Small</Button>);
     const button = screen.getByRole("button");
-    expect(button.className).toContain("h-9");
+    expect(button.className).toContain("h-[var(--spacing-8)]");
   });
 
   it("applies lg size classes", () => {
     render(<Button size="lg">Large</Button>);
     const button = screen.getByRole("button");
-    expect(button.className).toContain("h-11");
+    expect(button.className).toContain("h-[var(--spacing-12)]");
   });
 
   // -- Disabled state --
@@ -117,9 +117,9 @@ describe("Button", () => {
   it("allows custom className to override variant classes", () => {
     render(<Button className="px-8">Override</Button>);
     const button = screen.getByRole("button");
-    // tailwind-merge should resolve the conflict: custom px-8 wins over default px-4
+    // tailwind-merge should resolve the conflict: custom px-8 wins over default px-[var(--spacing-4)]
     expect(button.className).toContain("px-8");
-    expect(button.className).not.toContain("px-4");
+    expect(button.className).not.toContain("px-[var(--spacing-4)]");
   });
 
   // -- Ref forwarding --

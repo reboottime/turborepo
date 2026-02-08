@@ -75,16 +75,19 @@ const drawerContentVariants = cva(
       side: {
         left: [
           "inset-y-0 left-0 h-full w-3/4 max-w-sm",
-          "border-r rounded-r-lg",
+          "border-r rounded-r-[var(--radius-lg)]",
         ],
         right: [
           "inset-y-0 right-0 h-full w-3/4 max-w-sm",
-          "border-l rounded-l-lg",
+          "border-l rounded-l-[var(--radius-lg)]",
         ],
-        top: ["inset-x-0 top-0 w-full max-h-[80vh]", "border-b rounded-b-lg"],
+        top: [
+          "inset-x-0 top-0 w-full max-h-[80vh]",
+          "border-b rounded-b-[var(--radius-lg)]",
+        ],
         bottom: [
           "inset-x-0 bottom-0 w-full max-h-[80vh]",
-          "border-t rounded-t-lg",
+          "border-t rounded-t-[var(--radius-lg)]",
         ],
       },
     },
@@ -105,7 +108,7 @@ const DrawerHandle = forwardRef<
     ref={ref}
     data-testid="drawer-handle"
     className={cn(
-      "mx-auto mt-4 h-2 w-[100px] rounded-full bg-[var(--color-border-muted)]",
+      "mx-auto mt-[var(--spacing-4)] h-[var(--spacing-2)] w-[100px] rounded-full bg-[var(--color-border-muted)]",
       className,
     )}
     {...props}
@@ -200,7 +203,7 @@ const DrawerTitle = forwardRef<
   <VaulDrawer.Title
     ref={ref}
     className={cn(
-      "text-lg font-semibold leading-none tracking-tight",
+      "text-[length:var(--font-size-lg)] font-semibold leading-none tracking-[var(--tracking-tight)]",
       className,
     )}
     {...props}
@@ -214,7 +217,10 @@ const DrawerDescription = forwardRef<
 >(({ className, ...props }, ref) => (
   <VaulDrawer.Description
     ref={ref}
-    className={cn("text-sm text-text-secondary", className)}
+    className={cn(
+      "text-[length:var(--font-size-sm)] text-text-secondary",
+      className,
+    )}
     {...props}
   />
 ));

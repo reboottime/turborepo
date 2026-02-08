@@ -24,7 +24,7 @@ describe("Card", () => {
   it("applies base styling classes", () => {
     render(<Card data-testid="card">content</Card>);
     const card = screen.getByTestId("card");
-    expect(card.className).toContain("rounded-lg");
+    expect(card.className).toContain("rounded-[var(--radius-lg)]");
     expect(card.className).toContain("border");
   });
 
@@ -74,7 +74,7 @@ describe("Card", () => {
     );
     const card = screen.getByTestId("card");
     expect(card.className).toContain("my-custom");
-    expect(card.className).toContain("rounded-lg");
+    expect(card.className).toContain("rounded-[var(--radius-lg)]");
   });
 
   it("forwards ref", () => {
@@ -143,9 +143,9 @@ describe("CardTitle", () => {
   it("applies heading styling", () => {
     render(<CardTitle data-testid="title">Title</CardTitle>);
     const title = screen.getByTestId("title");
-    expect(title.className).toContain("text-2xl");
+    expect(title.className).toContain("text-[length:var(--font-size-2xl)]");
     expect(title.className).toContain("font-semibold");
-    expect(title.className).toContain("tracking-tight");
+    expect(title.className).toContain("tracking-[var(--tracking-tight)]");
   });
 
   it("merges custom className", () => {
@@ -180,7 +180,7 @@ describe("CardDescription", () => {
   it("applies muted text styling", () => {
     render(<CardDescription data-testid="desc">text</CardDescription>);
     const desc = screen.getByTestId("desc");
-    expect(desc.className).toContain("text-sm");
+    expect(desc.className).toContain("text-[length:var(--font-size-sm)]");
     expect(desc.className).toContain("text-text-secondary");
   });
 
@@ -210,7 +210,9 @@ describe("CardContent", () => {
 
   it("applies padding top class", () => {
     render(<CardContent data-testid="content">content</CardContent>);
-    expect(screen.getByTestId("content").className).toContain("pt-4");
+    expect(screen.getByTestId("content").className).toContain(
+      "pt-[var(--spacing-4)]",
+    );
   });
 
   it("merges custom className", () => {

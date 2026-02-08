@@ -3,7 +3,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "#lib/cn";
 
 const cardVariants = cva(
-  "rounded-lg border border-border-default bg-surface-raised text-text-primary p-6",
+  "rounded-[var(--radius-lg)] border border-border-default bg-surface-raised text-text-primary p-[var(--spacing-6)]",
   {
     variants: {
       surface: {
@@ -37,7 +37,7 @@ const CardHeader = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
     <div
       ref={ref}
-      className={cn("flex flex-col space-y-1.5", className)}
+      className={cn("flex flex-col space-y-[var(--spacing-1-5)]", className)}
       {...props}
     />
   ),
@@ -51,7 +51,7 @@ const CardTitle = forwardRef<
   <h3
     ref={ref}
     className={cn(
-      "text-2xl font-semibold leading-none tracking-tight",
+      "text-[length:var(--font-size-2xl)] font-semibold leading-none tracking-[var(--tracking-tight)]",
       className,
     )}
     {...props}
@@ -65,7 +65,10 @@ const CardDescription = forwardRef<
 >(({ className, ...props }, ref) => (
   <p
     ref={ref}
-    className={cn("text-sm text-text-secondary", className)}
+    className={cn(
+      "text-[length:var(--font-size-sm)] text-text-secondary",
+      className,
+    )}
     {...props}
   />
 ));
@@ -73,7 +76,11 @@ CardDescription.displayName = "CardDescription";
 
 const CardContent = forwardRef<HTMLDivElement, HTMLAttributes<HTMLDivElement>>(
   ({ className, ...props }, ref) => (
-    <div ref={ref} className={cn("pt-4", className)} {...props} />
+    <div
+      ref={ref}
+      className={cn("pt-[var(--spacing-4)]", className)}
+      {...props}
+    />
   ),
 );
 CardContent.displayName = "CardContent";

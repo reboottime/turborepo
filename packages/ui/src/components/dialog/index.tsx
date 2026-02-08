@@ -42,7 +42,7 @@ const dialogContentVariants = cva(
     // Base styles
     "fixed left-1/2 top-1/2 z-dialog -translate-x-1/2 -translate-y-1/2",
     "grid w-[calc(100%-var(--dialog-mobile-margin)*2)] gap-[var(--spacing-4)]",
-    "rounded-lg border border-border-default bg-surface-base p-[var(--spacing-6)] shadow-lg",
+    "rounded-[var(--radius-lg)] border border-border-default bg-surface-base p-[var(--spacing-6)] shadow-lg",
     // Height constraint with scrollable support
     "max-h-[var(--dialog-max-height)] overflow-y-auto",
     // Animations
@@ -137,7 +137,7 @@ const DialogTitle = forwardRef<
   <DialogPrimitive.Title
     ref={ref}
     className={cn(
-      "text-lg font-semibold leading-none tracking-tight",
+      "text-[length:var(--font-size-lg)] font-semibold leading-none tracking-[var(--tracking-tight)]",
       className,
     )}
     {...props}
@@ -151,7 +151,10 @@ const DialogDescription = forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
-    className={cn("text-sm text-text-secondary", className)}
+    className={cn(
+      "text-[length:var(--font-size-sm)] text-text-secondary",
+      className,
+    )}
     {...props}
   />
 ));

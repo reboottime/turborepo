@@ -27,7 +27,7 @@ describe("Label", () => {
     render(<Label className="custom-class">Test</Label>);
     const label = screen.getByText("Test");
     expect(label.className).toContain("custom-class");
-    expect(label.className).toContain("text-sm");
+    expect(label.className).toContain("text-[length:var(--font-size-sm)]");
   });
 
   it("forwards ref to the label element", () => {
