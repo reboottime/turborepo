@@ -23,7 +23,7 @@ PR to main:
   quality (lint + type-check) ─┐
                                 ├── build ── e2e
   test (unit tests) ───────────┘
-
+<!-- wait to be done -->
 Push to main:
   CI (above) ── deploy-web ── deploy-portal
 ```
