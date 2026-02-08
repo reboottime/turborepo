@@ -3,8 +3,11 @@ import type { NextRequest } from "next/server";
 
 export function middleware(request: NextRequest) {
   const { pathname } = request.nextUrl;
-  const authCookie = request.cookies.get("portal_auth");
-  const isAuthenticated = authCookie?.value === "authenticated";
+
+  // Check for token in localStorage via cookie (set by client)
+  // Note: We can't access localStorage in middleware, so we check a sync cookie
+  // that the client sets when storing the token
+  const isAuthenticated = hasAuthToken(request);
 
   // Public routes (no auth required)
   const isLoginPage = pathname === "/login";
@@ -34,6 +37,13 @@ export function middleware(request: NextRequest) {
   }
 
   return NextResponse.next();
+}
+
+function hasAuthToken(request: NextRequest): boolean {
+  // Since middleware can't access localStorage, we check if a sync cookie exists
+  // The auth context will set this cookie when storing the token
+  const authCookie = request.cookies.get("portal_token_exists");
+  return authCookie?.value === "true";
 }
 
 export const config = {

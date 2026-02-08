@@ -22,7 +22,7 @@ import {
 import { useAuth } from "../../lib/auth-context";
 
 type LoginFormData = {
-  username: string;
+  email: string;
   password: string;
 };
 
@@ -35,7 +35,7 @@ export default function LoginPage() {
 
   const form = useForm<LoginFormData>({
     defaultValues: {
-      username: "",
+      email: "",
       password: "",
     },
   });
@@ -45,7 +45,7 @@ export default function LoginPage() {
     setServerError(null);
 
     try {
-      await signIn(data.username, data.password);
+      await signIn(data.email, data.password);
       // Redirect will be handled by middleware
       router.push("/employees");
     } catch (error) {
@@ -58,9 +58,9 @@ export default function LoginPage() {
     }
   };
 
-  const username = form.watch("username");
+  const email = form.watch("email");
   const password = form.watch("password");
-  const isSubmitDisabled = !username || !password || isLoading;
+  const isSubmitDisabled = !email || !password || isLoading;
 
   return (
     <div className="min-h-screen flex items-center justify-center bg-surface-base px-4">
@@ -82,17 +82,18 @@ export default function LoginPage() {
                 </div>
               )}
 
-              {/* Username Field */}
+              {/* Email Field */}
               <FormField
                 control={form.control}
-                name="username"
-                rules={{ required: "Username is required" }}
+                name="email"
+                rules={{ required: "Email is required" }}
                 render={({ field }) => (
                   <FormItem>
-                    <FormLabel>Username</FormLabel>
+                    <FormLabel>Email</FormLabel>
                     <FormControl>
                       <Input
-                        placeholder="Enter your username"
+                        type="email"
+                        placeholder="Enter your email"
                         readOnly={isLoading}
                         {...field}
                       />

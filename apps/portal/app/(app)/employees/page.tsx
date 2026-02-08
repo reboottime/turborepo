@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useMemo, useEffect } from "react";
+import { useState, useEffect } from "react";
 import { Button } from "@repo/ui";
 import { EmployeeTable } from "./_components/employee-table";
 import { EmployeeToolbar } from "./_components/employee-toolbar";
@@ -8,18 +8,22 @@ import { EmployeeFormDialog } from "./_components/employee-form-dialog";
 import { EmployeeDeleteDialog } from "./_components/employee-delete-dialog";
 import { Pagination } from "./_components/pagination";
 import { Toast } from "./_components/toast";
-import { MOCK_EMPLOYEES } from "./_lib/mock-data";
+import { apiClient } from "../../../lib/api-client";
 import type { Employee, EmployeeFormData, Department } from "./_lib/types";
+import type { ApiError } from "../../../lib/api-client";
 
-const ITEMS_PER_PAGE = 5;
+const ITEMS_PER_PAGE = 10;
 
 export default function EmployeesPage() {
-  const [employees, setEmployees] = useState<Employee[]>(MOCK_EMPLOYEES);
+  const [employees, setEmployees] = useState<Employee[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [departmentFilter, setDepartmentFilter] = useState<Department | "all">(
     "all",
   );
   const [currentPage, setCurrentPage] = useState(1);
+  const [totalPages, setTotalPages] = useState(1);
+  const [totalItems, setTotalItems] = useState(0);
+  const [isLoading, setIsLoading] = useState(true);
   const [isAddModalOpen, setIsAddModalOpen] = useState(false);
   const [editingEmployee, setEditingEmployee] = useState<Employee | null>(null);
   const [deletingEmployee, setDeletingEmployee] = useState<Employee | null>(
@@ -30,28 +34,43 @@ export default function EmployeesPage() {
     type: "success" | "error";
   } | null>(null);
 
-  // Filter employees
-  const filteredEmployees = useMemo(() => {
-    return employees.filter((employee) => {
-      const matchesSearch =
-        searchTerm === "" ||
-        employee.firstName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        employee.lastName.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        employee.email.toLowerCase().includes(searchTerm.toLowerCase());
+  // Fetch employees from API
+  useEffect(() => {
+    const fetchEmployees = async () => {
+      setIsLoading(true);
+      try {
+        const params: {
+          page: number;
+          limit: number;
+          search?: string;
+          department?: string;
+        } = {
+          page: currentPage,
+          limit: ITEMS_PER_PAGE,
+        };
 
-      const matchesDepartment =
-        departmentFilter === "all" || employee.department === departmentFilter;
+        if (searchTerm) {
+          params.search = searchTerm;
+        }
 
-      return matchesSearch && matchesDepartment;
-    });
-  }, [employees, searchTerm, departmentFilter]);
+        if (departmentFilter !== "all") {
+          params.department = departmentFilter;
+        }
 
-  // Paginate employees
-  const totalPages = Math.ceil(filteredEmployees.length / ITEMS_PER_PAGE);
-  const paginatedEmployees = useMemo(() => {
-    const startIndex = (currentPage - 1) * ITEMS_PER_PAGE;
-    return filteredEmployees.slice(startIndex, startIndex + ITEMS_PER_PAGE);
-  }, [filteredEmployees, currentPage]);
+        const response = await apiClient.getEmployees(params);
+        setEmployees(response.data);
+        setTotalPages(response.meta.totalPages);
+        setTotalItems(response.meta.total);
+      } catch (error) {
+        const apiError = error as ApiError;
+        showToast(apiError.message || "Failed to load employees", "error");
+      } finally {
+        setIsLoading(false);
+      }
+    };
+
+    fetchEmployees();
+  }, [currentPage, searchTerm, departmentFilter]);
 
   // Reset to page 1 when filters change
   useEffect(() => {
@@ -65,51 +84,71 @@ export default function EmployeesPage() {
     setToast({ message, type });
   };
 
-  const handleAddEmployee = (data: EmployeeFormData) => {
-    const newEmployee: Employee = {
-      id: String(Date.now()),
-      firstName: data.firstName,
-      lastName: data.lastName,
-      email: data.email,
-      department: data.department as Department,
-      phone: data.phone || undefined,
-    };
-
-    setEmployees((prev) => [...prev, newEmployee]);
-    setIsAddModalOpen(false);
-    showToast("Employee added successfully");
+  const handleAddEmployee = async (data: EmployeeFormData) => {
+    try {
+      await apiClient.createEmployee(data);
+      setIsAddModalOpen(false);
+      showToast("Employee added successfully");
+      // Refetch to get updated list
+      const response = await apiClient.getEmployees({
+        page: currentPage,
+        limit: ITEMS_PER_PAGE,
+        search: searchTerm || undefined,
+        department: departmentFilter !== "all" ? departmentFilter : undefined,
+      });
+      setEmployees(response.data);
+      setTotalPages(response.meta.totalPages);
+      setTotalItems(response.meta.total);
+    } catch (error) {
+      const apiError = error as ApiError;
+      showToast(apiError.message || "Failed to add employee", "error");
+    }
   };
 
-  const handleEditEmployee = (data: EmployeeFormData) => {
+  const handleEditEmployee = async (data: EmployeeFormData) => {
     if (!editingEmployee) return;
 
-    setEmployees((prev) =>
-      prev.map((emp) =>
-        emp.id === editingEmployee.id
-          ? {
-              ...emp,
-              firstName: data.firstName,
-              lastName: data.lastName,
-              email: data.email,
-              department: data.department as Department,
-              phone: data.phone || undefined,
-            }
-          : emp,
-      ),
-    );
-
-    setEditingEmployee(null);
-    showToast("Employee updated successfully");
+    try {
+      await apiClient.updateEmployee(editingEmployee.id, data);
+      setEditingEmployee(null);
+      showToast("Employee updated successfully");
+      // Refetch to get updated list
+      const response = await apiClient.getEmployees({
+        page: currentPage,
+        limit: ITEMS_PER_PAGE,
+        search: searchTerm || undefined,
+        department: departmentFilter !== "all" ? departmentFilter : undefined,
+      });
+      setEmployees(response.data);
+      setTotalPages(response.meta.totalPages);
+      setTotalItems(response.meta.total);
+    } catch (error) {
+      const apiError = error as ApiError;
+      showToast(apiError.message || "Failed to update employee", "error");
+    }
   };
 
-  const handleDeleteEmployee = () => {
+  const handleDeleteEmployee = async () => {
     if (!deletingEmployee) return;
 
-    setEmployees((prev) =>
-      prev.filter((emp) => emp.id !== deletingEmployee.id),
-    );
-    setDeletingEmployee(null);
-    showToast("Employee deleted successfully");
+    try {
+      await apiClient.deleteEmployee(deletingEmployee.id);
+      setDeletingEmployee(null);
+      showToast("Employee deleted successfully");
+      // Refetch to get updated list
+      const response = await apiClient.getEmployees({
+        page: currentPage,
+        limit: ITEMS_PER_PAGE,
+        search: searchTerm || undefined,
+        department: departmentFilter !== "all" ? departmentFilter : undefined,
+      });
+      setEmployees(response.data);
+      setTotalPages(response.meta.totalPages);
+      setTotalItems(response.meta.total);
+    } catch (error) {
+      const apiError = error as ApiError;
+      showToast(apiError.message || "Failed to delete employee", "error");
+    }
   };
 
   const handlePageChange = (page: number) => {
@@ -152,22 +191,28 @@ export default function EmployeesPage() {
 
       {/* Table */}
       <div className="mb-6">
-        <EmployeeTable
-          employees={paginatedEmployees}
-          onEdit={setEditingEmployee}
-          onDelete={setDeletingEmployee}
-          isEmpty={employees.length === 0}
-          isSearching={searchTerm !== "" || departmentFilter !== "all"}
-          searchTerm={searchTerm}
-        />
+        {isLoading ? (
+          <div className="flex justify-center items-center py-12">
+            <div className="text-text-secondary">Loading...</div>
+          </div>
+        ) : (
+          <EmployeeTable
+            employees={employees}
+            onEdit={setEditingEmployee}
+            onDelete={setDeletingEmployee}
+            isEmpty={employees.length === 0 && totalItems === 0}
+            isSearching={searchTerm !== "" || departmentFilter !== "all"}
+            searchTerm={searchTerm}
+          />
+        )}
       </div>
 
       {/* Pagination */}
-      {filteredEmployees.length > 0 && (
+      {!isLoading && totalItems > 0 && (
         <Pagination
           currentPage={currentPage}
           totalPages={totalPages}
-          totalItems={filteredEmployees.length}
+          totalItems={totalItems}
           itemsPerPage={ITEMS_PER_PAGE}
           onPageChange={handlePageChange}
         />

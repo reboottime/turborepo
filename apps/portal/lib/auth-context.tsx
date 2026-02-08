@@ -7,55 +7,62 @@ import {
   useEffect,
   type ReactNode,
 } from "react";
+import { apiClient } from "./api-client";
 
 interface AuthContextValue {
   isAuthenticated: boolean;
   isLoading: boolean;
-  signIn: (username: string, password: string) => Promise<void>;
+  signIn: (email: string, password: string) => Promise<void>;
   signOut: () => void;
 }
 
 const AuthContext = createContext<AuthContextValue | undefined>(undefined);
+
+const TOKEN_KEY = "portal_token";
 
 export function AuthProvider({ children }: { children: ReactNode }) {
   const [isAuthenticated, setIsAuthenticated] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
-    // Check for auth cookie on mount
-    const authCookie = document.cookie
-      .split("; ")
-      .find((row) => row.startsWith("portal_auth="));
+    // Check for stored token on mount
+    const token = localStorage.getItem(TOKEN_KEY);
 
-    if (authCookie) {
+    if (token) {
+      apiClient.setToken(token);
       setIsAuthenticated(true);
+      // Set sync cookie for middleware
+      document.cookie = "portal_token_exists=true; path=/; SameSite=Strict";
     }
     setIsLoading(false);
   }, []);
 
-  const signIn = async (username: string, password: string) => {
-    // Mock authentication - in real app, this would call an API
-    // For demo purposes, accept any non-empty credentials
-    if (!username || !password) {
-      throw new Error("Username and password are required");
+  const signIn = async (email: string, password: string) => {
+    if (!email || !password) {
+      throw new Error("Email and password are required");
     }
 
-    // Simulate API delay
-    await new Promise((resolve) => setTimeout(resolve, 1000));
+    const response = await apiClient.login({ email, password });
+    const token = response.access_token;
 
-    // Set auth cookie (expires in 7 days)
-    const expiryDate = new Date();
-    expiryDate.setDate(expiryDate.getDate() + 7);
-    document.cookie = `portal_auth=authenticated; expires=${expiryDate.toUTCString()}; path=/; SameSite=Strict`;
-
+    // Store token and set on API client
+    localStorage.setItem(TOKEN_KEY, token);
+    apiClient.setToken(token);
     setIsAuthenticated(true);
+
+    // Set sync cookie for middleware
+    document.cookie = "portal_token_exists=true; path=/; SameSite=Strict";
   };
 
   const signOut = () => {
-    // Clear auth cookie
-    document.cookie =
-      "portal_auth=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Strict";
+    // Clear token from storage and API client
+    localStorage.removeItem(TOKEN_KEY);
+    apiClient.setToken(null);
     setIsAuthenticated(false);
+
+    // Clear sync cookie
+    document.cookie =
+      "portal_token_exists=; expires=Thu, 01 Jan 1970 00:00:00 UTC; path=/; SameSite=Strict";
   };
 
   return (

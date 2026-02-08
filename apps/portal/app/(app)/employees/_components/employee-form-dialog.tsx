@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { useForm } from "react-hook-form";
 import { yupResolver } from "@hookform/resolvers/yup";
 import * as yup from "yup";
@@ -23,13 +23,14 @@ import {
   SelectValue,
   SelectContent,
   SelectItem,
+  Spinner,
 } from "@repo/ui";
 import type { Employee, EmployeeFormData, Department } from "../_lib/types";
 
 interface EmployeeFormDialogProps {
   isOpen: boolean;
   onClose: () => void;
-  onSave: (data: EmployeeFormData) => void;
+  onSave: (data: EmployeeFormData) => Promise<void>;
   employee?: Employee | null;
 }
 
@@ -81,6 +82,8 @@ export function EmployeeFormDialog({
   onSave,
   employee,
 }: EmployeeFormDialogProps) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
+
   const form = useForm<EmployeeFormData>({
     resolver: yupResolver(employeeFormSchema),
     defaultValues: {
@@ -112,12 +115,19 @@ export function EmployeeFormDialog({
               phone: "",
             },
       );
+      setIsSubmitting(false);
     }
   }, [isOpen, employee, form]);
 
-  const handleSubmit = form.handleSubmit((data) => {
-    onSave(data);
-    onClose();
+  const handleSubmit = form.handleSubmit(async (data) => {
+    setIsSubmitting(true);
+    try {
+      await onSave(data);
+      onClose();
+    } catch {
+      // Error is handled in the parent component
+      setIsSubmitting(false);
+    }
   });
 
   return (
@@ -221,11 +231,28 @@ export function EmployeeFormDialog({
             </div>
 
             <DialogFooter>
-              <Button type="button" variant="outline" onClick={onClose}>
+              <Button
+                type="button"
+                variant="outline"
+                onClick={onClose}
+                disabled={isSubmitting}
+              >
                 Cancel
               </Button>
-              <Button type="submit" disabled={!form.formState.isValid}>
-                {employee ? "Save Changes" : "Save"}
+              <Button
+                type="submit"
+                disabled={!form.formState.isValid || isSubmitting}
+              >
+                {isSubmitting ? (
+                  <div className="flex items-center gap-2">
+                    <Spinner />
+                    <span>Saving...</span>
+                  </div>
+                ) : employee ? (
+                  "Save Changes"
+                ) : (
+                  "Save"
+                )}
               </Button>
             </DialogFooter>
           </form>
