@@ -45,6 +45,8 @@ Component tests see a correct button. Only a page screenshot catches the downstr
 
 A design token change updates all affected component screenshots at once — reviewers see the full blast radius across the design system before merge.
 
+For Playwright-based implementation approaches (CT + Portable Stories vs Storybook server), see [playwright.md — Part 2](playwright.md#part-2-component-visual-regression-testing).
+
 ## Layer 2: Page-Level Screenshots
 
 **Secondary gate.** Target pages that **compose many shared components**, not every page:
@@ -64,7 +66,7 @@ Mixing them makes both signals noisy. Keep them as separate test suites.
 
 ## The Real Challenge: False Positives
 
-The #1 industry complaint. Visual regression tests are prone to flakiness(unstable):
+The #1 industry complaint. Visual regression tests are prone to flakiness (unstable):
 
 - **OS-dependent rendering.** Mac screenshots won't match Linux CI. Font rendering, anti-aliasing, sub-pixel positioning all differ. SaaS tools (Percy, Chromatic) solve this by running captures in a consistent cloud environment, but that's one of several reasons teams pay for them (review UI, AI diffing, collaboration workflows)
 - **Dynamic content.** Timestamps, avatars, live data, relative dates ("3 minutes ago") change between runs
@@ -130,3 +132,4 @@ Three questions, three separate test suites:
 - [Design Token-Based UI Architecture — Martin Fowler](https://martinfowler.com/articles/design-token-based-ui-architecture.html)
 - [How to Reduce False Positives in Visual Testing — BrowserStack](https://www.browserstack.com/guide/how-to-reduce-false-positives-in-visual-testing)
 - [Chromatic vs Playwright Comparison](https://www.chromatic.com/compare/playwright)
+- [Portable Stories for Playwright CT — Storybook Blog](https://storybook.js.org/blog/portable-stories-for-playwright-ct/)
