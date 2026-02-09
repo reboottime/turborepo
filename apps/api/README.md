@@ -20,12 +20,12 @@ pnpm dev              # Runs on http://localhost:3002
 
 ## Authentication
 
-Login to get a JWT token:
+Login to get a JWT token (use credentials from `E2E_TEST_EMAIL` and `E2E_TEST_PASSWORD` env vars):
 
 ```bash
 curl -X POST http://localhost:3002/auth/login \
   -H "Content-Type: application/json" \
-  -d '{"email": "admin@demo.com", "password": "admin123"}'
+  -d '{"email": "$E2E_TEST_EMAIL", "password": "$E2E_TEST_PASSWORD"}'
 ```
 
 Response:

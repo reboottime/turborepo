@@ -53,6 +53,8 @@ jobs:
       - uses: ./.github/actions/setup
 
       - run: pnpm turbo run build
+        env:
+          NEXT_PUBLIC_API_URL: http://localhost:3002
 
       - uses: actions/upload-artifact@v4
         with:
@@ -68,6 +70,34 @@ jobs:
           retention-days: 1
           include-hidden-files: true
 
+      - name: Generate Prisma client for production
+        run: |
+          pnpm --filter @repo/api exec prisma generate
+
+          # Find the Prisma client path (handles version variations)
+          PRISMA_CLIENT_PATH=$(find node_modules/.pnpm -path "*/@prisma+client@*/node_modules/.prisma" -type d 2>/dev/null | head -1)
+
+          if [ -z "$PRISMA_CLIENT_PATH" ]; then
+            echo "Error: Could not find generated Prisma client"
+            echo "Contents of node_modules/.pnpm:"
+            ls -la node_modules/.pnpm/ | head -20
+            exit 1
+          fi
+
+          echo "Found Prisma client at: $PRISMA_CLIENT_PATH"
+          mkdir -p apps/api/node_modules/.prisma
+          cp -r "$PRISMA_CLIENT_PATH"/* apps/api/node_modules/.prisma/
+
+          # Verify copy succeeded
+          if [ ! -d "apps/api/node_modules/.prisma/client" ]; then
+            echo "Error: Prisma client copy failed"
+            ls -la apps/api/node_modules/.prisma/ || true
+            exit 1
+          fi
+
+          echo "Prisma client copied successfully:"
+          ls -la apps/api/node_modules/.prisma/
+
       - uses: actions/upload-artifact@v4
         with:
           name: api-build
@@ -75,7 +105,9 @@ jobs:
             apps/api/dist
             apps/api/prisma
             apps/api/package.json
+            apps/api/node_modules/.prisma
           retention-days: 1
+          include-hidden-files: true
 
   build-api-image:
     name: Build API Image
@@ -84,8 +116,6 @@ jobs:
     permissions:
       contents: read
       packages: write
-    outputs:
-      image-tag: ${{ steps.meta.outputs.tags }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -97,6 +127,13 @@ jobs:
         with:
           name: api-build
           path: apps/api
+
+      - name: Verify artifact structure
+        run: |
+          echo "=== apps/api directory structure ==="
+          ls -la apps/api/
+          echo "=== Checking for Prisma client ==="
+          ls -la apps/api/node_modules/.prisma/client/ | head -5 || echo "ERROR: Prisma client not found!"
 
       - name: Set up Docker Buildx
         uses: docker/setup-buildx-action@v3
@@ -133,6 +170,9 @@ jobs:
     name: E2E
     needs: [build-api-image]
     runs-on: ubuntu-latest
+    env:
+      E2E_TEST_EMAIL: admin@test.com
+      E2E_TEST_PASSWORD: test123
     services:
       postgres:
         image: postgres:16-alpine
@@ -164,30 +204,6 @@ jobs:
           username: ${{ github.actor }}
           password: ${{ secrets.GITHUB_TOKEN }}
 
-      - name: Start API container
-        run: |
-          docker run -d \
-            --name api \
-            --network host \
-            -e DATABASE_URL="postgresql://test:test@localhost:5432/employee_db" \
-            -e JWT_SECRET="test-secret" \
-            -e ADMIN_EMAIL="admin@test.com" \
-            -e ADMIN_PASSWORD="test123" \
-            -e PORT=3002 \
-            ${{ env.REGISTRY }}/${{ env.API_IMAGE_NAME }}:${{ github.sha }}
-
-      - name: Wait for API to be ready
-        run: |
-          echo "Waiting for API..."
-          for i in {1..30}; do
-            if curl -s http://localhost:3002/health > /dev/null; then
-              echo "API is ready!"
-              break
-            fi
-            echo "Attempt $i: API not ready yet..."
-            sleep 2
-          done
-
       - name: Run database migrations and seed
         working-directory: apps/api
         run: |
@@ -196,13 +212,58 @@ jobs:
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/employee_db
 
-      - name: Install Playwright browsers
-        run: pnpm --filter @repo/portal exec playwright install --with-deps chromium
-# Portal is where the app has e2e
+      - name: Start API container and install Playwright
+        run: |
+          # Start Playwright install in background
+          pnpm --filter @repo/portal exec playwright install --with-deps chromium &
+          PLAYWRIGHT_PID=$!
+
+          # Pull and start API container
+          docker run -d \
+            --name api \
+            --network host \
+            -e DATABASE_URL="postgresql://test:test@localhost:5432/employee_db" \
+            -e JWT_SECRET="test-secret" \
+            -e E2E_TEST_EMAIL="${{ env.E2E_TEST_EMAIL }}" \
+            -e E2E_TEST_PASSWORD="${{ env.E2E_TEST_PASSWORD }}" \
+            -e PORT=3002 \
+            ${{ env.REGISTRY }}/${{ env.API_IMAGE_NAME }}:${{ github.sha }}
+
+          # Wait for API (30 second timeout)
+          echo "Waiting for API..."
+          API_READY=false
+          for i in {1..30}; do
+            if curl -sf http://localhost:3002/health > /dev/null 2>&1; then
+              echo "API ready after $i seconds!"
+              API_READY=true
+              break
+            fi
+            sleep 1
+          done
+
+          # Fail fast with logs if API not ready
+          if [ "$API_READY" != "true" ]; then
+            echo "::error::API failed to start within 30 seconds"
+            echo "=== Container Status ==="
+            docker ps -a
+            echo "=== Container Logs ==="
+            docker logs api 2>&1
+            exit 1
+          fi
+
+          # Wait for Playwright (fail if install failed)
+          if ! wait $PLAYWRIGHT_PID; then
+            echo "::error::Playwright install failed"
+            exit 1
+          fi
+          echo "Playwright ready!"
+
       - name: Run E2E tests
         run: pnpm --filter @repo/portal test:e2e
         env:
           NEXT_PUBLIC_API_URL: http://localhost:3002
+          E2E_TEST_EMAIL: ${{ env.E2E_TEST_EMAIL }}
+          E2E_TEST_PASSWORD: ${{ env.E2E_TEST_PASSWORD }}
 
       - uses: actions/upload-artifact@v4
         if: failure()

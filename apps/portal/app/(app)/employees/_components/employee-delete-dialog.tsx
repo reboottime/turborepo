@@ -1,5 +1,6 @@
 "use client";
 
+import { useState } from "react";
 import {
   Button,
   Dialog,
@@ -8,12 +9,13 @@ import {
   DialogFooter,
   DialogHeader,
   DialogTitle,
+  Spinner,
 } from "@repo/ui";
 import type { Employee } from "../_lib/types";
 
 interface EmployeeDeleteDialogProps {
   employee: Employee | null;
-  onConfirm: () => void;
+  onConfirm: () => Promise<void>;
   onCancel: () => void;
 }
 
@@ -22,8 +24,23 @@ export function EmployeeDeleteDialog({
   onConfirm,
   onCancel,
 }: EmployeeDeleteDialogProps) {
+  const [isDeleting, setIsDeleting] = useState(false);
+
+  const handleConfirm = async () => {
+    setIsDeleting(true);
+    try {
+      await onConfirm();
+    } catch {
+      // Error is handled in the parent component
+      setIsDeleting(false);
+    }
+  };
+
   return (
-    <Dialog open={!!employee} onOpenChange={(open) => !open && onCancel()}>
+    <Dialog
+      open={!!employee}
+      onOpenChange={(open) => !open && !isDeleting && onCancel()}
+    >
       <DialogContent size="md">
         <DialogHeader>
           <DialogTitle>Delete Employee</DialogTitle>
@@ -36,11 +53,22 @@ export function EmployeeDeleteDialog({
           </DialogDescription>
         </DialogHeader>
         <DialogFooter>
-          <Button variant="outline" onClick={onCancel}>
+          <Button variant="outline" onClick={onCancel} disabled={isDeleting}>
             Cancel
           </Button>
-          <Button onClick={onConfirm} variant="destructive">
-            Delete
+          <Button
+            onClick={handleConfirm}
+            variant="destructive"
+            disabled={isDeleting}
+          >
+            {isDeleting ? (
+              <div className="flex items-center gap-2">
+                <Spinner />
+                <span>Deleting...</span>
+              </div>
+            ) : (
+              "Delete"
+            )}
           </Button>
         </DialogFooter>
       </DialogContent>
