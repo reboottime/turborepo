@@ -3,10 +3,22 @@ import { JwtService } from "@nestjs/jwt";
 
 @Injectable()
 export class AuthService {
-  private readonly adminEmail = process.env.ADMIN_EMAIL ?? "admin@demo.com";
-  private readonly adminPassword = process.env.ADMIN_PASSWORD ?? "admin123";
+  private readonly adminEmail: string;
+  private readonly adminPassword: string;
 
-  constructor(private readonly jwtService: JwtService) {}
+  constructor(private readonly jwtService: JwtService) {
+    const email = process.env.E2E_TEST_EMAIL;
+    const password = process.env.E2E_TEST_PASSWORD;
+
+    if (!email || !password) {
+      throw new Error(
+        "E2E_TEST_EMAIL and E2E_TEST_PASSWORD environment variables are required",
+      );
+    }
+
+    this.adminEmail = email;
+    this.adminPassword = password;
+  }
 
   async login(
     email: string,

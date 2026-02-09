@@ -12,8 +12,8 @@
       "env": [
         "CI",
         "JWT_SECRET",
-        "ADMIN_EMAIL",
-        "ADMIN_PASSWORD",
+        "E2E_TEST_EMAIL",
+        "E2E_TEST_PASSWORD",
         "PORT",
         "CORS_ORIGINS"
       ]

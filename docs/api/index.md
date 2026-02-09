@@ -49,14 +49,12 @@ model Employee {
 
 ## Auth
 
-Predefined admin user (no registration, no User table):
+Predefined admin user (no registration, no User table).
 
-```
-Email:    admin@demo.com
-Password: admin123
-```
+Credentials configured via environment variables:
 
-Credentials stored in environment variables, validated at login.
+- `E2E_TEST_EMAIL` - admin email
+- `E2E_TEST_PASSWORD` - admin password
 
 ---
 
@@ -111,8 +109,8 @@ volumes:
 DATABASE_URL="postgresql://dev:dev@localhost:5433/employee_db"
 JWT_SECRET="dev-secret"
 PORT=3002
-ADMIN_EMAIL="admin@demo.com"
-ADMIN_PASSWORD="admin123"
+E2E_TEST_EMAIL="admin@example.com"
+E2E_TEST_PASSWORD="your-secure-password"
 ```
 
 ```bash
@@ -120,8 +118,8 @@ ADMIN_PASSWORD="admin123"
 DATABASE_URL="postgresql://dev:dev@localhost:5433/employee_db_test"
 JWT_SECRET="test-secret"
 PORT=3003
-ADMIN_EMAIL="admin@demo.com"
-ADMIN_PASSWORD="admin123"
+E2E_TEST_EMAIL="admin@example.com"
+E2E_TEST_PASSWORD="your-secure-password"
 ```
 
 ### CI Database (GitHub Actions)

@@ -84,10 +84,8 @@ class ApiClient {
         // If response is not JSON, use default error message
       }
 
-      const error: ApiError = {
-        message: errorMessage,
-        statusCode: response.status,
-      };
+      const error = new Error(errorMessage);
+      (error as Error & { statusCode?: number }).statusCode = response.status;
       throw error;
     }
 

@@ -37,7 +37,7 @@ The portal app now integrates with the NestJS API service running at `http://loc
 
 ### Credentials
 
-- **Admin**: `admin@demo.com` / `admin123`
+Configured via environment variables: `E2E_TEST_EMAIL` / `E2E_TEST_PASSWORD`
 
 ### Logout Process
 
@@ -163,7 +163,7 @@ interface EmployeesResponse {
 
 1. Start both API and portal apps
 2. Navigate to `http://localhost:3001`
-3. Login with `admin@demo.com` / `admin123`
+3. Login with credentials from your `.env.local` (`E2E_TEST_EMAIL` / `E2E_TEST_PASSWORD`)
 4. Test CRUD operations:
    - View employee list
    - Search and filter employees

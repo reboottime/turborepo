@@ -19,8 +19,8 @@ it.describe("Login Page", () => {
     await expect(signInButton).toBeEnabled({ timeout: 5000 });
     await signInButton.click();
 
-    // Expected: Error banner displayed
-    await expect(page.getByText("An error occurred")).toBeVisible();
+    // Expected: Error banner displayed (API returns "Invalid credentials")
+    await expect(page.getByText("Invalid credentials")).toBeVisible();
 
     // Expected: user remains on /login
     await expect(page).toHaveURL("/login");
