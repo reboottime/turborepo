@@ -3,7 +3,13 @@ import type {
   EmployeeFormData,
 } from "../app/(app)/employees/_lib/types";
 
-const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL || "http://localhost:3002";
+const API_BASE_URL = process.env.NEXT_PUBLIC_API_URL;
+
+if (!API_BASE_URL) {
+  throw new Error(
+    "NEXT_PUBLIC_API_URL environment variable is not set. Please set it to the base URL of your API server.",
+  );
+}
 
 export interface ApiError {
   message: string;
@@ -28,7 +34,7 @@ export interface LoginRequest {
 }
 
 export interface LoginResponse {
-  access_token: string;
+  accessToken: string;
 }
 
 class ApiClient {

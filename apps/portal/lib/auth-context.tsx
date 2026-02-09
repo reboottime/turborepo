@@ -43,7 +43,7 @@ export function AuthProvider({ children }: { children: ReactNode }) {
     }
 
     const response = await apiClient.login({ email, password });
-    const token = response.access_token;
+    const token = response.accessToken;
 
     // Store token and set on API client
     localStorage.setItem(TOKEN_KEY, token);

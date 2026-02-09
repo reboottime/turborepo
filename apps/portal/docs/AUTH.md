@@ -2,7 +2,7 @@
 
 ## Overview
 
-The portal app implements route protection using Next.js middleware and a React Context-based auth system. This is a demo implementation using cookies for authentication state.
+The portal app implements route protection using Next.js middleware and a React Context-based auth system. Authentication tokens are obtained from a backend API and stored in localStorage.
 
 ## Implementation
 
@@ -10,15 +10,21 @@ The portal app implements route protection using Next.js middleware and a React 
 
 1. **Auth Context** (`lib/auth-context.tsx`)
    - Client-side React Context providing auth state and methods
-   - Uses cookies to persist authentication across page reloads
+   - Stores JWT access token in localStorage (`portal_token`)
+   - Sets a sync cookie (`portal_token_exists`) for middleware to detect auth state
    - Exports `useAuth()` hook for accessing auth state in components
 
-2. **Middleware** (`middleware.ts`)
+2. **API Client** (`lib/api-client.ts`)
+   - Handles API requests with Bearer token authentication
+   - `login()` method calls `/auth/login` endpoint
+   - Sets Authorization header on all authenticated requests
+
+3. **Middleware** (`middleware.ts`)
    - Server-side route protection
-   - Checks auth cookie before rendering routes
+   - Checks for `portal_token_exists` sync cookie (cannot access localStorage)
    - Handles redirects based on auth state
 
-3. **App Layout** (`app/(app)/layout.tsx`)
+4. **App Layout** (`app/(app)/layout.tsx`)
    - Provides navigation header with sign-out button
    - Wraps all authenticated routes
 
@@ -36,27 +42,33 @@ The portal app implements route protection using Next.js middleware and a React 
 ### Auth Flow
 
 1. User visits portal
-2. Middleware checks for `portal_auth` cookie
+2. Middleware checks for `portal_token_exists` sync cookie
 3. If no cookie, redirect to `/login`
-4. User enters credentials (any non-empty values work in demo)
-5. On successful login:
-   - `signIn()` sets auth cookie (7-day expiry)
+4. User enters email and password
+5. On form submit:
+   - `signIn()` calls `apiClient.login({ email, password })`
+   - Backend validates credentials, returns `accessToken`
+   - Token stored in localStorage (`portal_token`)
+   - Sync cookie set (`portal_token_exists=true`)
+   - API client configured with token for subsequent requests
    - User redirected to `/employees`
 6. On sign out:
-   - `signOut()` clears auth cookie
+   - Token removed from localStorage
+   - Sync cookie cleared
+   - API client token cleared
    - User redirected to `/login`
 
-## Demo Credentials
+## Storage Strategy
 
-Since this is a demo/portfolio project, **any non-empty username and password will authenticate successfully**. The point is demonstrating the routing protection pattern, not implementing real authentication.
+- **Token storage**: localStorage for persistent cross-tab access
+- **Middleware sync**: Cookie (`portal_token_exists`) because middleware can't access localStorage
+- **API authentication**: Bearer token in Authorization header
 
 ## For Production Use
 
-Replace mock implementation with:
+Current implementation could be enhanced with:
 
-- Real API authentication endpoints
-- Secure session tokens (JWT, session IDs)
-- HTTPS-only, httpOnly cookies
+- Refresh token mechanism for token expiry
+- HTTPS-only, httpOnly cookies for token storage (more secure than localStorage)
 - CSRF protection
-- Refresh token mechanism
-- Proper error handling and rate limiting
+- Rate limiting on login attempts

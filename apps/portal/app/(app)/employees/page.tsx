@@ -9,12 +9,14 @@ import { EmployeeDeleteDialog } from "./_components/employee-delete-dialog";
 import { Pagination } from "./_components/pagination";
 import { Toast } from "./_components/toast";
 import { apiClient } from "../../../lib/api-client";
+import { useAuth } from "../../../lib/auth-context";
 import type { Employee, EmployeeFormData, Department } from "./_lib/types";
 import type { ApiError } from "../../../lib/api-client";
 
 const ITEMS_PER_PAGE = 10;
 
 export default function EmployeesPage() {
+  const { isLoading: isAuthLoading } = useAuth();
   const [employees, setEmployees] = useState<Employee[]>([]);
   const [searchTerm, setSearchTerm] = useState("");
   const [departmentFilter, setDepartmentFilter] = useState<Department | "all">(
@@ -36,6 +38,11 @@ export default function EmployeesPage() {
 
   // Fetch employees from API
   useEffect(() => {
+    // Wait for auth to initialize before fetching data
+    if (isAuthLoading) {
+      return;
+    }
+
     const fetchEmployees = async () => {
       setIsLoading(true);
       try {
@@ -70,7 +77,7 @@ export default function EmployeesPage() {
     };
 
     fetchEmployees();
-  }, [currentPage, searchTerm, departmentFilter]);
+  }, [isAuthLoading, currentPage, searchTerm, departmentFilter]);
 
   // Reset to page 1 when filters change
   useEffect(() => {
