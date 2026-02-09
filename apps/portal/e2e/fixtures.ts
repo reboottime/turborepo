@@ -4,7 +4,7 @@ export { expect };
 
 export async function login(page: Page) {
   await page.goto("/login");
-  await page.getByLabel("Username").fill("testuser");
+  await page.getByLabel("Email").fill("testuser@example.com");
   await page.getByPlaceholder("Enter your password").fill("testpass");
   await page.getByRole("button", { name: "Sign In" }).click();
   await page.waitForURL("/employees", { timeout: 5000 });
