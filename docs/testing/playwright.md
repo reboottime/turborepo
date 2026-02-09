@@ -1,153 +1,37 @@
 # Playwright
 
-Playwright solutions used in this project: E2E test generation via test agents, and component visual regression testing.
+Playwright is used for two things: E2E tests that verify user flows, and component visual regression testing.
 
-## Part 1: E2E Test Generation with Test Agents
+## Part 1: E2E Testing
 
-How we generate and maintain E2E tests using Playwright's AI-powered test agent pipeline.
+### How It Works
 
-## What Are Playwright Test Agents?
-
-[Playwright Test Agents](https://playwright.dev/docs/test-agents) are three built-in AI agents that ship with Playwright. They work independently or sequentially to create and maintain E2E tests without hand-writing them:
-
-| Agent         | Role                                     | Input                                             | Output                                                |
-| ------------- | ---------------------------------------- | ------------------------------------------------- | ----------------------------------------------------- |
-| **Planner**   | Explores the app, designs test scenarios | User request + seed test + optional PRD/wireframe | Markdown test plan in `specs/`                        |
-| **Generator** | Converts plans into executable tests     | Spec from `specs/`                                | Test files in `e2e/`, one-to-one with spec scenarios  |
-| **Healer**    | Debugs and fixes failing tests           | Failing test name                                 | Patched test code, or `test.fixme()` if app is broken |
-
-Each agent connects to a real browser via an MCP server. They don't just generate code from templates — they interact with the live app, verify selectors, and validate assertions in real-time.
-
-The `--loop` flag determines which AI coding tool hosts the agents. We use `--loop=claude` for Claude Code. Other options: `vscode` (v1.105+), `copilot`, `opencode`.
-
-## Overview
-
-Instead of hand-writing E2E tests, we use this three-agent pipeline that takes a UX wireframe as input and produces executable Playwright tests as output:
+E2E tests verify that users can complete real tasks. The input is a **user flow doc** — a step-by-step description of what a user does and what should happen. The output is Playwright test files.
 
 ```
-Wireframe (docs/ux/*.md)
+Flow doc (docs/portal/ux/.../flows/<feature>.md)
     ↓
-  Planner    →  specs/<feature>.md       (human-readable test plan)
+  Test plan (apps/<app>/docs/e2e/<feature>.md)
     ↓
-  Generator  →  e2e/<feature>/*.spec.ts  (executable tests)
-    ↓
-  Healer     →  fixes failing tests automatically
+  Test files (apps/<app>/e2e/<feature>/*.spec.ts)
 ```
 
-## Prerequisites
+The `/test:e2e` command automates this: give it a flow doc path and it produces tests.
 
-### Playwright Test Agents
+### File Structure
 
-Initialized per-app via:
-
-```bash
-cd apps/<app>
-npx playwright init-agents --loop=claude
-```
-
-This scaffolds:
-
-| File                                          | Purpose                                                  |
-| --------------------------------------------- | -------------------------------------------------------- |
-| `.mcp.json`                                   | MCP server config — gives agents access to browser tools |
-| `.claude/agents/playwright-test-planner.md`   | Planner agent definition                                 |
-| `.claude/agents/playwright-test-generator.md` | Generator agent definition                               |
-| `.claude/agents/playwright-test-healer.md`    | Healer agent definition                                  |
-| `e2e/seed.spec.ts`                            | Seed test — environment bootstrap template               |
-| `specs/README.md`                             | Specs directory marker                                   |
-
-Re-run after Playwright version updates to pick up new agent definitions and tools.
-
-### Seed Test
-
-The `e2e/seed.spec.ts` file serves two purposes:
-
-1. **Environment bootstrap** — provides a ready-to-use page context for agents (e.g., navigating to the right URL, logging in if needed)
-2. **Code style reference** — demonstrates the test structure and patterns agents should follow when generating tests
-
-The Planner runs the seed test first to establish the environment before exploring the app. The Generator references it for code conventions.
-
-### MCP Server
-
-The `.mcp.json` file configures a local MCP (Model Context Protocol) server. It starts `playwright run-test-mcp-server`, which exposes browser automation tools (`browser_click`, `browser_snapshot`, `generator_setup_page`, `test_run`, etc.) to the agents. Without it, agents can only read/write files — they can't interact with the app in a browser.
-
-## The Three Agents
-
-### 1. Planner
-
-**Input**: A wireframe/PRD + the live app running in a browser.
-
-**What it does**: Opens the app in a real browser, explores the UI, maps out interactive elements, and produces a human-readable test plan.
-
-**Output**: `specs/<feature>.md` — a structured markdown file listing every test scenario with steps and expected outcomes.
-
-**Example**: For the login page wireframe, the Planner produced `specs/login-page.md` with 10 scenarios covering form rendering, validation, accessibility, keyboard navigation, and the login flow.
-
-### 2. Generator
-
-**Input**: A spec file from `specs/` + the live app.
-
-**What it does**: For each scenario in the spec, it opens the app, manually executes the steps in a real browser, records the actions, and generates a Playwright test file.
-
-**Output**: One `.spec.ts` file per scenario in `e2e/<feature>/`.
-
-Each generated file includes traceability comments:
-
-```typescript
-// spec: specs/login-page.md
-// seed: e2e/seed.spec.ts
-```
-
-### 3. Healer
-
-**Input**: Failing test names.
-
-**What it does**: Runs the failing test in debug mode, inspects the browser state, identifies why the test fails (wrong selectors, timing issues, incorrect assertions), and patches the test code. Repeats until tests pass.
-
-**When the app is wrong**: If the Healer determines the test is correct and the app has a bug, it marks the test with `test.fixme()` and writes a proposal to `docs/proposals/` explaining the issue.
-
-> **Note**: Agent definitions (`.claude/agents/playwright-test-*.md`) are static files generated by Playwright. Don't hand-edit them — they regenerate when you re-run `init-agents` after a Playwright update.
-
-## File Structure
-
-Per-app layout (e.g., `apps/portal/`):
+Per-app layout:
 
 ```
-specs/
-  login-page.md              # Planner output — test plan
-e2e/
-  seed.spec.ts               # Seed test template
-  auth-flow.spec.ts          # Hand-written tests (pre-existing)
-  login-page/                # Generated tests (one folder per feature)
-    form-rendering.spec.ts
-    empty-form-submit.spec.ts
-    password-visibility-toggle.spec.ts
-    button-disabled-state.spec.ts
-    successful-login.spec.ts
-    tab-order.spec.ts
-    enter-key-submit.spec.ts
-    accessibility.spec.ts
-    ...
-.claude/agents/
-  playwright-test-planner.md
-  playwright-test-generator.md
-  playwright-test-healer.md
-.mcp.json
+apps/<app>/
+  ├── docs/e2e/             # Test plans — scenarios derived from flow docs
+  │   └── <feature>.md
+  └── e2e/                  # Playwright test files
+      └── <feature>/
+          └── <scenario>.spec.ts
 ```
 
-## Running the Pipeline
-
-### Full pipeline (via Claude Code)
-
-Use the `/test-e2e` command with a wireframe path:
-
-```
-/test-e2e docs/ux/login-page.md
-```
-
-This triggers all three agents in sequence: Planner, Generator, Healer.
-
-### Running tests manually
+### Running Tests
 
 E2E tests run against a **production build** (`next start`), not the dev server — this catches build-only issues (dead code elimination, env vars, SSR hydration). CI runs **Chromium only** for speed; run all browsers locally before pushing.
 
@@ -160,38 +44,20 @@ cd apps/portal
 npx playwright test e2e/login-page/ --project=chromium
 
 # Single test file
-npx playwright test e2e/login-page/form-rendering.spec.ts
+npx playwright test e2e/login-page/successful-login.spec.ts
 ```
 
 Config: `apps/{web,portal}/playwright.config.ts`
 
-### Re-healing after app changes
+### Conventions
 
-When the app UI changes and tests break:
+- **Flow docs are the source of truth** — tests trace back to user flows, not component specs
+- **One scenario per file** — makes failures easy to isolate and fix
+- **No app code changes from tests** — if E2E tests reveal an app bug, write a proposal to `docs/proposals/` named `e2e-<description>.md`
 
-1. Run tests to identify failures
-2. Spawn the Healer agent on the failing tests
-3. Healer debugs and patches the test files
+### Selector Strategy
 
-If many tests break (layout overhaul, component redesign), consider re-running the full pipeline from the Planner with an updated wireframe.
-
-## Conventions
-
-### Specs are the source of truth
-
-To change test behavior, edit the spec in `specs/`, then re-run the Generator. Don't hand-edit generated tests unless the Healer is doing it to fix locators.
-
-### One test per file
-
-Each scenario gets its own `.spec.ts` file. This makes failures easy to identify and heal independently.
-
-### No app code changes from tests
-
-If E2E tests reveal an app bug (missing aria attributes, broken navigation), don't fix the app code from the test pipeline. Instead, write a proposal to `docs/proposals/` with the naming convention `e2e-<description>.md`.
-
-### Selector strategy
-
-Generated tests follow Playwright's recommended selector priority:
+Follow Playwright's recommended order:
 
 1. `getByRole` — buttons, headings, links
 2. `getByLabel` — form fields with labels
@@ -199,19 +65,14 @@ Generated tests follow Playwright's recommended selector priority:
 4. `getByText` — visible text content
 5. CSS selectors — last resort
 
-## Gotchas
+### Gotchas
 
-### `getByLabel` ambiguity
-
-If a form field has a label "Password" and a nearby button has `aria-label="Show password"`, `getByLabel('Password')` may resolve to the button. Use `getByPlaceholder('Enter your password')` instead. The Healer catches these, but it's good to know why.
-
-### Validation triggers
-
-Forms using react-hook-form with disabled submit buttons can't trigger validation by clicking the button. Validation errors only appear on blur (tab away from a touched field) or on form submit. The Generator may need adjustment — the Healer handles this.
-
-### Demo auth
-
-The portal app uses demo authentication — any non-empty credentials are accepted. Server error banners (wrong credentials) can't be tested until a real API is connected.
+- **`getByLabel` ambiguity**: If a field has label "Password" and a nearby button has `aria-label="Show password"`, `getByLabel('Password')` may resolve to the button. Use `getByPlaceholder()` instead
+- **Validation triggers**: Forms using react-hook-form with disabled submit buttons can't trigger validation by clicking the button. Validation errors appear on blur or form submit
+- **Radix Select**: Not native `<select>`. Use `getByRole("combobox").click()` → `getByRole("option", { name }).click()`
+- **Strict mode**: `getByRole("cell", { name })` may match action cells too (aria-labels contain name). Use `exact: true`
+- **Mobile/desktop views**: Table has hidden mobile card view. `getByText()` may match hidden elements. Scope to `page.locator("table")` or use `getByRole("cell")`
+- **Shared backend state**: Mutating tests must create own data with `Date.now()` UIDs for isolation
 
 ## Part 2: Component Visual Regression Testing
 
@@ -240,10 +101,8 @@ Navigates to each story's iframe URL, takes a screenshot.
 
 ## References
 
-- [Playwright Test Agents docs](https://playwright.dev/docs/test-agents)
 - [Playwright Best Practices](https://playwright.dev/docs/best-practices)
 - [Portable Stories for Playwright CT — Storybook Blog](https://storybook.js.org/blog/portable-stories-for-playwright-ct/)
 - [Visual Testing Storybook with Playwright — James Ives](https://jamesiv.es/blog/frontend/testing/2024/03/11/visual-testing-storybook-with-playwright/)
 - [Visual Regression Tests with Storybook and Playwright — Markus Oberlehner](https://markus.oberlehner.net/blog/running-visual-regression-tests-with-storybook-and-playwright-for-free)
-- Agent definitions: `apps/<app>/.claude/agents/playwright-test-*.md`
-- E2E test engineer: `.claude/agents/e2e-test-engineer.md`
+- E2E test engineer agent: `.claude/agents/e2e-test-engineer.md`

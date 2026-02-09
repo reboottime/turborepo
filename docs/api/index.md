@@ -82,53 +82,12 @@ Query params for list: `?search=&department=&page=1&limit=10`
 
 ---
 
-## File Structure
-
-```
-apps/api/
-├── package.json
-├── nest-cli.json
-├── tsconfig.json
-├── eslint.config.mjs
-├── jest.config.js
-├── .env.example
-├── .gitignore
-├── prisma/
-│   ├── schema.prisma
-│   ├── seed.ts
-│   └── migrations/
-└── src/
-    ├── main.ts
-    ├── app.module.ts
-    ├── prisma/
-    │   ├── prisma.module.ts
-    │   └── prisma.service.ts
-    ├── auth/
-    │   ├── auth.module.ts
-    │   ├── auth.controller.ts
-    │   ├── auth.service.ts
-    │   ├── jwt.strategy.ts
-    │   ├── jwt-auth.guard.ts
-    │   └── dto/
-    │       └── login.dto.ts
-    └── employees/
-        ├── employees.module.ts
-        ├── employees.controller.ts
-        ├── employees.service.ts
-        └── dto/
-            ├── create-employee.dto.ts
-            ├── update-employee.dto.ts
-            └── list-employees-query.dto.ts
-```
-
----
-
 ## Environment
 
 ### Local Database (Docker)
 
 ```yaml
-# docker-compose.yml (root)
+# apps/api/docker-compose.yml
 services:
   db:
     image: postgres:16-alpine
@@ -189,18 +148,20 @@ services:
 
 ## Commands
 
+Run from `apps/api/`:
+
 ```bash
 # Development
-pnpm --filter api dev          # Start dev server
-pnpm --filter api build        # Build for production
-pnpm --filter api start:prod   # Start production server
+pnpm dev              # Start dev server
+pnpm build            # Build for production
+pnpm start:prod       # Start production server
 
-# Database (root shortcuts)
-pnpm db:up                     # Start PostgreSQL (docker compose up -d)
-pnpm db:down                   # Stop PostgreSQL (docker compose down)
-pnpm db:migrate                # Run migrations (deploy)
-pnpm db:migrate:dev            # Run migrations (dev, creates migration files)
-pnpm db:seed                   # Seed mock data
-pnpm db:reset                  # Drop + migrate + seed
-pnpm db:generate               # Regenerate Prisma client
+# Database
+pnpm db:up            # Start PostgreSQL (docker compose up -d)
+pnpm db:down          # Stop PostgreSQL (docker compose down)
+pnpm db:migrate       # Run migrations (deploy)
+pnpm db:migrate:dev   # Run migrations (dev, creates migration files)
+pnpm db:seed          # Seed mock data
+pnpm db:reset         # Drop + migrate + seed
+pnpm db:generate      # Regenerate Prisma client
 ```
