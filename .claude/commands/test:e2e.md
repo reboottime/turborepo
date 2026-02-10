@@ -24,38 +24,38 @@ If any are missing → stop and tell user to run `/test:e2e-init <app>` first.
 
 ```
 ┌──────────────────────────────────┐
-│           PLANNER                │
+│            PLANNER               │
 │  (self-reviews until satisfied)  │
-│  Max 3 internal iterations       │
-└───────────────┬──────────────────┘
-                │
-                ▼
+│    Max 3 internal iterations     │
+└────────────────┬─────────────────┘
+                 │
+                 ▼
 ┌──────────────────────────────────┐
-│          GENERATOR               │
-│  (creates .spec.ts files)        │
-└───────────────┬──────────────────┘
-                │
-                ▼
+│            GENERATOR             │
+│      (creates .spec.ts files)    │
+└────────────────┬─────────────────┘
+                 │
+                 ▼
 ┌──────────────────────────────────┐
-│      HEALER + REVIEWER           │◄───┐
-│  (run tests, fix, review)        │    │
-└───────────────┬──────────────────┘    │
-                │                       │
-                ▼                       │
-       ┌────────────────┐              │
-       │ Tests pass +   │              │
-       │ Code approved? │              │
-       └───────┬────────┘              │
-               │                       │
-          No   │   Yes                 │
-       ┌───────┴───────┐               │
-       ▼               ▼               │
-  ┌─────────┐    ┌──────────┐         │
-  │Fix/retry│    │   DONE   │         │
-  └────┬────┘    └──────────┘         │
-       └───────────────────────────────┘
+│        HEALER + REVIEWER         │◄──┐
+│     (run tests, fix, review)     │   │
+└────────────────┬─────────────────┘   │
+                 │                     │
+                 ▼                     │
+        ┌────────────────┐             │
+        │  Tests pass +  │             │
+        │ Code approved? │             │
+        └───────┬────────┘             │
+                │                      │
+        No ─────┼───── Yes             │
+        │       │       │              │
+        ▼       │       ▼              │
+   ┌─────────┐  │  ┌──────────┐        │
+   │Fix/retry│  │  │   DONE   │        │
+   └────┬────┘  │  └──────────┘        │
+        └───────┴──────────────────────┘
 
-Exit when:
+Exit conditions:
 ✓ Tests pass + Reviewer approves
 ✗ Healer determines failure is a codebase bug
 ```

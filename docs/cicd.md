@@ -93,10 +93,11 @@ The E2E job runs Playwright tests against a real API backend:
 **Flow:**
 
 1. Postgres starts as GitHub Actions service
-2. API image pulled from GHCR, runs on host network
-3. Prisma migrations + seed data applied
-4. Portal starts via Playwright webServer
-5. Playwright tests run against real API
+2. Prisma migrations + seed data applied
+3. API container pulled from GHCR + Playwright install (parallel)
+4. API starts on host network, waits for health check
+5. Portal starts via Playwright webServer
+6. Playwright tests run against real API
 
 ## API Docker Image
 
@@ -106,12 +107,13 @@ The API uses pre-built artifacts (not multi-stage build):
 build job                    build-api-image job
 ─────────                    ───────────────────
 turbo run build              download api-build artifact
-     │                              │
-     ▼                              ▼
-apps/api/dist ──────────►    Dockerfile (just COPY)
-apps/api/prisma                     │
-apps/api/package.json               ▼
-                             push to GHCR
+prisma generate                     │
+     │                              ▼
+     ▼                       Dockerfile (just COPY)
+apps/api/dist ──────────►           │
+apps/api/prisma                     ▼
+apps/api/package.json        push to GHCR
+apps/api/node_modules/.prisma
 ```
 
 **Why pre-built:** Turborepo caching. Building in Docker would lose cache benefits.

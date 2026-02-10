@@ -50,6 +50,11 @@ export {
   FormMessage,
 } from "./components/form";
 export { EyeIcon, EyeOffIcon, Spinner } from "./components/icons";
+export {
+  IconButton,
+  iconButtonVariants,
+  type IconButtonProps,
+} from "./components/icon-button";
 export { Input } from "./components/input";
 export { Label } from "./components/label";
 export {

@@ -74,6 +74,26 @@ Follow Playwright's recommended order:
 - **Mobile/desktop views**: Table has hidden mobile card view. `getByText()` may match hidden elements. Scope to `page.locator("table")` or use `getByRole("cell")`
 - **Shared backend state**: Mutating tests must create own data with `Date.now()` UIDs for isolation
 
+### Quality Checklist
+
+Every E2E test must pass all criteria. The reviewer agent enforces this.
+
+| Criterion               | Requirement                                                |
+| ----------------------- | ---------------------------------------------------------- |
+| Critical workflow only  | Covers auth, checkout, core CRUD, or permissions           |
+| One story per test      | If description needs "and", split it                       |
+| User-visible assertions | Assert only on what user sees (text, visibility, URL)      |
+| Isolated state          | Creates own state, assumes parallel execution              |
+| Own test user           | Provisions own user if login required                      |
+| Observable waits        | Waits on UI state, never `waitForTimeout`                  |
+| Minimal stubs           | Stubs only third-party services, documented                |
+| No flaky retries        | No retry logic to mask intermittent failures               |
+| Abstracted selectors    | Selectors in reusable helpers, appear in exactly one place |
+| Concise logic           | Test body ~30 lines max                                    |
+| No orphan skips         | No `test.skip()` without linked tracking issue             |
+| Real environment        | Runs against real browser, real API, real DB               |
+| Suite performance       | Full critical-path suite under 15 minutes                  |
+
 ## Part 2: Component Visual Regression Testing
 
 Two approaches to screenshot Storybook stories with Playwright. Both use `toHaveScreenshot()` for image diffing.

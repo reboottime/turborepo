@@ -3,10 +3,21 @@ description: Conventions for building shared UI components in packages/ui/
 tags: [design-system, components, ui, conventions, radix, cva, storybook]
 applies_to: design-system-architect agent, staff-frontend-engineer agent
 status: Active
-last_updated: 2026-02-03
+last_updated: 2026-02-09
 ---
 
 # Design System Conventions
+
+## Principles
+
+- **Token-first**: Use theme tokens from `packages/ui/src/styles/`. Never hardcode colors, spacing, radii, or z-index values.
+- **Consistent API surface**: Prop names follow established patterns. If `Button` uses `variant` and `size`, every component with similar concepts uses the same names and scale.
+- **Semantic prop separation**: `variant` = what it is (identity, behavior), `size` = how big. Never conflate them. Don't use size to indicate identity (e.g., `size="icon"` is wrong — that's a variant).
+- **Minimal API surface**: Don't add props when existing ones work. If `Button` has `variant="destructive"`, `IconButton` reuses it — no separate `color` prop.
+- **Compose vs. separate**: Wrap a base component when the specialized version shares behavior with minor styling changes. Extract a separate component when it has unique constraints (required props, different defaults, shape changes) that would complicate the base component's API. Don't add complexity to a base component just to support a specialized use case.
+- **Composition over configuration**: Prefer compound components (`Card` + `CardHeader` + `CardContent`) over prop-heavy monoliths.
+- **Radix as foundation**: Interactive components build on Radix UI primitives for accessibility (focus management, ARIA, keyboard navigation).
+- **Tailwind + cva for styling**: All styling via Tailwind utilities. All variants via `cva`. Class merging via `cn` (imported as `#lib/cn`).
 
 ## Component Folder Structure
 
@@ -27,8 +38,6 @@ Pattern: Radix primitive + `cva` variants + `cn` merging + `forwardRef` (see tem
 
 - `"use client"` only when component uses client-side features (state, effects, event handlers, browser APIs)
 - Import via subpath imports (`#lib/cn`, not relative paths)
-- Prefer compound components (`Card` + `CardHeader` + `CardContent`) over prop-heavy monoliths
-- Consistent prop names across components — `variant`, `size` use the same names/scale
 
 **Design tokens** (`packages/ui/src/styles/`) — never hardcode values:
 

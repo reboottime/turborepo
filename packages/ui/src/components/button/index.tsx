@@ -17,6 +17,7 @@ const buttonVariants = cva(
           "border border-border-default bg-surface-base hover:bg-surface-sunken hover:text-text-primary",
         ghost:
           "border border-transparent hover:bg-surface-sunken hover:text-text-primary",
+        icon: "bg-transparent hover:bg-surface-sunken text-text-primary border border-transparent",
       },
       size: {
         default:
@@ -25,6 +26,23 @@ const buttonVariants = cva(
         lg: "h-[var(--spacing-12)] rounded-[var(--radius-md)] px-[var(--spacing-8)]",
       },
     },
+    compoundVariants: [
+      {
+        variant: "icon",
+        size: "sm",
+        class: "w-[var(--spacing-8)] p-0",
+      },
+      {
+        variant: "icon",
+        size: "default",
+        class: "w-[var(--spacing-10)] p-0",
+      },
+      {
+        variant: "icon",
+        size: "lg",
+        class: "w-[var(--spacing-12)] p-0",
+      },
+    ],
     defaultVariants: {
       variant: "default",
       size: "default",
