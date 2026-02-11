@@ -2,6 +2,8 @@
 
 > **Note:** This repo demonstrates my development methodology and agentic workflows, not a polished production codebase. Corners are cut where they don't serve the demo purpose.
 
+[**Design System Preview →**](https://reboottime.github.io/turborepo)
+
 ## Value Proposition
 
 Ship fast with reliability: `Define → Generate → Guard`
