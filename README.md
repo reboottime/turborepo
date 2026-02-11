@@ -44,7 +44,8 @@ Ship fast with reliability: `Define → Generate → Guard`
 
 ### Shared Packages
 
-- **`@repo/ui`** — In-house design system built on Radix UI + Tailwind CSS 4 + CVA for maintainability and extensibility. Each component colocates implementation, tests, and stories. Storybook enables visual review. See [Design System Manual](manuals/design-system.md) for how components are generated via `/add-component`.
+- **`@repo/ui`** — In-house design system (built on top of Radix UI + Tailwind CSS 4 + CVA). See the [**demo**](https://reboottime.github.io/turborepo) or learn [how it's built](manuals/design-system.md)
+
 - **`@repo/libs`** — Shared business logic and utilities — single source of truth across apps.
 
 ## Testing Strategy
