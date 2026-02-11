@@ -38,6 +38,7 @@ Pattern: Radix primitive + `cva` variants + `cn` merging + `forwardRef` (see tem
 
 - `"use client"` only when component uses client-side features (state, effects, event handlers, browser APIs)
 - Import via subpath imports (`#lib/cn`, not relative paths)
+- **Text size scales with size variant**: Move `text-[length:var(--font-size-*)]` from base classes into size variants. Each size variant should specify its own font size (sm: xs, default: sm, lg: base).
 
 **Design tokens** (`packages/ui/src/styles/`) — never hardcode values:
 
@@ -59,7 +60,7 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "#lib/cn";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-[var(--radius-md)] text-[length:var(--font-size-sm)] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring disabled:pointer-events-none disabled:opacity-[var(--opacity-disabled)]",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-[var(--radius-md)] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring disabled:pointer-events-none disabled:opacity-[var(--opacity-disabled)]",
   {
     variants: {
       variant: {
@@ -73,9 +74,9 @@ const buttonVariants = cva(
       },
       size: {
         default:
-          "h-[var(--spacing-10)] px-[var(--spacing-4)] py-[var(--spacing-2)]",
-        sm: "h-[var(--spacing-8)] rounded-[var(--radius-md)] px-[var(--spacing-3)]",
-        lg: "h-[var(--spacing-12)] rounded-[var(--radius-md)] px-[var(--spacing-8)]",
+          "h-[var(--spacing-10)] px-[var(--spacing-4)] py-[var(--spacing-2)] text-[length:var(--font-size-sm)]",
+        sm: "h-[var(--spacing-8)] rounded-[var(--radius-md)] px-[var(--spacing-3)] text-[length:var(--font-size-xs)]",
+        lg: "h-[var(--spacing-12)] rounded-[var(--radius-md)] px-[var(--spacing-8)] text-[length:var(--font-size-base)]",
       },
     },
     defaultVariants: {

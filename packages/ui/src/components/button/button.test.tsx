@@ -58,18 +58,21 @@ describe("Button", () => {
     render(<Button>Default Size</Button>);
     const button = screen.getByRole("button");
     expect(button.className).toContain("h-[var(--spacing-10)]");
+    expect(button.className).toContain("text-[length:var(--font-size-sm)]");
   });
 
   it("applies sm size classes", () => {
     render(<Button size="sm">Small</Button>);
     const button = screen.getByRole("button");
     expect(button.className).toContain("h-[var(--spacing-8)]");
+    expect(button.className).toContain("text-[length:var(--font-size-xs)]");
   });
 
   it("applies lg size classes", () => {
     render(<Button size="lg">Large</Button>);
     const button = screen.getByRole("button");
     expect(button.className).toContain("h-[var(--spacing-12)]");
+    expect(button.className).toContain("text-[length:var(--font-size-base)]");
   });
 
   // -- Full width --
