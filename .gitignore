@@ -41,7 +41,7 @@ pnpm-debug.log*
 # Claude local settings
 .claude/settings.local.json
 packages/*/.claude/
-apps/*/.claude/settings.*.json
+apps/.claude/
 
 # Project management (private)
 /index.md
