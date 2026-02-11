@@ -4,7 +4,7 @@ description: Install pnpm, Node.js, dependencies, and restore Turbo cache
 inputs:
   node-version:
     description: Node.js version
-    default: "18"
+    default: "22"
 
 runs:
   using: composite
