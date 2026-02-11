@@ -11,7 +11,7 @@ it.describe("Login Page", () => {
     await emailInput.pressSequentially("wrong@email.com", { delay: 10 });
 
     // 3. Enter wrong password
-    const passwordInput = page.locator('input[type="password"]');
+    const passwordInput = page.getByRole("textbox", { name: "Password" });
     await passwordInput.pressSequentially("wrongpassword", { delay: 10 });
 
     // 4. Click "Sign In" button

@@ -11,7 +11,7 @@ it.describe("Login Page", () => {
     await emailInput.pressSequentially(TEST_USER.email, { delay: 10 });
 
     // 3. Enter password in password field
-    const passwordInput = page.locator('input[type="password"]');
+    const passwordInput = page.getByRole("textbox", { name: "Password" });
     await passwordInput.pressSequentially(TEST_USER.password, { delay: 10 });
 
     // 4. Click "Sign In" button

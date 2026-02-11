@@ -15,8 +15,7 @@ import {
   FormControl,
   FormMessage,
   Input,
-  EyeIcon,
-  EyeOffIcon,
+  PasswordInput,
   Spinner,
 } from "@repo/ui";
 import { useAuth } from "@/lib/auth-context";
@@ -31,7 +30,6 @@ export default function LoginPage() {
   const { signIn } = useAuth();
   const [isLoading, setIsLoading] = useState(false);
   const [serverError, setServerError] = useState<string | null>(null);
-  const [showPassword, setShowPassword] = useState(false);
 
   const form = useForm<LoginFormData>({
     defaultValues: {
@@ -112,25 +110,11 @@ export default function LoginPage() {
                   <FormItem>
                     <FormLabel>Password</FormLabel>
                     <FormControl>
-                      <div className="relative">
-                        <Input
-                          type={showPassword ? "text" : "password"}
-                          placeholder="Enter your password"
-                          readOnly={isLoading}
-                          className="pr-10"
-                          {...field}
-                        />
-                        <button
-                          type="button"
-                          onClick={() => setShowPassword(!showPassword)}
-                          aria-label={
-                            showPassword ? "Hide password" : "Show password"
-                          }
-                          className="absolute right-3 top-1/2 -translate-y-1/2 text-text-secondary hover:text-text-primary transition-colors"
-                        >
-                          {showPassword ? <EyeOffIcon /> : <EyeIcon />}
-                        </button>
-                      </div>
+                      <PasswordInput
+                        placeholder="Enter your password"
+                        readOnly={isLoading}
+                        {...field}
+                      />
                     </FormControl>
                     <FormMessage />
                   </FormItem>
