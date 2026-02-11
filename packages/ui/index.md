@@ -16,6 +16,20 @@ Read this before using or adding components.
 | **Select**    | `Select`, `SelectGroup`, `SelectValue`, `SelectTrigger`, `selectTriggerVariants`, `SelectContent`, `SelectLabel`, `SelectItem`, `SelectSeparator`, `SelectScrollUpButton`, `SelectScrollDownButton`, `SelectTriggerProps`                   | `components/select/`    |
 | **Separator** | `Separator`                                                                                                                                                                                                                                 | `components/separator/` |
 
+## Design Tokens
+
+Visual design documentation for designers and developers. View in Storybook under "Design Tokens" section.
+
+| Category         | Description                                            | Path                                      |
+| ---------------- | ------------------------------------------------------ | ----------------------------------------- |
+| **Introduction** | Overview and usage guidelines                          | `stories/tokens/Introduction.stories.tsx` |
+| **Colors**       | Surface, text, border, status, action, and icon colors | `stories/tokens/Colors.stories.tsx`       |
+| **Typography**   | Font families, type scale, weights, letter spacing     | `stories/tokens/Typography.stories.tsx`   |
+| **Spacing**      | 8px grid scale, container widths, breakpoints          | `stories/tokens/Spacing.stories.tsx`      |
+| **Elevation**    | Shadow tokens and z-index hierarchy                    | `stories/tokens/Elevation.stories.tsx`    |
+
+**Source files:** `packages/ui/src/styles/tokens/`
+
 ## Utilities
 
 | Export                    | Path     |
