@@ -7,7 +7,6 @@ interface EmployeeTableProps {
   employees: Employee[];
   onEdit: (employee: Employee) => void;
   onDelete: (employee: Employee) => void;
-  isEmpty?: boolean;
   isSearching?: boolean;
   searchTerm?: string;
 }
@@ -16,39 +15,10 @@ export function EmployeeTable({
   employees,
   onEdit,
   onDelete,
-  isEmpty = false,
   isSearching = false,
   searchTerm = "",
 }: EmployeeTableProps) {
-  if (isEmpty) {
-    return (
-      <div className="border border-border-default rounded-lg p-12 text-center">
-        <div className="max-w-md mx-auto">
-          <svg
-            className="w-16 h-16 mx-auto mb-4 text-text-secondary"
-            fill="none"
-            stroke="currentColor"
-            viewBox="0 0 24 24"
-          >
-            <path
-              strokeLinecap="round"
-              strokeLinejoin="round"
-              strokeWidth={1.5}
-              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
-            />
-          </svg>
-          <p className="text-text-primary font-medium mb-1">
-            No employees found.
-          </p>
-          <p className="text-sm text-text-secondary">
-            Click &quot;+ Add Employee&quot; to get started.
-          </p>
-        </div>
-      </div>
-    );
-  }
-
-  if (isSearching && employees.length === 0) {
+  if (isSearching) {
     return (
       <div className="border border-border-default rounded-lg p-12 text-center">
         <div className="max-w-md mx-auto">
@@ -70,6 +40,34 @@ export function EmployeeTable({
           </p>
           <p className="text-sm text-text-secondary">
             Try a different search term.
+          </p>
+        </div>
+      </div>
+    );
+  }
+
+  if (!isSearching && employees.length === 0) {
+    return (
+      <div className="border border-border-default rounded-lg p-12 text-center">
+        <div className="max-w-md mx-auto">
+          <svg
+            className="w-16 h-16 mx-auto mb-4 text-text-secondary"
+            fill="none"
+            stroke="currentColor"
+            viewBox="0 0 24 24"
+          >
+            <path
+              strokeLinecap="round"
+              strokeLinejoin="round"
+              strokeWidth={1.5}
+              d="M17 20h5v-2a3 3 0 00-5.356-1.857M17 20H7m10 0v-2c0-.656-.126-1.283-.356-1.857M7 20H2v-2a3 3 0 015.356-1.857M7 20v-2c0-.656.126-1.283.356-1.857m0 0a5.002 5.002 0 019.288 0M15 7a3 3 0 11-6 0 3 3 0 016 0zm6 3a2 2 0 11-4 0 2 2 0 014 0zM7 10a2 2 0 11-4 0 2 2 0 014 0z"
+            />
+          </svg>
+          <p className="text-text-primary font-medium mb-1">
+            No employees found.
+          </p>
+          <p className="text-sm text-text-secondary">
+            Click &quot;+ Add Employee&quot; to get started.
           </p>
         </div>
       </div>

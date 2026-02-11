@@ -19,7 +19,7 @@ import {
   EyeOffIcon,
   Spinner,
 } from "@repo/ui";
-import { useAuth } from "../../lib/auth-context";
+import { useAuth } from "@/lib/auth-context";
 
 type LoginFormData = {
   email: string;
