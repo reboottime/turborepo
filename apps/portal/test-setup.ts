@@ -3,6 +3,9 @@ import "@testing-library/jest-dom/jest-globals";
 import { jest } from "@jest/globals";
 
 // Mock window.matchMedia for Radix UI
+// jsdom doesn't implement matchMedia, but Radix UI components use it internally
+// for responsive behavior (e.g., reduced motion detection). Without this mock,
+// tests fail with "TypeError: window.matchMedia is not a function".
 Object.defineProperty(window, "matchMedia", {
   writable: true,
   value: jest.fn().mockImplementation((query) => ({
