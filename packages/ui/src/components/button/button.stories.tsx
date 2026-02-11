@@ -7,12 +7,13 @@ const meta: Meta<typeof Button> = {
   argTypes: {
     variant: {
       control: "select",
-      options: ["default", "destructive", "outline", "ghost"],
+      options: ["default", "destructive", "outline", "ghost", "link"],
     },
     size: {
       control: "select",
       options: ["sm", "default", "lg"],
     },
+    fullWidth: { control: "boolean" },
     disabled: { control: "boolean" },
     children: { control: "text" },
   },
@@ -34,6 +35,10 @@ export const Ghost: Story = {
   args: { variant: "ghost" },
 };
 
+export const Link: Story = {
+  args: { variant: "link", children: "Learn more" },
+};
+
 export const Destructive: Story = {
   args: { variant: "destructive", children: "Delete" },
 };
@@ -50,10 +55,21 @@ export const Disabled: Story = {
   args: { disabled: true },
 };
 
+export const FullWidth: Story = {
+  args: { fullWidth: true },
+  decorators: [
+    (Story) => (
+      <div style={{ width: "300px" }}>
+        <Story />
+      </div>
+    ),
+  ],
+};
+
 export const AllVariants: Story = {
   render: () => (
     <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-      {(["default", "destructive", "outline", "ghost"] as const).map(
+      {(["default", "destructive", "outline", "ghost", "link"] as const).map(
         (variant) => (
           <div
             key={variant}

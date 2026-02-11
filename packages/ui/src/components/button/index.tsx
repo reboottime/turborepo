@@ -6,18 +6,19 @@ import { cva, type VariantProps } from "class-variance-authority";
 import { cn } from "#lib/cn";
 
 const buttonVariants = cva(
-  "inline-flex items-center justify-center whitespace-nowrap rounded-[var(--radius-md)] text-[length:var(--font-size-sm)] font-medium transition-colors focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-focus-ring disabled:pointer-events-none disabled:opacity-[var(--opacity-disabled)]",
+  "inline-flex items-center justify-center whitespace-nowrap rounded-[var(--radius-md)] text-[length:var(--font-size-sm)] font-medium transition-colors duration-[var(--duration-fast)] focus-visible:outline-solid focus-visible:outline-2 focus-visible:outline-focus-ring focus-visible:outline-offset-2 disabled:pointer-events-none disabled:opacity-[var(--opacity-disabled)]",
   {
     variants: {
       variant: {
-        default: "bg-primary text-text-inverse hover:bg-primary-hover",
+        default:
+          "bg-primary text-text-inverse hover:bg-primary-hover active:bg-primary-active",
         destructive:
-          "bg-destructive text-text-inverse hover:bg-destructive-hover",
+          "bg-destructive text-text-inverse hover:bg-destructive-hover active:bg-destructive-active",
         outline:
-          "border border-border-default bg-surface-base hover:bg-surface-sunken hover:text-text-primary",
+          "border border-border-default bg-surface-base text-text-primary hover:bg-surface-sunken active:bg-surface-sunken",
         ghost:
-          "border border-transparent hover:bg-surface-sunken hover:text-text-primary",
-        icon: "bg-transparent hover:bg-surface-sunken text-text-primary border border-transparent",
+          "border border-transparent text-text-primary hover:bg-surface-sunken active:bg-surface-sunken",
+        link: "text-primary underline-offset-4 hover:underline",
       },
       size: {
         default:
@@ -25,27 +26,15 @@ const buttonVariants = cva(
         sm: "h-[var(--spacing-8)] rounded-[var(--radius-md)] px-[var(--spacing-3)]",
         lg: "h-[var(--spacing-12)] rounded-[var(--radius-md)] px-[var(--spacing-8)]",
       },
+      fullWidth: {
+        true: "w-full",
+        false: "",
+      },
     },
-    compoundVariants: [
-      {
-        variant: "icon",
-        size: "sm",
-        class: "w-[var(--spacing-8)] p-0",
-      },
-      {
-        variant: "icon",
-        size: "default",
-        class: "w-[var(--spacing-10)] p-0",
-      },
-      {
-        variant: "icon",
-        size: "lg",
-        class: "w-[var(--spacing-12)] p-0",
-      },
-    ],
     defaultVariants: {
       variant: "default",
       size: "default",
+      fullWidth: false,
     },
   },
 );
@@ -56,10 +45,10 @@ export interface ButtonProps
     VariantProps<typeof buttonVariants> {}
 
 const Button = forwardRef<HTMLButtonElement, ButtonProps>(
-  ({ className, variant, size, ...props }, ref) => {
+  ({ className, variant, size, fullWidth, ...props }, ref) => {
     return (
       <button
-        className={cn(buttonVariants({ variant, size, className }))}
+        className={cn(buttonVariants({ variant, size, fullWidth, className }))}
         ref={ref}
         {...props}
       />

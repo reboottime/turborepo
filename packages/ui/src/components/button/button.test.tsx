@@ -39,6 +39,13 @@ describe("Button", () => {
     expect(button.className).toContain("border-transparent");
   });
 
+  it("applies link variant classes", () => {
+    render(<Button variant="link">Link</Button>);
+    const button = screen.getByRole("button");
+    expect(button.className).toContain("text-primary");
+    expect(button.className).toContain("underline-offset-4");
+  });
+
   it("applies destructive variant classes", () => {
     render(<Button variant="destructive">Delete</Button>);
     const button = screen.getByRole("button");
@@ -63,6 +70,20 @@ describe("Button", () => {
     render(<Button size="lg">Large</Button>);
     const button = screen.getByRole("button");
     expect(button.className).toContain("h-[var(--spacing-12)]");
+  });
+
+  // -- Full width --
+
+  it("applies full width class when fullWidth is true", () => {
+    render(<Button fullWidth>Full Width</Button>);
+    const button = screen.getByRole("button");
+    expect(button.className).toContain("w-full");
+  });
+
+  it("does not apply full width class by default", () => {
+    render(<Button>Default Width</Button>);
+    const button = screen.getByRole("button");
+    expect(button.className).not.toContain("w-full");
   });
 
   // -- Disabled state --
