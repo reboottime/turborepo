@@ -1,0 +1,12 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(git -C /Users/kate/2026/tana/projects/cicd/apps status)",
+      "Bash(git -C /Users/kate/2026/tana/projects/cicd/apps diff --stat)",
+      "Bash(git -C /Users/kate/2026/tana/projects/cicd/apps diff HEAD ../.claude/commands/test:unit.md)",
+      "Bash(git -C /Users/kate/2026/tana/projects/cicd/apps diff HEAD portal/package.json)",
+      "Bash(git -C /Users/kate/2026/tana/projects/cicd/apps rev-parse:*)",
+      "Bash(git checkout:*)"
+    ]
+  }
+}
