@@ -58,6 +58,10 @@ export {
 export { Input } from "./components/input";
 export { Label } from "./components/label";
 export {
+  PasswordInput,
+  type PasswordInputProps,
+} from "./components/password-input";
+export {
   Select,
   SelectGroup,
   SelectValue,

@@ -40,7 +40,7 @@ export const TEST_USER = {
 export async function login(page: Page) {
   await page.goto("/login");
   const emailInput = page.getByLabel("Email");
-  const passwordInput = page.locator('input[type="password"]');
+  const passwordInput = page.getByRole("textbox", { name: "Password" });
   const signInButton = page.getByRole("button", { name: "Sign In" });
 
   // Use pressSequentially for webkit compatibility with React controlled inputs
@@ -54,4 +54,39 @@ export async function login(page: Page) {
   await signInButton.click();
 
   await expect(page).toHaveURL("/employees");
+}
+
+/**
+ * Creates an employee for test setup. Returns the full name.
+ */
+export async function createEmployee(
+  page: Page,
+  data: {
+    firstName: string;
+    lastName: string;
+    email: string;
+    department?: string;
+  },
+): Promise<string> {
+  await page.getByRole("button", { name: "Add Employee" }).click();
+  await expect(page.getByRole("dialog")).toBeVisible();
+
+  await page.getByLabel(/first name/i).fill(data.firstName);
+  await page.getByLabel(/last name/i).fill(data.lastName);
+  await page.getByLabel(/email/i).fill(data.email);
+
+  const dialog = page.getByRole("dialog");
+  await dialog.getByRole("combobox", { name: "Department" }).click();
+  await page
+    .getByRole("option", { name: data.department ?? "Engineering" })
+    .click();
+
+  await page.getByRole("button", { name: "Save" }).click();
+  await expect(page.getByRole("dialog")).toBeHidden();
+  await expect(page.getByRole("status")).toContainText(
+    "Employee added successfully",
+  );
+  await expect(page.getByRole("status")).toBeHidden({ timeout: 5000 });
+
+  return `${data.firstName} ${data.lastName}`;
 }

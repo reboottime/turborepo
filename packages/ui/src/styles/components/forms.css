@@ -32,7 +32,9 @@
 
   /* Disabled state */
   .form-field-disabled {
-    @apply disabled:cursor-not-allowed disabled:opacity-[var(--opacity-disabled)];
+    @apply disabled:cursor-not-allowed
+           disabled:text-text-tertiary
+           disabled:bg-surface-sunken;
   }
 
   /* Error state via aria-invalid */
