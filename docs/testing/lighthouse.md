@@ -150,3 +150,12 @@ Once configured, each PR will show a "Lighthouse CI" status check with a "Detail
 **CI environment differences:** Lighthouse in CI may score differently than local. CI runners have consistent resources; local varies.
 
 **Build-time vs runtime a11y:** Some a11y issues only appear with real data. Lighthouse catches these; component tests may not.
+
+## Tracking Improvements
+
+When Lighthouse identifies issues, document them in a plan file for later fixes. See [lighthouse-improvements.md](lighthouse-improvements.md) for an example tracking:
+
+- Current scores and metrics baseline
+- Issues with root cause analysis
+- Fix options with expected impact
+- Priority order
