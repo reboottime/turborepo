@@ -4,6 +4,6 @@ import { nextJsConfig } from "@repo/config.eslint/next-js";
 export default [
   ...nextJsConfig,
   {
-    ignores: ["e2e/**/*", "test-results/**/*", "lighthouserc.js"],
+    ignores: ["e2e/**/*", "test-results/**/*", "lighthouserc.cjs"],
   },
 ];

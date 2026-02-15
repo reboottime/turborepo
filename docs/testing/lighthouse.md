@@ -39,7 +39,7 @@ pnpm add -D @lhci/cli -w
 
 ### Configuration
 
-Create `lighthouserc.js` in the app directory (e.g., `apps/portal/lighthouserc.js`). App-level config allows different apps to have different thresholds:
+Create `lighthouserc.cjs` in the app directory (e.g., `apps/portal/lighthouserc.cjs`). App-level config allows different apps to have different thresholds:
 
 ```js
 module.exports = {

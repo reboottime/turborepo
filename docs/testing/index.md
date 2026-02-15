@@ -12,6 +12,7 @@
 | [visual-testing.md](visual-testing.md)                   | Visual testing — component vs page layers, false positives, tool landscape                |
 | [chromatic.md](chromatic.md)                             | Chromatic — Storybook setup, CI workflow, configuration, review process                   |
 | [chromatic-playwright.md](chromatic-playwright.md)       | Chromatic + Playwright — E2E visual testing setup, CI integration                         |
+| [lighthouse.md](lighthouse.md)                           | Lighthouse CI — performance, accessibility, SEO audits                                    |
 | [TODO.md](TODO.md)                                       | Open items                                                                                |
 
 Start with **overview.md** for the full picture, then follow links into each layer.
