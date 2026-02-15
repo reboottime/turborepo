@@ -10,6 +10,7 @@
     "test": "turbo run test",
     "test:e2e": "turbo run test:e2e",
     "storybook": "pnpm --filter ui storybook",
+    "chromatic": "pnpm --filter ui chromatic",
     "prepare": "husky",
     "postinstall": "rm -rf apps/*/.next"
   },
