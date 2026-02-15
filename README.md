@@ -86,38 +86,47 @@ Ship fast with reliability: `Define → Generate → Guard`
 
 - **Unit / Component**: Jest 30 (ESM native) + React Testing Library, accessibility-first queries
 - **Critical path testing**: Playwright against real backend in Docker
-- [ ] **Visual Regression Testing**: TBD
+- **Visual Regression**: Chromatic for both layers
+  - **Component-level**: Screenshots every Storybook story — catches design system regressions
+  - **Page-level**: Screenshots during Playwright E2E — catches composition breaks when components change
 
 ## CI/CD Pipeline
 
 CI runs on pull requests and pushes to `main`:
 
 ```sh
-┌────────────────────┐   ┌────────────────┐
-│ Lint + Type Checks │   │  Unit Tests    │  <- parallel
-└─────────┬──────────┘   └───────┬────────┘
-          │                      │
-          └──────────┬───────────┘
-                     ↓
-              ┌────────────────┐
-              │   Build Apps   │
-              └───────┬────────┘
-                      ↓
-              ┌────────────────┐
-              │ Build API Image│
-              └───────┬────────┘
-                      ↓
-      ┌───────────────────────────────────┐
-      │               e2e                 │
-      │  Playwright against real backend  │
-      │  (API container --> PostgreSQL)   │
+┌────────────────────┐   ┌────────────────┐   ┌────────────────────┐
+│ Lint + Type Checks │   │  Unit Tests    │   │  Visual Review     │  <- parallel
+└─────────┬──────────┘   └───────┬────────┘   │  (Chromatic)       │
+          │                      │            └─────────┬──────────┘
+          └──────────┬───────────┘                      │
+                     ↓                                  │
+              ┌────────────────┐                        │
+              │   Build Apps   │                        │
+              └───────┬────────┘                        │
+                      ↓                                 │
+              ┌────────────────┐                        │
+              │ Build API Image│                        │
+              └───────┬────────┘                        │
+                      ↓                                 │
+      ┌───────────────────────────────────┐            │
+      │               e2e                 │            │
+      │  Playwright against real backend  │            │
+      │  (API container --> PostgreSQL)   │            │
+      └───────────────────┬───────────────┘            │
+                          ↓                            │
+      ┌───────────────────────────────────┐            │
+      │        Page Visual Review         │ ←──────────┘
+      │  (Chromatic + Playwright)         │   same dashboard
       └───────────────────────────────────┘
 ```
 
-1. **quality** (lint + type checks) and unit tests run in parallel
-2. **build** runs only after both pass — produces Next.js + API artifacts, uploaded for downstream jobs
+1. **quality** (lint + type checks), unit tests, and **component visual review** run in parallel
+2. **build** runs only after quality + tests pass — produces Next.js + API artifacts
 3. **build-api-image** builds API Docker image, pushes to GHCR
-4. **e2e** runs Playwright against real backend (API image from GHCR + PostgreSQL service + migrations/seed)
+4. **e2e** runs Playwright against real backend, then uploads page screenshots to Chromatic
+
+Visual changes don't block CI — they're soft gates requiring human review in the [Chromatic dashboard](https://www.chromatic.com/builds?appId=698f8bb1c019388f4cbe6ec7).
 
 CD workflows (`deploy-preview.yml`, `deploy-production.yml`) are authored for Vercel — preview on PR, production on main. Pending secrets configuration.
 

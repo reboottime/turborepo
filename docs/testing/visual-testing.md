@@ -49,7 +49,9 @@ For Playwright-based implementation approaches (CT + Portable Stories vs Storybo
 
 ## Layer 2: Page-Level Screenshots
 
-**Secondary gate.** Target pages that **compose many shared components**, not every page:
+**Secondary gate.** Target pages that **compose many shared components**, not every page.
+
+For implementation with Chromatic + Playwright, see [chromatic-playwright.md](chromatic-playwright.md).
 
 - Login page (form layout, button, input sizing)
 - Employee list (table, pagination, filters)
@@ -101,19 +103,36 @@ Visual failures are **soft blocks** requiring human review. Industry practice (N
 
 ## Tool Landscape (2025-2026)
 
-| Tool                                | Type       | Best for                                                                                                                        | Weakness                                                  |
-| ----------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------- | --------------------------------------------------------- |
-| **Chromatic**                       | SaaS       | Component-level via Storybook. Best integration, unlimited parallelization, perceptual diff. Also supports Playwright snapshots | Primarily Storybook-focused, costs scale with snapshots   |
-| **Percy** (BrowserStack)            | SaaS       | Page-level + cross-browser. AI-based diff reduces false positives, OCR filters text shifts                                      | More expensive                                            |
-| **Playwright `toHaveScreenshot()`** | OSS        | Already in stack, free, page-level                                                                                              | OS-dependent baselines, pixel-diff is noisy, no review UI |
-| **Argos**                           | SaaS + OSS | Both layers, Storybook + Playwright plugins                                                                                     | Smaller ecosystem                                         |
-| **Lost Pixel**                      | OSS        | Both layers, self-hosted option                                                                                                 | Less mature                                               |
+| Tool                                | Type       | Best for                                                                                                                        | Weakness                                                                                           |
+| ----------------------------------- | ---------- | ------------------------------------------------------------------------------------------------------------------------------- | -------------------------------------------------------------------------------------------------- |
+| **Chromatic**                       | SaaS       | Component-level via Storybook. Best integration, unlimited parallelization, perceptual diff. Also supports Playwright snapshots | Primarily Storybook-focused, costs scale with snapshots                                            |
+| **Percy** (BrowserStack)            | SaaS       | Page-level + cross-browser. AI-based diff reduces false positives, OCR filters text shifts                                      | More expensive                                                                                     |
+| **Playwright `toHaveScreenshot()`** | OSS        | Free, already in stack                                                                                                          | OS-dependent baselines, pixel-diff is noisy, no review UI, baseline management gets messy at scale |
+| **Argos**                           | SaaS + OSS | Both layers, Storybook + Playwright plugins                                                                                     | Smaller ecosystem                                                                                  |
+| **Lost Pixel**                      | OSS        | Both layers, self-hosted option                                                                                                 | Less mature                                                                                        |
 
-### Pragmatic starting point
+### What production teams actually use
 
-**Chromatic for Layer 1** (normalizes rendering, perceptual diff, review UI) + **Playwright `toHaveScreenshot()` for Layer 2** (free, already in stack).
+**Component-level:** Chromatic is the industry standard for Storybook-based visual testing. Most teams (Shopify, Airbnb) use it or Percy.
 
-If Chromatic cost becomes a concern, Playwright can cover component-level too via Storybook's portable stories, but you lose the review UI and must standardize CI rendering yourself.
+**Page-level:** Enterprise teams typically use Percy, Argos, or Chromatic (which now supports Playwright snapshots). Pure Playwright `toHaveScreenshot()` is less common in production because:
+
+- OS-dependent baselines (Mac screenshots won't match Linux CI)
+- Pixel-diff causes false positives (no AI/perceptual diffing)
+- No review UI — just "test failed" with no side-by-side comparison
+- Baseline management gets messy as page count grows
+
+### Pragmatic options for this project
+
+| Option                        | Setup                                                                            | Trade-off                                                                                                        |
+| ----------------------------- | -------------------------------------------------------------------------------- | ---------------------------------------------------------------------------------------------------------------- |
+| **Chromatic for both layers** | Chromatic supports Playwright snapshots. Same review UI, same perceptual diffing | Costs scale with snapshots                                                                                       |
+| **Argos for page-level**      | Open-source friendly, modern alternative gaining traction                        | Another vendor to manage                                                                                         |
+| **Playwright built-in**       | Free, shows understanding of concepts                                            | Requires stabilization effort (Docker, mocking, masking). Fine for demos, but production teams typically upgrade |
+
+**For this portfolio demo:** Playwright built-in is acceptable — demonstrates the concept. Document the trade-offs.
+
+**For production apps:** Budget for Percy/Argos or use Chromatic for both layers.
 
 ## Summary
 
@@ -127,8 +146,12 @@ Three questions, three separate test suites:
 
 - [How Netflix, Shopify & Top Tech Teams Use Visual Regression Testing](https://dev.to/maria_bueno/how-netflix-shopify-top-tech-teams-use-visual-regression-testing-to-scale-qa-3e30)
 - [Flaky Visual Regression Tests, and What To Do About Them](https://www.shakacode.com/blog/flaky-visual-regression-tests-and-what-to-do-about-them/)
+- [Fixing flaky Playwright visual regression tests](https://www.houseful.blog/posts/2023/fix-flaky-playwright-visual-regression-tests/)
 - [It's Time to Disrupt Visual Regression Testing](https://www.tonyward.dev/articles/visual-regression-testing-disruption)
 - [Running Visual Regression Tests with Storybook and Playwright for Free](https://markus.oberlehner.net/blog/running-visual-regression-tests-with-storybook-and-playwright-for-free)
+- [Visual Testing Tools Comparison 2025](https://vizzly.dev/visual-testing-tools-comparison/)
+- [Percy vs Chromatic comparison](https://www.chromatic.com/compare/percy)
+- [Argos CI](https://argos-ci.com)
 - [Design Token-Based UI Architecture — Martin Fowler](https://martinfowler.com/articles/design-token-based-ui-architecture.html)
 - [How to Reduce False Positives in Visual Testing — BrowserStack](https://www.browserstack.com/guide/how-to-reduce-false-positives-in-visual-testing)
 - [Chromatic vs Playwright Comparison](https://www.chromatic.com/compare/playwright)

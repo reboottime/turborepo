@@ -17,6 +17,22 @@ env:
   API_IMAGE_NAME: ${{ github.repository }}/api
 
 jobs:
+  # Detect which packages changed for conditional jobs
+  changes:
+    name: Detect Changes
+    runs-on: ubuntu-latest
+    outputs:
+      ui: ${{ steps.filter.outputs.ui }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: dorny/paths-filter@v3
+        id: filter
+        with:
+          filters: |
+            ui:
+              - 'packages/ui/**'
+
   quality:
     name: Lint & Type Check
     runs-on: ubuntu-latest
@@ -40,6 +56,33 @@ jobs:
       - uses: ./.github/actions/setup
 
       - run: pnpm turbo run test
+
+  chromatic:
+    name: Visual Review (Components)
+    needs: [changes]
+    if: needs.changes.outputs.ui == 'true'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+
+      - uses: ./.github/actions/setup
+
+      - name: Build Storybook
+        run: pnpm turbo run build-storybook --filter=@repo/ui
+
+      - name: Run Chromatic
+        uses: chromaui/action@latest
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          workingDir: packages/ui
+          storybookBuildDir: storybook-static
+          onlyChanged: true
+          autoAcceptChanges: main
+          exitZeroOnChanges: true
+          externals: |
+            packages/ui/src/styles/**
 
   build:
     name: Build
@@ -123,7 +166,8 @@ jobs:
             apps/api/Dockerfile
             apps/api/.dockerignore
 
-      - uses: actions/download-artifact@v4
+      - name: Download API build artifact
+        uses: actions/download-artifact@v4
         with:
           name: api-build
           path: apps/api
@@ -152,8 +196,6 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.API_IMAGE_NAME }}
           tags: |
             type=sha,prefix=,format=long
-            type=ref,event=pr
-            type=ref,event=branch
 
       - name: Build and push
         uses: docker/build-push-action@v6
@@ -167,9 +209,12 @@ jobs:
           cache-to: type=gha,mode=max
 
   e2e:
-    name: E2E
+    name: E2E Tests
     needs: [build-api-image]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
     env:
       E2E_TEST_EMAIL: admin@test.com
       E2E_TEST_PASSWORD: test123
@@ -189,10 +234,13 @@ jobs:
           --health-retries 5
     steps:
       - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - uses: ./.github/actions/setup
 
-      - uses: actions/download-artifact@v4
+      - name: Download portal build artifact
+        uses: actions/download-artifact@v4
         with:
           name: portal-build
           path: apps/portal/.next
@@ -264,6 +312,16 @@ jobs:
           NEXT_PUBLIC_API_URL: http://localhost:3002
           E2E_TEST_EMAIL: ${{ env.E2E_TEST_EMAIL }}
           E2E_TEST_PASSWORD: ${{ env.E2E_TEST_PASSWORD }}
+
+      - name: Visual Review (Pages)
+        if: success() || failure()
+        uses: chromaui/action@latest
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          workingDir: apps/portal
+          playwright: true
+          exitZeroOnChanges: true
+          autoAcceptChanges: main
 
       - uses: actions/upload-artifact@v4
         if: failure()
