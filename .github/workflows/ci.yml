@@ -210,6 +210,26 @@ jobs:
           cache-from: type=gha
           cache-to: type=gha,mode=max
 
+  lighthouse:
+    name: Lighthouse CI
+    needs: [build]
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+
+      - uses: ./.github/actions/setup
+
+      - name: Download portal build artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: portal-build
+          path: apps/portal/.next
+
+      - name: Lighthouse CI
+        run: pnpm --filter @repo/portal lighthouse
+        env:
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+
   e2e:
     name: E2E Tests
     needs: [build-api-image]
