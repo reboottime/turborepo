@@ -36,7 +36,24 @@ import { test, expect } from "@playwright/test";
 import { test, expect } from "@chromatic-com/playwright";
 ```
 
-Same API — Chromatic's package re-exports everything from Playwright and adds archive capture.
+**What this import change does:**
+
+```
+Before (Playwright directly):
+Test runs → Playwright controls browser → Test passes/fails → Done
+
+After (Chromatic wrapper):
+Test runs → Chromatic wrapper controls browser → Same test passes/fails
+                                               ↓
+                                    Also silently captures page snapshots
+                                    (saved to test-results/chromatic-archives/)
+```
+
+The wrapper re-exports everything from Playwright (`test`, `expect`, `Page`, etc.) with identical behavior. Your tests work exactly the same — they don't know the difference.
+
+The only addition: Chromatic's wrapper records the page state (HTML, CSS, assets) at the end of each test. These archives are later uploaded to Chromatic's cloud, where they render the pages and compare screenshots.
+
+**In short:** Same tests, same behavior, but now they secretly take "photos" for visual comparison.
 
 ### Step 3: Update fixtures (if using custom fixtures)
 

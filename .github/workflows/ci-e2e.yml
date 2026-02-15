@@ -4,12 +4,9 @@ on:
   workflow_run:
     workflows: [CI - Build]
     types: [completed]
-    branches: [main]
-  pull_request:
-    types: [opened, synchronize]
 
 concurrency:
-  group: ci-e2e-${{ github.event.workflow_run.head_sha || github.sha }}
+  group: ci-e2e-${{ github.event.workflow_run.head_sha }}
   cancel-in-progress: true
 
 env:
@@ -19,75 +16,9 @@ env:
   API_IMAGE_NAME: ${{ github.repository }}/api
 
 jobs:
-  # For workflow_run trigger, check if CI succeeded
-  check-ci:
-    name: Check CI Status
-    runs-on: ubuntu-latest
-    if: github.event_name == 'workflow_run'
-    outputs:
-      should_run: ${{ steps.check.outputs.should_run }}
-    steps:
-      - name: Check CI workflow result
-        id: check
-        run: |
-          if [ "${{ github.event.workflow_run.conclusion }}" == "success" ]; then
-            echo "should_run=true" >> $GITHUB_OUTPUT
-          else
-            echo "CI workflow did not succeed, skipping E2E"
-            echo "should_run=false" >> $GITHUB_OUTPUT
-          fi
-
-  # For PR trigger, wait for CI artifacts to be available
-  wait-for-ci:
-    name: Wait for CI
-    runs-on: ubuntu-latest
-    if: github.event_name == 'pull_request'
-    outputs:
-      should_run: ${{ steps.wait.outputs.should_run }}
-    steps:
-      - name: Wait for CI workflow
-        id: wait
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const maxWait = 20 * 60 * 1000; // 20 minutes
-            const pollInterval = 30 * 1000; // 30 seconds
-            const startTime = Date.now();
-
-            while (Date.now() - startTime < maxWait) {
-              const { data: runs } = await github.rest.actions.listWorkflowRuns({
-                owner: context.repo.owner,
-                repo: context.repo.repo,
-                workflow_id: 'ci-build.yml',
-                head_sha: context.sha,
-                per_page: 1
-              });
-
-              if (runs.workflow_runs.length > 0) {
-                const run = runs.workflow_runs[0];
-                if (run.conclusion === 'success') {
-                  core.setOutput('should_run', 'true');
-                  console.log('CI workflow succeeded');
-                  return;
-                } else if (run.conclusion && run.conclusion !== 'success') {
-                  core.setOutput('should_run', 'false');
-                  console.log(`CI workflow ended with: ${run.conclusion}`);
-                  return;
-                }
-              }
-
-              console.log('Waiting for CI workflow...');
-              await new Promise(r => setTimeout(r, pollInterval));
-            }
-
-            core.setFailed('Timeout waiting for CI workflow');
-
   build-api-image:
     name: Build API Image
-    needs: [check-ci, wait-for-ci]
-    if: |
-      always() &&
-      (needs.check-ci.outputs.should_run == 'true' || needs.wait-for-ci.outputs.should_run == 'true')
+    if: github.event.workflow_run.conclusion == 'success'
     runs-on: ubuntu-latest
     permissions:
       contents: read
@@ -96,34 +27,10 @@ jobs:
     steps:
       - uses: actions/checkout@v4
         with:
+          ref: ${{ github.event.workflow_run.head_sha }}
           sparse-checkout: |
             apps/api/Dockerfile
             apps/api/.dockerignore
-
-      - name: Get CI run ID
-        id: get-run
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const sha = context.eventName === 'workflow_run'
-              ? '${{ github.event.workflow_run.head_sha }}'
-              : context.sha;
-
-            const { data: runs } = await github.rest.actions.listWorkflowRuns({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'ci-build.yml',
-              head_sha: sha,
-              status: 'success',
-              per_page: 1
-            });
-
-            if (runs.workflow_runs.length === 0) {
-              core.setFailed('No successful CI run found');
-              return;
-            }
-
-            core.setOutput('run_id', runs.workflow_runs[0].id);
 
       - name: Download API build artifact
         uses: actions/download-artifact@v4
@@ -131,7 +38,7 @@ jobs:
           name: api-build
           path: apps/api
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ steps.get-run.outputs.run_id }}
+          run-id: ${{ github.event.workflow_run.id }}
 
       - name: Verify artifact structure
         run: |
@@ -157,8 +64,6 @@ jobs:
           images: ${{ env.REGISTRY }}/${{ env.API_IMAGE_NAME }}
           tags: |
             type=sha,prefix=,format=long
-            type=ref,event=pr
-            type=ref,event=branch
 
       - name: Build and push
         uses: docker/build-push-action@v6
@@ -198,33 +103,10 @@ jobs:
           --health-retries 5
     steps:
       - uses: actions/checkout@v4
+        with:
+          ref: ${{ github.event.workflow_run.head_sha }}
 
       - uses: ./.github/actions/setup
-
-      - name: Get CI run ID
-        id: get-run
-        uses: actions/github-script@v7
-        with:
-          script: |
-            const sha = context.eventName === 'workflow_run'
-              ? '${{ github.event.workflow_run.head_sha }}'
-              : context.sha;
-
-            const { data: runs } = await github.rest.actions.listWorkflowRuns({
-              owner: context.repo.owner,
-              repo: context.repo.repo,
-              workflow_id: 'ci-build.yml',
-              head_sha: sha,
-              status: 'success',
-              per_page: 1
-            });
-
-            if (runs.workflow_runs.length === 0) {
-              core.setFailed('No successful CI run found');
-              return;
-            }
-
-            core.setOutput('run_id', runs.workflow_runs[0].id);
 
       - name: Download portal build artifact
         uses: actions/download-artifact@v4
@@ -232,7 +114,7 @@ jobs:
           name: portal-build
           path: apps/portal/.next
           github-token: ${{ secrets.GITHUB_TOKEN }}
-          run-id: ${{ steps.get-run.outputs.run_id }}
+          run-id: ${{ github.event.workflow_run.id }}
 
       - name: Log in to Container Registry
         uses: docker/login-action@v3
@@ -255,13 +137,6 @@ jobs:
           pnpm --filter @repo/portal exec playwright install --with-deps chromium &
           PLAYWRIGHT_PID=$!
 
-          # Determine the correct SHA for image tag
-          if [ "${{ github.event_name }}" == "workflow_run" ]; then
-            IMAGE_SHA="${{ github.event.workflow_run.head_sha }}"
-          else
-            IMAGE_SHA="${{ github.sha }}"
-          fi
-
           # Pull and start API container
           docker run -d \
             --name api \
@@ -271,7 +146,7 @@ jobs:
             -e E2E_TEST_EMAIL="${{ env.E2E_TEST_EMAIL }}" \
             -e E2E_TEST_PASSWORD="${{ env.E2E_TEST_PASSWORD }}" \
             -e PORT=3002 \
-            ${{ env.REGISTRY }}/${{ env.API_IMAGE_NAME }}:${IMAGE_SHA}
+            ${{ env.REGISTRY }}/${{ env.API_IMAGE_NAME }}:${{ github.event.workflow_run.head_sha }}
 
           # Wait for API (30 second timeout)
           echo "Waiting for API..."
