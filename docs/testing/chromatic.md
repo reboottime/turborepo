@@ -1,8 +1,10 @@
-# Chromatic
+# Chromatic (Storybook)
 
 Chromatic captures screenshots of every Storybook story and compares them against baselines. When something changes, reviewers see a side-by-side diff and approve or reject.
 
 For why visual testing matters and how Chromatic fits into the testing strategy, see [visual-testing.md](visual-testing.md).
+
+For Chromatic with Playwright (E2E page-level visual testing), see [chromatic-playwright.md](chromatic-playwright.md).
 
 ## How It Works
 

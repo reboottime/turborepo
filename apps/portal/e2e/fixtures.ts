@@ -1,5 +1,5 @@
 // apps/portal/e2e/fixtures.ts
-import { test as base, expect, Page } from "@playwright/test";
+import { test as base, expect, Page } from "@chromatic-com/playwright";
 import * as fs from "fs";
 import * as path from "path";
 import { fileURLToPath } from "url";

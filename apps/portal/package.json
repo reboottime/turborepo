@@ -23,6 +23,7 @@
     "yup": "^1.7.1"
   },
   "devDependencies": {
+    "@chromatic-com/playwright": "^0.12.8",
     "@jest/globals": "^30.2.0",
     "@playwright/test": "^1.58.2",
     "@repo/config.eslint": "workspace:*",

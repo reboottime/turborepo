@@ -309,6 +309,16 @@ jobs:
           E2E_TEST_EMAIL: ${{ env.E2E_TEST_EMAIL }}
           E2E_TEST_PASSWORD: ${{ env.E2E_TEST_PASSWORD }}
 
+      - name: Visual Review (Chromatic)
+        if: success() || failure()
+        uses: chromaui/action@latest
+        with:
+          projectToken: ${{ secrets.CHROMATIC_PROJECT_TOKEN }}
+          workingDir: apps/portal
+          playwright: true
+          exitZeroOnChanges: true
+          autoAcceptChanges: main
+
       - uses: actions/upload-artifact@v4
         if: failure()
         with:
