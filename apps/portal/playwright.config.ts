@@ -30,7 +30,8 @@ export default defineConfig({
   webServer: {
     command: process.env.CI ? "pnpm start --port 3001" : "pnpm dev",
     port: 3001,
-    reuseExistingServer: !process.env.CI,
+    // REUSE_SERVER=true when running parallel with Lighthouse (server started externally)
+    reuseExistingServer: process.env.REUSE_SERVER === "true" || !process.env.CI,
     timeout: 120000,
   },
 });
