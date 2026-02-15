@@ -42,4 +42,4 @@ jobs:
           exitZeroOnChanges: true
           # Files that affect all stories — changes here trigger full visual regression
           externals: |
-            packages/ui/src/styles.css
+            packages/ui/src/styles/**

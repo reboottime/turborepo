@@ -93,12 +93,12 @@ Workflow: `.github/workflows/chromatic.yml`
 
 **Key options:**
 
-| Option              | Value                        | Why                                                   |
-| ------------------- | ---------------------------- | ----------------------------------------------------- |
-| `onlyChanged`       | `true`                       | Only test stories affected by the PR                  |
-| `autoAcceptChanges` | `main`                       | Pushes to main become the new baseline                |
-| `exitZeroOnChanges` | `true`                       | Don't fail CI on visual changes — review in dashboard |
-| `externals`         | `packages/ui/src/styles.css` | Global CSS changes trigger full rebuild               |
+| Option              | Value                       | Why                                                   |
+| ------------------- | --------------------------- | ----------------------------------------------------- |
+| `onlyChanged`       | `true`                      | Only test stories affected by the PR                  |
+| `autoAcceptChanges` | `main`                      | Pushes to main become the new baseline                |
+| `exitZeroOnChanges` | `true`                      | Don't fail CI on visual changes — review in dashboard |
+| `externals`         | `packages/ui/src/styles/**` | Global CSS changes trigger full rebuild               |
 
 **Secret required:** `CHROMATIC_PROJECT_TOKEN` in GitHub repository secrets.
 
