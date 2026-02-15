@@ -31,7 +31,9 @@ jobs:
         with:
           filters: |
             ui:
-              - 'packages/ui/**'
+              - 'packages/ui/src/**'
+              - '!packages/ui/src/**/*.test.tsx'
+              - 'packages/ui/.storybook/**'
 
   quality:
     name: Lint & Type Check
@@ -82,7 +84,7 @@ jobs:
           autoAcceptChanges: main
           exitZeroOnChanges: true
           externals: |
-            packages/ui/src/styles/**
+            src/styles/**
 
   build:
     name: Build
