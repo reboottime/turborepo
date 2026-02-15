@@ -3,7 +3,8 @@ module.exports = {
     collect: {
       startServerCommand: 'pnpm start',
       startServerReadyPattern: 'Ready',
-      url: ['http://localhost:3001'],
+      puppeteerScript: './lighthouse-auth.cjs',
+      url: ['http://localhost:3001/employees'],
       numberOfRuns: 3,
     },
     assert: {
