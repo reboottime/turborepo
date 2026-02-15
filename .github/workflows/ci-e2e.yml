@@ -1,14 +1,16 @@
-name: CI
+name: CI - E2E
 
 on:
-  push:
+  workflow_run:
+    workflows: [CI - Build]
+    types: [completed]
     branches: [main]
   pull_request:
     types: [opened, synchronize]
 
 concurrency:
-  group: ci-${{ github.ref }}
-  cancel-in-progress: ${{ github.ref != 'refs/heads/main' }}
+  group: ci-e2e-${{ github.event.workflow_run.head_sha || github.sha }}
+  cancel-in-progress: true
 
 env:
   TURBO_TOKEN: ${{ secrets.TURBO_TOKEN }}
@@ -17,105 +19,80 @@ env:
   API_IMAGE_NAME: ${{ github.repository }}/api
 
 jobs:
-  quality:
-    name: Lint & Type Check
+  # For workflow_run trigger, check if CI succeeded
+  check-ci:
+    name: Check CI Status
     runs-on: ubuntu-latest
+    if: github.event_name == 'workflow_run'
+    outputs:
+      should_run: ${{ steps.check.outputs.should_run }}
     steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-
-      - uses: ./.github/actions/setup
-
-      - run: pnpm turbo run lint check-types
-
-  test:
-    name: Unit Tests
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-
-      - uses: ./.github/actions/setup
-
-      - run: pnpm turbo run test
-
-  build:
-    name: Build
-    needs: [quality, test]
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v4
-        with:
-          fetch-depth: 2
-
-      - uses: ./.github/actions/setup
-
-      - run: pnpm turbo run build
-        env:
-          NEXT_PUBLIC_API_URL: http://localhost:3002
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: web-build
-          path: apps/web/.next
-          retention-days: 1
-          include-hidden-files: true
-
-      - uses: actions/upload-artifact@v4
-        with:
-          name: portal-build
-          path: apps/portal/.next
-          retention-days: 1
-          include-hidden-files: true
-
-      - name: Generate Prisma client for production
+      - name: Check CI workflow result
+        id: check
         run: |
-          pnpm --filter @repo/api exec prisma generate
-
-          # Find the Prisma client path (handles version variations)
-          PRISMA_CLIENT_PATH=$(find node_modules/.pnpm -path "*/@prisma+client@*/node_modules/.prisma" -type d 2>/dev/null | head -1)
-
-          if [ -z "$PRISMA_CLIENT_PATH" ]; then
-            echo "Error: Could not find generated Prisma client"
-            echo "Contents of node_modules/.pnpm:"
-            ls -la node_modules/.pnpm/ | head -20
-            exit 1
+          if [ "${{ github.event.workflow_run.conclusion }}" == "success" ]; then
+            echo "should_run=true" >> $GITHUB_OUTPUT
+          else
+            echo "CI workflow did not succeed, skipping E2E"
+            echo "should_run=false" >> $GITHUB_OUTPUT
           fi
 
-          echo "Found Prisma client at: $PRISMA_CLIENT_PATH"
-          mkdir -p apps/api/node_modules/.prisma
-          cp -r "$PRISMA_CLIENT_PATH"/* apps/api/node_modules/.prisma/
-
-          # Verify copy succeeded
-          if [ ! -d "apps/api/node_modules/.prisma/client" ]; then
-            echo "Error: Prisma client copy failed"
-            ls -la apps/api/node_modules/.prisma/ || true
-            exit 1
-          fi
-
-          echo "Prisma client copied successfully:"
-          ls -la apps/api/node_modules/.prisma/
-
-      - uses: actions/upload-artifact@v4
+  # For PR trigger, wait for CI artifacts to be available
+  wait-for-ci:
+    name: Wait for CI
+    runs-on: ubuntu-latest
+    if: github.event_name == 'pull_request'
+    outputs:
+      should_run: ${{ steps.wait.outputs.should_run }}
+    steps:
+      - name: Wait for CI workflow
+        id: wait
+        uses: actions/github-script@v7
         with:
-          name: api-build
-          path: |
-            apps/api/dist
-            apps/api/prisma
-            apps/api/package.json
-            apps/api/node_modules/.prisma
-          retention-days: 1
-          include-hidden-files: true
+          script: |
+            const maxWait = 20 * 60 * 1000; // 20 minutes
+            const pollInterval = 30 * 1000; // 30 seconds
+            const startTime = Date.now();
+
+            while (Date.now() - startTime < maxWait) {
+              const { data: runs } = await github.rest.actions.listWorkflowRuns({
+                owner: context.repo.owner,
+                repo: context.repo.repo,
+                workflow_id: 'ci-build.yml',
+                head_sha: context.sha,
+                per_page: 1
+              });
+
+              if (runs.workflow_runs.length > 0) {
+                const run = runs.workflow_runs[0];
+                if (run.conclusion === 'success') {
+                  core.setOutput('should_run', 'true');
+                  console.log('CI workflow succeeded');
+                  return;
+                } else if (run.conclusion && run.conclusion !== 'success') {
+                  core.setOutput('should_run', 'false');
+                  console.log(`CI workflow ended with: ${run.conclusion}`);
+                  return;
+                }
+              }
+
+              console.log('Waiting for CI workflow...');
+              await new Promise(r => setTimeout(r, pollInterval));
+            }
+
+            core.setFailed('Timeout waiting for CI workflow');
 
   build-api-image:
     name: Build API Image
-    needs: [build]
+    needs: [check-ci, wait-for-ci]
+    if: |
+      always() &&
+      (needs.check-ci.outputs.should_run == 'true' || needs.wait-for-ci.outputs.should_run == 'true')
     runs-on: ubuntu-latest
     permissions:
       contents: read
       packages: write
+      actions: read
     steps:
       - uses: actions/checkout@v4
         with:
@@ -123,10 +100,38 @@ jobs:
             apps/api/Dockerfile
             apps/api/.dockerignore
 
-      - uses: actions/download-artifact@v4
+      - name: Get CI run ID
+        id: get-run
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const sha = context.eventName === 'workflow_run'
+              ? '${{ github.event.workflow_run.head_sha }}'
+              : context.sha;
+
+            const { data: runs } = await github.rest.actions.listWorkflowRuns({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'ci-build.yml',
+              head_sha: sha,
+              status: 'success',
+              per_page: 1
+            });
+
+            if (runs.workflow_runs.length === 0) {
+              core.setFailed('No successful CI run found');
+              return;
+            }
+
+            core.setOutput('run_id', runs.workflow_runs[0].id);
+
+      - name: Download API build artifact
+        uses: actions/download-artifact@v4
         with:
           name: api-build
           path: apps/api
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ steps.get-run.outputs.run_id }}
 
       - name: Verify artifact structure
         run: |
@@ -170,6 +175,10 @@ jobs:
     name: E2E
     needs: [build-api-image]
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      packages: read
+      actions: read
     env:
       E2E_TEST_EMAIL: admin@test.com
       E2E_TEST_PASSWORD: test123
@@ -192,10 +201,38 @@ jobs:
 
       - uses: ./.github/actions/setup
 
-      - uses: actions/download-artifact@v4
+      - name: Get CI run ID
+        id: get-run
+        uses: actions/github-script@v7
+        with:
+          script: |
+            const sha = context.eventName === 'workflow_run'
+              ? '${{ github.event.workflow_run.head_sha }}'
+              : context.sha;
+
+            const { data: runs } = await github.rest.actions.listWorkflowRuns({
+              owner: context.repo.owner,
+              repo: context.repo.repo,
+              workflow_id: 'ci-build.yml',
+              head_sha: sha,
+              status: 'success',
+              per_page: 1
+            });
+
+            if (runs.workflow_runs.length === 0) {
+              core.setFailed('No successful CI run found');
+              return;
+            }
+
+            core.setOutput('run_id', runs.workflow_runs[0].id);
+
+      - name: Download portal build artifact
+        uses: actions/download-artifact@v4
         with:
           name: portal-build
           path: apps/portal/.next
+          github-token: ${{ secrets.GITHUB_TOKEN }}
+          run-id: ${{ steps.get-run.outputs.run_id }}
 
       - name: Log in to Container Registry
         uses: docker/login-action@v3
@@ -218,6 +255,13 @@ jobs:
           pnpm --filter @repo/portal exec playwright install --with-deps chromium &
           PLAYWRIGHT_PID=$!
 
+          # Determine the correct SHA for image tag
+          if [ "${{ github.event_name }}" == "workflow_run" ]; then
+            IMAGE_SHA="${{ github.event.workflow_run.head_sha }}"
+          else
+            IMAGE_SHA="${{ github.sha }}"
+          fi
+
           # Pull and start API container
           docker run -d \
             --name api \
@@ -227,7 +271,7 @@ jobs:
             -e E2E_TEST_EMAIL="${{ env.E2E_TEST_EMAIL }}" \
             -e E2E_TEST_PASSWORD="${{ env.E2E_TEST_PASSWORD }}" \
             -e PORT=3002 \
-            ${{ env.REGISTRY }}/${{ env.API_IMAGE_NAME }}:${{ github.sha }}
+            ${{ env.REGISTRY }}/${{ env.API_IMAGE_NAME }}:${IMAGE_SHA}
 
           # Wait for API (30 second timeout)
           echo "Waiting for API..."
