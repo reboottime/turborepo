@@ -26,9 +26,11 @@ out/
 coverage/
 test-results/
 playwright-report/
+chromatic-archives/
 
 # Storybook
 storybook-static/
+build-storybook.log
 
 # TypeScript
 *.tsbuildinfo
