@@ -229,6 +229,8 @@ jobs:
         run: pnpm --filter @repo/portal lighthouse
         env:
           LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
+          E2E_TEST_EMAIL: admin@test.com
+          E2E_TEST_PASSWORD: test123
 
   e2e:
     name: E2E Tests
