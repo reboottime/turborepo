@@ -42,13 +42,21 @@ pnpm add -D @lhci/cli -w
 Create `lighthouserc.cjs` in the app directory (e.g., `apps/portal/lighthouserc.cjs`). App-level config allows different apps to have different thresholds:
 
 ```js
+// When REUSE_SERVER=true, server is started externally (parallel CI mode)
+const serverConfig =
+  process.env.REUSE_SERVER === "true"
+    ? {}
+    : {
+        startServerCommand: "pnpm start --port 3001",
+        startServerReadyPattern: "Ready",
+      };
+
 module.exports = {
   ci: {
     collect: {
-      // Lighthouse will start the server itself
-      startServerCommand: "pnpm start",
-      startServerReadyPattern: "Ready",
-      url: ["http://localhost:3001"],
+      ...serverConfig,
+      puppeteerScript: "./lighthouse-auth.cjs", // For authenticated pages
+      url: ["http://localhost:3001/employees"],
       numberOfRuns: 3,
     },
     assert: {
@@ -66,16 +74,25 @@ module.exports = {
 };
 ```
 
+For apps with authentication, create a `lighthouse-auth.cjs` puppeteer script to log in before audits.
+
 ### CI Integration
 
-Add to workflow after build completes:
+Lighthouse runs in the same job as E2E tests, sharing infrastructure (postgres, API, portal server):
 
 ```yaml
-- name: Lighthouse CI
-  run: pnpm --filter @repo/portal lighthouse
+# Portal server started externally, shared with E2E
+- name: Run E2E and Lighthouse
+  run: |
+    pnpm --filter @repo/portal test:e2e &
+    pnpm --filter @repo/portal lighthouse &
+    wait
   env:
+    REUSE_SERVER: "true" # Don't start server, use existing
     LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
 ```
+
+The `REUSE_SERVER=true` env var tells both Playwright and Lighthouse to use the externally-started portal server instead of starting their own.
 
 ## Thresholds
 
@@ -104,6 +121,27 @@ pnpm lighthouse
 ## Reports
 
 With `temporary-public-storage`, reports upload to a public URL (expires after 7 days). For persistent storage, configure Lighthouse Server or use `filesystem` target.
+
+## GitHub PR Status Checks
+
+To get Lighthouse results as clickable links directly in PR status checks:
+
+### 1. Install the Lighthouse CI GitHub App
+
+1. Go to https://github.com/apps/lighthouse-ci
+2. Click **Install**
+3. Select your repository
+4. **Copy the token** from the confirmation page (shown only once)
+
+### 2. Add the token to GitHub Secrets
+
+1. Go to your repo → **Settings** → **Secrets and variables** → **Actions**
+2. Click **New repository secret**
+3. Name: `LHCI_GITHUB_APP_TOKEN`
+4. Value: paste the token from step 1
+5. Click **Add secret**
+
+Once configured, each PR will show a "Lighthouse CI" status check with a "Details" link to the full report.
 
 ## Common Issues
 

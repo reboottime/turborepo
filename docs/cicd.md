@@ -26,41 +26,40 @@ PR opened/sync                          Push to main
                      │   build   │
                      └─────┬─────┘
                            │
+                           ▼
+                    ┌──────────────┐
+                    │build-api-img │
+                    └──────┬───────┘
+                           │
+                           ▼
+              ┌────────────────────────┐
+              │    E2E & Lighthouse    │
+              │  ┌────────┐ ┌────────┐ │
+              │  │  e2e   │ │  lhci  │ │  <- parallel
+              │  └────────┘ └────────┘ │   (shared infra)
+              └────────────┬───────────┘
+                           │
+                   JOB MUST PASS
+                           │
             ┌──────────────┴──────────────┐
-            ▼                             ▼
-     ┌─────────────┐              ┌──────────────┐
-     │ lighthouse  │              │build-api-img │
-     │             │              └──────┬───────┘
-     │ perf ≥ 90   │                     │
-     │ a11y ≥ 95   │                     ▼
-     └──────┬──────┘              ┌──────────────┐
-            │                     │     e2e      │
-            │                     │ (playwright) │
-            │                     └──────┬───────┘
-            │                            │
-            └────────────┬───────────────┘
-                         │
-                 ALL JOBS MUST PASS
-                         │
-            ┌────────────┴────────────┐
-            │                         │
-       ❌ ANY FAIL                ✅ ALL PASS
-            │                         │
-       deploy skips          ┌────────┴────────┐
-                        if: PR            if: main
-                             │                 │
+            │                             │
+       ❌ FAIL                       ✅ PASS
+            │                             │
+       deploy skips          ┌────────────┴────────────┐
+                        if: PR                    if: main
+                             │                         │
 ══════════════════════════════════════════════════════════════════
-                             ▼                 ▼
-               deploy-preview.yml    deploy-production.yml
-               ┌────────┬────────┐   ┌────────┬────────┐
-               │ web    │ portal │   │ web    │ portal │
-               │preview │preview │   │ prod   │ prod   │
-               └────────┴────────┘   └────────┴────────┘
+                             ▼                         ▼
+               deploy-preview.yml          deploy-production.yml
+               ┌────────┬────────┐         ┌────────┬────────┐
+               │ web    │ portal │         │ web    │ portal │
+               │preview │preview │         │ prod   │ prod   │
+               └────────┴────────┘         └────────┴────────┘
 ```
 
-## E2E Integration Architecture
+## E2E & Lighthouse Integration Architecture
 
-The E2E job runs Playwright tests against a real API backend:
+The combined job runs Playwright and Lighthouse tests in parallel against shared infrastructure:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -71,13 +70,13 @@ The E2E job runs Playwright tests against a real API backend:
 │  │   Portal    │ ─────────────────► │   API Container     ││
 │  │   :3001     │                    │   --network host    ││
 │  │             │                    │   PORT=3002         ││
-│  └─────────────┘                    └──────────┬──────────┘│
-│        ▲                                       │           │
-│        │                                       ▼           │
-│  ┌─────────────┐                    ┌─────────────────────┐│
-│  │  Playwright │                    │   Postgres          ││
-│  │  (browser)  │                    │   :5432 (service)   ││
-│  └─────────────┘                    └─────────────────────┘│
+│  └──────┬──────┘                    └──────────┬──────────┘│
+│         │                                      │           │
+│    ┌────┴────┐                                 ▼           │
+│    │         │                      ┌─────────────────────┐│
+│  ┌─────┐ ┌─────────┐                │   Postgres          ││
+│  │ E2E │ │Lighthse │  <- parallel   │   :5432 (service)   ││
+│  └─────┘ └─────────┘                └─────────────────────┘│
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -87,8 +86,9 @@ The E2E job runs Playwright tests against a real API backend:
 2. Prisma migrations + seed data applied
 3. API container pulled from GHCR + Playwright install (parallel)
 4. API starts on host network, waits for health check
-5. Portal starts via Playwright webServer
-6. Playwright tests run against real API
+5. Portal server starts (shared by both test suites)
+6. E2E and Lighthouse run in parallel with `REUSE_SERVER=true`
+7. Both must pass for job to succeed
 
 ## API Docker Image
 
@@ -122,11 +122,11 @@ apps/api/node_modules/.prisma
 
 ## Workflow Files
 
-| File                    | Trigger          | Purpose                                                         |
-| ----------------------- | ---------------- | --------------------------------------------------------------- |
-| `ci.yml`                | push to main, PR | Lint, types, test, chromatic, build, lighthouse, API image, E2E |
-| `deploy-preview.yml`    | after CI (PR)    | Deploy preview to Vercel                                        |
-| `deploy-production.yml` | after CI (main)  | Deploy production to Vercel                                     |
+| File                    | Trigger          | Purpose                                                          |
+| ----------------------- | ---------------- | ---------------------------------------------------------------- |
+| `ci.yml`                | push to main, PR | Lint, types, test, chromatic, build, API image, E2E + Lighthouse |
+| `deploy-preview.yml`    | after CI (PR)    | Deploy preview to Vercel                                         |
+| `deploy-production.yml` | after CI (main)  | Deploy production to Vercel                                      |
 
 **Archived:** `_archived/storybook.yml` — Chromatic hosts published Storybook, GitHub Pages redundant.
 
@@ -141,14 +141,16 @@ Runs conditionally in `ci.yml` when `packages/ui/**` changes:
 
 ## Lighthouse CI (Quality Audits)
 
-Runs in `ci.yml` after build, audits portal app:
+Runs in parallel with E2E tests (same job, shared infrastructure):
 
 - Performance, accessibility, SEO, best practices
 - Fails if scores drop below thresholds (perf 90, a11y 95)
 - Reports uploaded to temporary public storage (7-day retention)
 - Config: `apps/portal/lighthouserc.cjs` (app-level, not repo root)
+- Uses `REUSE_SERVER=true` to share portal server with E2E
+- PR status checks with report links require `LHCI_GITHUB_APP_TOKEN` secret
 
-See [testing/lighthouse.md](testing/lighthouse.md) for setup details.
+See [testing/lighthouse.md](testing/lighthouse.md) for setup details including GitHub App configuration.
 
 ## Branch Protection
 
@@ -157,7 +159,7 @@ To prevent merging PRs until CI passes, configure GitHub branch protection:
 1. **Settings** → **Branches** → **Add branch protection rule**
 2. Branch name pattern: `main`
 3. Enable **Require status checks to pass before merging**
-4. Select required jobs: `Lint & Type Check`, `Unit Tests`, `Build`, `Lighthouse CI`, `E2E`
+4. Select required jobs: `Lint & Type Check`, `Unit Tests`, `Build`, `E2E & Lighthouse`
 5. Enable **Require branches to be up to date before merging**
 
 Note: Status checks only appear in the dropdown after the workflow has run at least once.
