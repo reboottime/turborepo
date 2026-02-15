@@ -211,7 +211,7 @@ jobs:
           cache-to: type=gha,mode=max
 
   e2e:
-    name: E2E Tests
+    name: E2E & Lighthouse
     needs: [build-api-image]
     runs-on: ubuntu-latest
     permissions:
@@ -262,7 +262,7 @@ jobs:
         env:
           DATABASE_URL: postgresql://test:test@localhost:5432/employee_db
 
-      - name: Start API container and install Playwright
+      - name: Start services
         run: |
           # Start Playwright install in background
           pnpm --filter @repo/portal exec playwright install --with-deps chromium &
@@ -301,6 +301,28 @@ jobs:
             exit 1
           fi
 
+          # Start portal server in background
+          NEXT_PUBLIC_API_URL=http://localhost:3002 pnpm --filter @repo/portal start --port 3001 &
+          PORTAL_PID=$!
+          echo "PORTAL_PID=$PORTAL_PID" >> $GITHUB_ENV
+
+          # Wait for portal (30 second timeout)
+          echo "Waiting for Portal..."
+          PORTAL_READY=false
+          for i in {1..30}; do
+            if curl -sf http://localhost:3001 > /dev/null 2>&1; then
+              echo "Portal ready after $i seconds!"
+              PORTAL_READY=true
+              break
+            fi
+            sleep 1
+          done
+
+          if [ "$PORTAL_READY" != "true" ]; then
+            echo "::error::Portal failed to start within 30 seconds"
+            exit 1
+          fi
+
           # Wait for Playwright (fail if install failed)
           if ! wait $PLAYWRIGHT_PID; then
             echo "::error::Playwright install failed"
@@ -308,12 +330,37 @@ jobs:
           fi
           echo "Playwright ready!"
 
-      - name: Run E2E tests
-        run: pnpm --filter @repo/portal test:e2e
+      - name: Run E2E and Lighthouse
+        run: |
+          # Run both in parallel
+          pnpm --filter @repo/portal test:e2e &
+          E2E_PID=$!
+
+          pnpm --filter @repo/portal lighthouse &
+          LH_PID=$!
+
+          # Track failures
+          FAILED=0
+
+          # Wait for E2E
+          if ! wait $E2E_PID; then
+            echo "::error::E2E tests failed"
+            FAILED=1
+          fi
+
+          # Wait for Lighthouse
+          if ! wait $LH_PID; then
+            echo "::error::Lighthouse failed"
+            FAILED=1
+          fi
+
+          exit $FAILED
         env:
+          REUSE_SERVER: "true"
           NEXT_PUBLIC_API_URL: http://localhost:3002
           E2E_TEST_EMAIL: ${{ env.E2E_TEST_EMAIL }}
           E2E_TEST_PASSWORD: ${{ env.E2E_TEST_PASSWORD }}
+          LHCI_GITHUB_APP_TOKEN: ${{ secrets.LHCI_GITHUB_APP_TOKEN }}
 
       - name: Visual Review (Pages)
         if: success() || failure()
@@ -332,6 +379,8 @@ jobs:
           path: apps/portal/playwright-report
           retention-days: 7
 
-      - name: Stop API container
+      - name: Stop services
         if: always()
-        run: docker stop api || true
+        run: |
+          kill $PORTAL_PID || true
+          docker stop api || true

@@ -97,34 +97,33 @@ CI runs on pull requests and pushes to `main`:
 ```sh
 ┌────────────────────┐   ┌────────────────┐   ┌────────────────────┐
 │ Lint + Type Checks │   │  Unit Tests    │   │  Visual Review     │  <- parallel
-└─────────┬──────────┘   └───────┬────────┘   │  (Chromatic)       │
-          │                      │            └─────────┬──────────┘
-          └──────────┬───────────┘                      │
-                     ↓                                  │
-              ┌────────────────┐                        │
-              │   Build Apps   │                        │
-              └───────┬────────┘                        │
-                      ↓                                 │
-              ┌────────────────┐                        │
-              │ Build API Image│                        │
-              └───────┬────────┘                        │
-                      ↓                                 │
-      ┌───────────────────────────────────┐            │
-      │               e2e                 │            │
-      │  Playwright against real backend  │            │
-      │  (API container --> PostgreSQL)   │            │
-      └───────────────────┬───────────────┘            │
-                          ↓                            │
-      ┌───────────────────────────────────┐            │
-      │        Page Visual Review         │ ←──────────┘
-      │  (Chromatic + Playwright)         │   same dashboard
-      └───────────────────────────────────┘
+└─────────┬──────────┘   └───────┬────────┘   │  (if UI changed)   │
+          │                      │            └────────────────────┘
+          └──────────┬───────────┘
+                     ↓
+              ┌────────────────┐
+              │   Build Apps   │
+              └───────┬────────┘
+                      ↓
+              ┌───────────────┐
+              │ Build API Img │
+              └───────┬───────┘
+                      ↓
+       ┌──────────────────────────────────┐
+       │       E2E & Lighthouse           │
+       │  ┌───────────┐  ┌─────────────┐  │
+       │  │ Playwright│  │  Lighthouse │  │  <- parallel
+       │  │   tests   │  │  perf ≥ 90  │  │     (shared infra)
+       │  └───────────┘  │  a11y ≥ 95  │  │
+       │                 └─────────────┘  │
+       │  + Page Visual Review            │
+       └──────────────────────────────────┘
 ```
 
-1. **quality** (lint + type checks), unit tests, and **component visual review** run in parallel
+1. **quality** (lint + type checks), unit tests, and **component visual review** run in parallel — visual review only triggers when UI package changes
 2. **build** runs only after quality + tests pass — produces Next.js + API artifacts
 3. **build-api-image** builds API Docker image, pushes to GHCR
-4. **e2e** runs Playwright against real backend, then uploads page screenshots to Chromatic
+4. **e2e & lighthouse** share infrastructure (postgres, API, portal server) and run tests in parallel — Playwright for functionality, Lighthouse for performance/accessibility
 
 Visual changes don't block CI — they're soft gates requiring human review in the [Chromatic dashboard](https://www.chromatic.com/builds?appId=698f8bb1c019388f4cbe6ec7). See [this PR](https://github.com/reboottime/turborepo/pull/11) for a demo of visual regression detection in action.
 

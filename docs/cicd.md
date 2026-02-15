@@ -7,80 +7,59 @@ PR opened/sync                          Push to main
      │                                       │
      └──────────────┬────────────────────────┘
                     ▼
-══════════════════════════════════════════════════
-              ci-build.yml (CI - Build)
-══════════════════════════════════════════════════
+══════════════════════════════════════════════════════════════════
+                              ci.yml
+══════════════════════════════════════════════════════════════════
 
-┌──────────────────┐  ┌──────────────────┐  ┌──────────────────┐
-│     changes      │  │     quality      │  │       test       │
-│ (paths-filter)   │  │  (lint + types)  │  │   (unit tests)   │
-└────────┬─────────┘  └────────┬─────────┘  └────────┬─────────┘
-         │                     │                     │
-         ▼                     └──────────┬──────────┘
-┌──────────────────┐                      │
-│    chromatic     │                      │
-│ (visual review)  │                      │
-│                  │                      │
-│ if: ui changed   │                      │
-└──────────────────┘                      │
-                              both must pass
-                                          ▼
-                             ┌──────────────────┐
-                             │      build       │
-                             │ (turbo run build)│
-                             │                  │
-                             │ uploads:         │
-                             │  - web-build     │
-                             │  - portal-build  │
-                             │  - api-build     │
-                             └────────┬─────────┘
-                                      │
-                              CI - Build completed
-                                      │
-                                      ▼
-══════════════════════════════════════════════════
-               ci-e2e.yml (CI E2E)
-        triggers: workflow_run (main) or PR
-══════════════════════════════════════════════════
-
-                    ┌──────────────────┐
-                    │  build-api-image │
-                    │                  │
-                    │ - download api   │
-                    │ - docker build   │
-                    │ - push to GHCR   │
-                    └────────┬─────────┘
-                             ▼
-                    ┌──────────────────┐
-                    │       e2e        │
-                    │   (playwright)   │
-                    │                  │
-                    │ real integration │
-                    │ API + Postgres   │
-                    └────────┬─────────┘
-                             │
-                       E2E completed
-                ┌────────────┴────────────┐
-                │                         │
-           ❌ FAILED                 ✅ SUCCESS
-                │                         │
-           everything            ┌────────┴────────┐
-            skips                │                 │
-                            if: PR            if: main
-                                 │                 │
-                                 ▼                 ▼
-               deploy-preview.yml     deploy-production.yml
-               ┌─────────┬────────┐   ┌─────────┬────────┐
-               │deploy   │deploy  │   │deploy   │deploy  │
-               │web      │portal  │   │web      │portal  │
-               │(Vercel) │(Vercel)│   │(--prod) │(--prod)│
-               └─────────┴────────┘   └─────────┴────────┘
-                 parallel, no deps      parallel, no deps
+┌───────────┐  ┌───────────┐  ┌───────────┐
+│  changes  │  │  quality  │  │   test    │
+└─────┬─────┘  └─────┬─────┘  └─────┬─────┘
+      │              │              │
+      ▼              └──────┬───────┘
+┌───────────┐               │
+│ chromatic │               │
+│ (if ui)   │               │
+└───────────┘               │
+                   both must pass
+                            ▼
+                     ┌───────────┐
+                     │   build   │
+                     └─────┬─────┘
+                           │
+                           ▼
+                    ┌──────────────┐
+                    │build-api-img │
+                    └──────┬───────┘
+                           │
+                           ▼
+              ┌────────────────────────┐
+              │    E2E & Lighthouse    │
+              │  ┌────────┐ ┌────────┐ │
+              │  │  e2e   │ │  lhci  │ │  <- parallel
+              │  └────────┘ └────────┘ │   (shared infra)
+              └────────────┬───────────┘
+                           │
+                   JOB MUST PASS
+                           │
+            ┌──────────────┴──────────────┐
+            │                             │
+       ❌ FAIL                       ✅ PASS
+            │                             │
+       deploy skips          ┌────────────┴────────────┐
+                        if: PR                    if: main
+                             │                         │
+══════════════════════════════════════════════════════════════════
+                             ▼                         ▼
+               deploy-preview.yml          deploy-production.yml
+               ┌────────┬────────┐         ┌────────┬────────┐
+               │ web    │ portal │         │ web    │ portal │
+               │preview │preview │         │ prod   │ prod   │
+               └────────┴────────┘         └────────┴────────┘
 ```
 
-## E2E Integration Architecture
+## E2E & Lighthouse Integration Architecture
 
-The E2E job runs Playwright tests against a real API backend:
+The combined job runs Playwright and Lighthouse tests in parallel against shared infrastructure:
 
 ```
 ┌─────────────────────────────────────────────────────────────┐
@@ -91,13 +70,13 @@ The E2E job runs Playwright tests against a real API backend:
 │  │   Portal    │ ─────────────────► │   API Container     ││
 │  │   :3001     │                    │   --network host    ││
 │  │             │                    │   PORT=3002         ││
-│  └─────────────┘                    └──────────┬──────────┘│
-│        ▲                                       │           │
-│        │                                       ▼           │
-│  ┌─────────────┐                    ┌─────────────────────┐│
-│  │  Playwright │                    │   Postgres          ││
-│  │  (browser)  │                    │   :5432 (service)   ││
-│  └─────────────┘                    └─────────────────────┘│
+│  └──────┬──────┘                    └──────────┬──────────┘│
+│         │                                      │           │
+│    ┌────┴────┐                                 ▼           │
+│    │         │                      ┌─────────────────────┐│
+│  ┌─────┐ ┌─────────┐                │   Postgres          ││
+│  │ E2E │ │Lighthse │  <- parallel   │   :5432 (service)   ││
+│  └─────┘ └─────────┘                └─────────────────────┘│
 └─────────────────────────────────────────────────────────────┘
 ```
 
@@ -107,8 +86,9 @@ The E2E job runs Playwright tests against a real API backend:
 2. Prisma migrations + seed data applied
 3. API container pulled from GHCR + Playwright install (parallel)
 4. API starts on host network, waits for health check
-5. Portal starts via Playwright webServer
-6. Playwright tests run against real API
+5. Portal server starts (shared by both test suites)
+6. E2E and Lighthouse run in parallel with `REUSE_SERVER=true`
+7. Both must pass for job to succeed
 
 ## API Docker Image
 
@@ -142,23 +122,35 @@ apps/api/node_modules/.prisma
 
 ## Workflow Files
 
-| File                    | Trigger                     | Purpose                                  |
-| ----------------------- | --------------------------- | ---------------------------------------- |
-| `ci-build.yml`          | push to main, PR            | Lint, types, unit test, chromatic, build |
-| `ci-e2e.yml`            | after CI - Build succeeds   | Build API image, E2E tests               |
-| `deploy-preview.yml`    | after CI succeeds (PR only) | Deploy preview to Vercel                 |
-| `deploy-production.yml` | after CI succeeds (main)    | Deploy production to Vercel              |
+| File                    | Trigger          | Purpose                                                          |
+| ----------------------- | ---------------- | ---------------------------------------------------------------- |
+| `ci.yml`                | push to main, PR | Lint, types, test, chromatic, build, API image, E2E + Lighthouse |
+| `deploy-preview.yml`    | after CI (PR)    | Deploy preview to Vercel                                         |
+| `deploy-production.yml` | after CI (main)  | Deploy production to Vercel                                      |
 
 **Archived:** `_archived/storybook.yml` — Chromatic hosts published Storybook, GitHub Pages redundant.
 
 ## Chromatic (Visual Review)
 
-Runs conditionally in `ci-build.yml` when `packages/ui/**` changes:
+Runs conditionally in `ci.yml` when `packages/ui/**` changes:
 
 - Uses `dorny/paths-filter` to detect ui package changes
 - Builds Storybook and uploads to Chromatic
 - Auto-accepts changes on main branch
 - Exits zero on changes (non-blocking for PRs)
+
+## Lighthouse CI (Quality Audits)
+
+Runs in parallel with E2E tests (same job, shared infrastructure):
+
+- Performance, accessibility, SEO, best practices
+- Fails if scores drop below thresholds (perf 90, a11y 95)
+- Reports uploaded to temporary public storage (7-day retention)
+- Config: `apps/portal/lighthouserc.cjs` (app-level, not repo root)
+- Uses `REUSE_SERVER=true` to share portal server with E2E
+- PR status checks with report links require `LHCI_GITHUB_APP_TOKEN` secret
+
+See [testing/lighthouse.md](testing/lighthouse.md) for setup details including GitHub App configuration.
 
 ## Branch Protection
 
@@ -167,7 +159,7 @@ To prevent merging PRs until CI passes, configure GitHub branch protection:
 1. **Settings** → **Branches** → **Add branch protection rule**
 2. Branch name pattern: `main`
 3. Enable **Require status checks to pass before merging**
-4. Select required jobs: `Lint & Type Check`, `Unit Tests`, `Build`, `E2E`
+4. Select required jobs: `Lint & Type Check`, `Unit Tests`, `Build`, `E2E & Lighthouse`
 5. Enable **Require branches to be up to date before merging**
 
 Note: Status checks only appear in the dropdown after the workflow has run at least once.

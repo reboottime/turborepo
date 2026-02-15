@@ -15,7 +15,8 @@
         "E2E_TEST_EMAIL",
         "E2E_TEST_PASSWORD",
         "PORT",
-        "CORS_ORIGINS"
+        "CORS_ORIGINS",
+        "REUSE_SERVER"
       ]
     },
     "check-types": {
