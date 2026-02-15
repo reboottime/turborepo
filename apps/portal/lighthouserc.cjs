@@ -1,7 +1,7 @@
 module.exports = {
   ci: {
     collect: {
-      startServerCommand: 'pnpm start',
+      startServerCommand: 'pnpm start --port 3001',
       startServerReadyPattern: 'Ready',
       puppeteerScript: './lighthouse-auth.cjs',
       url: ['http://localhost:3001/employees'],
