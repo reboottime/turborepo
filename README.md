@@ -1,6 +1,6 @@
 # Enterprise Frontend Foundation
 
-> **Note:** This repo demonstrates my development methodology and agentic workflows, not a polished production codebase. Corners are cut where they don't serve the demo purpose.
+> **Note:** This repo demonstrates my development methodology and agentic workflows, not a polished production codebase for the whole app. Corners are cut where they don't serve the demo purpose.
 
 ## Value Proposition
 
