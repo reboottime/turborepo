@@ -1,24 +1,19 @@
-# App Engineering Conventions
+# App Conventions
 
 Conventions for building features in Next.js applications under `apps/`.
 
-## Naming Convention
+## Conventions
 
-- **Files**: kebab-case (`user-profile.ts`, `job-card.tsx`)
-- **Components**: PascalCase (`UserProfile`, `JobCard`)
-- **Functions/Variables**: camelCase (`calculateScore`, `userProfile`)
-- **Constants**: UPPER_SNAKE_CASE (`MAX_RESULTS`, `API_BASE_URL`)
-- **Types/Interfaces**: PascalCase (`UserProfileData`, `JobMatchResult`)
+| Topic                                                   | What it covers                          |
+| ------------------------------------------------------- | --------------------------------------- |
+| [Naming](app-conventions.naming.md)                     | File, component, variable, dialog names |
+| [Folder Structure](app-conventions.folder-structure.md) | Next.js App Router organization         |
+| [API Client](app-conventions.api-client.md)             | OOP-style API client patterns           |
 
-## Dialog Naming
+## Contributing
 
-Use **"dialog"** (not "modal") in file and component names — aligned with Radix UI and the `@repo/ui` design system.
+These conventions are living documents. If you encounter a pattern that should be standardized:
 
-Every dialog file must include the **entity** it operates on:
-
-| Pattern                        | Example file                 | Example component      |
-| ------------------------------ | ---------------------------- | ---------------------- |
-| `<entity>-<action>-dialog.tsx` | `employee-delete-dialog.tsx` | `EmployeeDeleteDialog` |
-| `<entity>-form-dialog.tsx`     | `employee-form-dialog.tsx`   | `EmployeeFormDialog`   |
-
-Bad: `delete-dialog.tsx` (delete what?), `form-modal.tsx` (wrong term + no entity).
+1. Discuss with the team first
+2. Document the convention in the appropriate file (or create a new `app-conventions.<topic>.md`)
+3. Update this index
