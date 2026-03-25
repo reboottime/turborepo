@@ -1,6 +1,7 @@
 # Drawer Component
 
-A slide-in panel component built on [Vaul](https://vaul.emilkowal.ski/) with touch gestures and multi-directional support.
+A slide-in panel component built on [Vaul](https://vaul.emilkowal.ski/) with touch gestures and
+multi-directional support.
 
 ## Features
 
@@ -26,7 +27,7 @@ import {
   DrawerBody,
   DrawerFooter,
   DrawerClose,
-} from "@repo/ui";
+} from '@repo/ui'
 
 function Example() {
   return (
@@ -50,7 +51,7 @@ function Example() {
         </DrawerFooter>
       </DrawerContent>
     </Drawer>
-  );
+  )
 }
 ```
 
@@ -58,7 +59,7 @@ function Example() {
 
 ```tsx
 function ControlledExample() {
-  const [open, setOpen] = useState(false);
+  const [open, setOpen] = useState(false)
 
   return (
     <Drawer open={open} onOpenChange={setOpen}>
@@ -71,7 +72,7 @@ function ControlledExample() {
         </DrawerHeader>
       </DrawerContent>
     </Drawer>
-  );
+  )
 }
 ```
 
@@ -111,7 +112,7 @@ Set `direction` on the root `Drawer` component:
 | `DrawerPortal`      | Portal container (included in DrawerContent) |
 | `DrawerOverlay`     | Backdrop overlay (included in DrawerContent) |
 | `DrawerHandle`      | Swipe handle indicator (auto for top/bottom) |
-| `DrawerHeader`      | Header section with padding                  |
+| `DrawerHeader`      | Header section with scroll shadow on scroll  |
 | `DrawerBody`        | Scrollable body section                      |
 | `DrawerFooter`      | Footer section with action buttons           |
 | `DrawerTitle`       | Accessible title (required for a11y)         |
@@ -179,6 +180,52 @@ Set `direction` on the root `Drawer` component:
 </Drawer>
 ```
 
+## Design Guidelines
+
+### Close Button
+
+The `DrawerClose` component is **composable, not forced** — include it when needed.
+
+**When to include a close button (header X icon):**
+
+| Context                          | Include | Rationale                                         |
+| -------------------------------- | ------- | ------------------------------------------------- |
+| Modal drawers with forms/content | ✅ Yes  | Users need explicit, discoverable dismissal       |
+| Complex multi-step flows         | ✅ Yes  | Prevents accidental data loss from backdrop click |
+| Mobile drawers                   | ✅ Yes  | Swipe gestures are ambiguous and inaccessible     |
+| Accessibility-critical apps      | ✅ Yes  | Screen readers and keyboard users need it         |
+
+**When close button may be omitted:**
+
+| Context                       | Include     | Rationale                           |
+| ----------------------------- | ----------- | ----------------------------------- |
+| Single-action selection lists | ❌ Optional | Selecting an item closes the drawer |
+| Non-modal/persistent sidebars | ❌ No       | Always visible, no dismissal needed |
+| Quick action sheets (bottom)  | ❌ Optional | Handle + swipe is primary pattern   |
+
+**Built-in dismissal methods (always available):**
+
+- `Esc` key
+- Backdrop click (unless disabled)
+- Swipe gesture (direction-aware)
+
+### Border Radius
+
+Drawers use border radius on the **inner edge only** (the side facing content).
+
+| Direction | Rounded Corners           |
+| --------- | ------------------------- |
+| `right`   | Top-left, bottom-left     |
+| `left`    | Top-right, bottom-right   |
+| `bottom`  | Top-left, top-right       |
+| `top`     | Bottom-left, bottom-right |
+
+**Rationale:**
+
+- Outer edge touches viewport — no radius (extends to screen edge)
+- Inner edge radius signals the drawer is a distinct elevated surface
+- Follows Material Design 3 "Large" shape category (16dp)
+
 ## Accessibility
 
 - Built on Vaul which uses Radix primitives for ARIA compliance
@@ -196,7 +243,13 @@ Uses design system tokens:
 - `--color-overlay-backdrop` - Overlay background
 - `--z-dialog` - Z-index layering
 - `--color-border-muted` - Handle indicator color
+- `--shadow-sm` - Header scroll shadow (via `drawer.css`)
 - Border and shadow tokens for elevation
+
+### Scroll Shadow
+
+When `DrawerBody` content is scrolled, `DrawerHeader` shows a shadow to indicate more content above.
+This is handled automatically via scroll detection and CSS in `styles/components/drawer.css`.
 
 ## Testing
 

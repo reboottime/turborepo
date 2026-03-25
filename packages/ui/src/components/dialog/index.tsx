@@ -1,18 +1,28 @@
-"use client";
+'use client'
 
 import {
+  createContext,
   forwardRef,
+  useCallback,
+  useContext,
+  useState,
   type ComponentPropsWithoutRef,
   type ComponentRef,
-} from "react";
-import * as DialogPrimitive from "@radix-ui/react-dialog";
-import { cva, type VariantProps } from "class-variance-authority";
-import { cn } from "#lib/cn";
+} from 'react'
+import * as DialogPrimitive from '@radix-ui/react-dialog'
+import { cva, type VariantProps } from 'class-variance-authority'
+import { cn } from '#lib/cn'
 
-const Dialog = DialogPrimitive.Root;
-const DialogTrigger = DialogPrimitive.Trigger;
-const DialogClose = DialogPrimitive.Close;
-const DialogPortal = DialogPrimitive.Portal;
+const Dialog = DialogPrimitive.Root
+
+const DialogScrollContext = createContext<{
+  isScrolled: boolean
+  setIsScrolled: (scrolled: boolean) => void
+}>({ isScrolled: false, setIsScrolled: () => {} })
+
+const DialogTrigger = DialogPrimitive.Trigger
+const DialogClose = DialogPrimitive.Close
+const DialogPortal = DialogPrimitive.Portal
 
 const DialogOverlay = forwardRef<
   ComponentRef<typeof DialogPrimitive.Overlay>,
@@ -21,13 +31,13 @@ const DialogOverlay = forwardRef<
   <DialogPrimitive.Overlay
     ref={ref}
     className={cn(
-      "fixed inset-0 z-dialog bg-[var(--color-overlay-backdrop)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
-      className,
+      'fixed inset-0 z-dialog bg-[var(--color-overlay-backdrop)] data-[state=open]:animate-in data-[state=closed]:animate-out data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+      className
     )}
     {...props}
   />
-));
-DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
+))
+DialogOverlay.displayName = DialogPrimitive.Overlay.displayName
 
 /**
  * Dialog size variants following industry best practices:
@@ -40,95 +50,131 @@ DialogOverlay.displayName = DialogPrimitive.Overlay.displayName;
 const dialogContentVariants = cva(
   [
     // Base styles
-    "fixed left-1/2 top-1/2 z-dialog -translate-x-1/2 -translate-y-1/2",
-    "grid w-[calc(100%-var(--dialog-mobile-margin)*2)] gap-[var(--spacing-4)]",
-    "rounded-[var(--radius-lg)] border border-border-default bg-surface-base p-[var(--spacing-6)] shadow-lg",
-    // Height constraint with scrollable support
-    "max-h-[var(--dialog-max-height)] overflow-y-auto",
+    'fixed left-1/2 top-1/2 z-dialog -translate-x-1/2 -translate-y-1/2',
+    'flex flex-col w-[calc(100%-var(--dialog-mobile-margin)*2)] gap-[var(--spacing-4)]',
+    'rounded-[var(--radius-lg)] border border-border-default bg-surface-base p-[var(--spacing-6)] shadow-lg',
+    // Height constraint - no overflow here, let DialogBody scroll
+    'max-h-[var(--dialog-max-height)]',
     // Animations
-    "data-[state=open]:animate-in data-[state=closed]:animate-out",
-    "data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0",
-    "data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95",
+    'data-[state=open]:animate-in data-[state=closed]:animate-out',
+    'data-[state=closed]:fade-out-0 data-[state=open]:fade-in-0',
+    'data-[state=closed]:zoom-out-95 data-[state=open]:zoom-in-95',
   ],
   {
     variants: {
       size: {
-        sm: "max-w-[var(--dialog-width-sm)]",
-        md: "max-w-[var(--dialog-width-md)]",
-        lg: "max-w-[var(--dialog-width-lg)]",
-        xl: "max-w-[var(--dialog-width-xl)]",
-        full: "max-w-none h-screen max-h-screen rounded-none",
+        sm: 'max-w-[var(--dialog-width-sm)]',
+        md: 'max-w-[var(--dialog-width-md)]',
+        lg: 'max-w-[var(--dialog-width-lg)]',
+        xl: 'max-w-[var(--dialog-width-xl)]',
+        full: 'max-w-none h-screen max-h-screen rounded-none',
       },
     },
     defaultVariants: {
-      size: "md",
+      size: 'md',
     },
-  },
-);
+  }
+)
 
 interface DialogContentProps
   extends
     ComponentPropsWithoutRef<typeof DialogPrimitive.Content>,
     VariantProps<typeof dialogContentVariants> {}
 
-const DialogContent = forwardRef<
-  ComponentRef<typeof DialogPrimitive.Content>,
-  DialogContentProps
->(({ className, children, size, ...props }, ref) => (
-  <DialogPortal>
-    <DialogOverlay />
-    <DialogPrimitive.Content
+const DialogContent = forwardRef<ComponentRef<typeof DialogPrimitive.Content>, DialogContentProps>(
+  ({ className, children, size, ...props }, ref) => {
+    const [isScrolled, setIsScrolled] = useState(false)
+
+    return (
+      <DialogPortal>
+        <DialogOverlay />
+        <DialogPrimitive.Content
+          ref={ref}
+          className={cn(
+            dialogContentVariants({ size, className }),
+            'overscroll-contain touch-manipulation'
+          )}
+          {...props}
+        >
+          <DialogScrollContext.Provider value={{ isScrolled, setIsScrolled }}>
+            {children}
+          </DialogScrollContext.Provider>
+        </DialogPrimitive.Content>
+      </DialogPortal>
+    )
+  }
+)
+DialogContent.displayName = DialogPrimitive.Content.displayName
+
+const DialogHeader = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => {
+    const { isScrolled } = useContext(DialogScrollContext)
+    return (
+      <div
+        ref={ref}
+        data-dialog-header=""
+        data-scrolled={isScrolled}
+        className={cn(
+          'flex flex-col gap-[var(--spacing-1-5)] text-center sm:text-left flex-shrink-0',
+          // Extend to dialog edges with negative margins, restore padding for content alignment
+          '-mx-[var(--spacing-6)] px-[var(--spacing-6)]',
+          'pb-[var(--spacing-4)] border-b border-border-default',
+          className
+        )}
+        {...props}
+      />
+    )
+  }
+)
+DialogHeader.displayName = 'DialogHeader'
+
+const DialogBody = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, onScroll, ...props }, ref) => {
+    const { setIsScrolled } = useContext(DialogScrollContext)
+
+    const handleScroll = useCallback(
+      (e: React.UIEvent<HTMLDivElement>) => {
+        setIsScrolled(e.currentTarget.scrollTop > 0)
+        onScroll?.(e)
+      },
+      [setIsScrolled, onScroll]
+    )
+
+    return (
+      <div
+        ref={ref}
+        data-dialog-body=""
+        onScroll={handleScroll}
+        className={cn(
+          'flex-1 min-h-0 overflow-y-auto py-[var(--spacing-2)]',
+          // Extend to dialog edges, restore padding for content alignment
+          '-mx-[var(--spacing-6)] px-[var(--spacing-6)]',
+          className
+        )}
+        {...props}
+      />
+    )
+  }
+)
+DialogBody.displayName = 'DialogBody'
+
+const DialogFooter = forwardRef<HTMLDivElement, React.HTMLAttributes<HTMLDivElement>>(
+  ({ className, ...props }, ref) => (
+    <div
       ref={ref}
-      className={cn(dialogContentVariants({ size, className }))}
+      data-dialog-footer=""
+      className={cn(
+        'flex flex-col-reverse sm:flex-row sm:justify-end sm:gap-[var(--spacing-2)] flex-shrink-0',
+        // Extend to dialog edges, restore padding for content alignment
+        '-mx-[var(--spacing-6)] px-[var(--spacing-6)]',
+        'pt-[var(--spacing-4)] border-t border-border-default',
+        className
+      )}
       {...props}
-    >
-      {children}
-    </DialogPrimitive.Content>
-  </DialogPortal>
-));
-DialogContent.displayName = DialogPrimitive.Content.displayName;
-
-const DialogHeader = forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "flex flex-col gap-[var(--spacing-1-5)] text-center sm:text-left",
-      className,
-    )}
-    {...props}
-  />
-));
-DialogHeader.displayName = "DialogHeader";
-
-const DialogBody = forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn("flex-1 overflow-y-auto", className)}
-    {...props}
-  />
-));
-DialogBody.displayName = "DialogBody";
-
-const DialogFooter = forwardRef<
-  HTMLDivElement,
-  React.HTMLAttributes<HTMLDivElement>
->(({ className, ...props }, ref) => (
-  <div
-    ref={ref}
-    className={cn(
-      "flex flex-col-reverse sm:flex-row sm:justify-end sm:gap-[var(--spacing-2)]",
-      className,
-    )}
-    {...props}
-  />
-));
-DialogFooter.displayName = "DialogFooter";
+    />
+  )
+)
+DialogFooter.displayName = 'DialogFooter'
 
 const DialogTitle = forwardRef<
   ComponentRef<typeof DialogPrimitive.Title>,
@@ -137,13 +183,13 @@ const DialogTitle = forwardRef<
   <DialogPrimitive.Title
     ref={ref}
     className={cn(
-      "text-[length:var(--font-size-lg)] font-semibold leading-none tracking-[var(--tracking-tight)]",
-      className,
+      'text-[length:var(--font-size-lg)] font-semibold leading-none tracking-[var(--tracking-tight)]',
+      className
     )}
     {...props}
   />
-));
-DialogTitle.displayName = DialogPrimitive.Title.displayName;
+))
+DialogTitle.displayName = DialogPrimitive.Title.displayName
 
 const DialogDescription = forwardRef<
   ComponentRef<typeof DialogPrimitive.Description>,
@@ -151,14 +197,11 @@ const DialogDescription = forwardRef<
 >(({ className, ...props }, ref) => (
   <DialogPrimitive.Description
     ref={ref}
-    className={cn(
-      "text-[length:var(--font-size-sm)] text-text-secondary",
-      className,
-    )}
+    className={cn('text-[length:var(--font-size-sm)] text-text-secondary', className)}
     {...props}
   />
-));
-DialogDescription.displayName = DialogPrimitive.Description.displayName;
+))
+DialogDescription.displayName = DialogPrimitive.Description.displayName
 
 export {
   Dialog,
@@ -173,6 +216,6 @@ export {
   DialogFooter,
   DialogTitle,
   DialogDescription,
-};
+}
 
-export type { DialogContentProps };
+export type { DialogContentProps }

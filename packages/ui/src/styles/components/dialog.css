@@ -1,0 +1,29 @@
+/* =============================================================================
+   DIALOG HEADER SCROLL SHADOW
+   Shows elevation when body content is scrolled
+   ============================================================================= */
+
+[data-dialog-header] {
+  position: relative;
+  z-index: 1;
+  transition: box-shadow 0.15s ease-out;
+}
+
+[data-dialog-header][data-scrolled='true'] {
+  box-shadow: var(--shadow-sm);
+}
+
+/* =============================================================================
+   DIALOG BORDER VISIBILITY
+   Hide borders when no DialogBody present (e.g., confirmation dialogs)
+   ============================================================================= */
+
+/* Remove header bottom border when no body */
+[role='dialog']:not(:has([data-dialog-body])) [data-dialog-header] {
+  border-bottom-color: transparent;
+}
+
+/* Remove footer top border when no body */
+[role='dialog']:not(:has([data-dialog-body])) [data-dialog-footer] {
+  border-top-color: transparent;
+}

@@ -2,13 +2,12 @@
    TYPOGRAPHY TOKENS
    ============================================================================= */
 
+/* doc: When defining theme variables that reference other variables, use the inline option: */
 @theme inline {
   /* Font Families */
   --font-family-sans:
-    -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, "Helvetica Neue",
-    Arial, sans-serif;
-  --font-family-mono:
-    "SF Mono", Monaco, "Cascadia Code", "Roboto Mono", "Courier New", monospace;
+    -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, 'Helvetica Neue', Arial, sans-serif;
+  --font-family-mono: 'SF Mono', Monaco, 'Cascadia Code', 'Roboto Mono', 'Courier New', monospace;
 
   /* Tailwind v4 font aliases */
   --font-sans: var(--font-family-sans);

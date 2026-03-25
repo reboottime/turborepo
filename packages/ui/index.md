@@ -4,22 +4,23 @@ Read this before using or adding components.
 
 ## Components
 
-| Component         | Exports                                                                                                                                                                                                                                     | Path                         |
-| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- | ---------------------------- |
-| **Button**        | `Button`, `buttonVariants`, `ButtonProps`                                                                                                                                                                                                   | `components/button/`         |
-| **Card**          | `Card`, `cardVariants`, `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, `CardProps`                                                                                                                                            | `components/card/`           |
-| **Dialog**        | `Dialog`, `DialogTrigger`, `DialogClose`, `DialogPortal`, `DialogOverlay`, `DialogContent`, `DialogHeader`, `DialogFooter`, `DialogTitle`, `DialogDescription`                                                                              | `components/dialog/`         |
-| **Drawer**        | `Drawer`, `DrawerTrigger`, `DrawerClose`, `DrawerPortal`, `DrawerOverlay`, `DrawerContent`, `drawerContentVariants`, `DrawerHandle`, `DrawerHeader`, `DrawerBody`, `DrawerFooter`, `DrawerTitle`, `DrawerDescription`, `DrawerContentProps` | `components/drawer/`         |
-| **Form**          | `Form`, `FormField`, `FormItem`, `FormLabel`, `FormControl`, `FormDescription`, `FormMessage`, `useFormField`                                                                                                                               | `components/form/`           |
-| **Input**         | `Input`                                                                                                                                                                                                                                     | `components/input/`          |
-| **Label**         | `Label`                                                                                                                                                                                                                                     | `components/label/`          |
-| **PasswordInput** | `PasswordInput`, `PasswordInputProps`                                                                                                                                                                                                       | `components/password-input/` |
-| **Select**        | `Select`, `SelectGroup`, `SelectValue`, `SelectTrigger`, `selectTriggerVariants`, `SelectContent`, `SelectLabel`, `SelectItem`, `SelectSeparator`, `SelectScrollUpButton`, `SelectScrollDownButton`, `SelectTriggerProps`                   | `components/select/`         |
-| **Separator**     | `Separator`                                                                                                                                                                                                                                 | `components/separator/`      |
+| Component         | Exports                                                                                                                                                                                                                                                                                                                                    | Path                         |
+| ----------------- | ------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------ | ---------------------------- |
+| **Button**        | `Button`, `buttonVariants`, `ButtonProps`                                                                                                                                                                                                                                                                                                  | `components/button/`         |
+| **Card**          | `Card`, `cardVariants`, `CardHeader`, `CardTitle`, `CardDescription`, `CardContent`, `CardProps`                                                                                                                                                                                                                                           | `components/card/`           |
+| **Dialog**        | `Dialog`, `DialogTrigger`, `DialogClose`, `DialogPortal`, `DialogOverlay`, `DialogContent`, `dialogContentVariants`, `DialogHeader`, `DialogBody`, `DialogFooter`, `DialogTitle`, `DialogDescription`, `DialogContentProps`                                                                                                                | `components/dialog/`         |
+| **Drawer**        | `Drawer`, `DrawerTrigger`, `DrawerClose`, `DrawerPortal`, `DrawerOverlay`, `DrawerContent`, `drawerContentVariants`, `DrawerHandle`, `DrawerHeader`, `DrawerBody`, `DrawerFooter`, `DrawerTitle`, `DrawerDescription`, `DrawerDirection`, `DrawerProps`, `DrawerContentProps`, `DrawerHeaderProps`, `DrawerBodyProps`, `DrawerFooterProps` | `components/drawer/`         |
+| **Form**          | `Form`, `FormField`, `FormItem`, `FormLabel`, `FormControl`, `FormDescription`, `FormMessage`, `useFormField`                                                                                                                                                                                                                              | `components/form/`           |
+| **Input**         | `Input`                                                                                                                                                                                                                                                                                                                                    | `components/input/`          |
+| **Label**         | `Label`                                                                                                                                                                                                                                                                                                                                    | `components/label/`          |
+| **PasswordInput** | `PasswordInput`, `PasswordInputProps`                                                                                                                                                                                                                                                                                                      | `components/password-input/` |
+| **Select**        | `Select`, `SelectGroup`, `SelectValue`, `SelectTrigger`, `selectTriggerVariants`, `SelectContent`, `SelectLabel`, `SelectItem`, `SelectSeparator`, `SelectScrollUpButton`, `SelectScrollDownButton`, `SelectTriggerProps`                                                                                                                  | `components/select/`         |
+| **Separator**     | `Separator`                                                                                                                                                                                                                                                                                                                                | `components/separator/`      |
 
 ## Design Tokens
 
-Visual design documentation for designers and developers. View in Storybook under "Design Tokens" section.
+Visual design documentation for designers and developers. View in Storybook under "Design Tokens"
+section.
 
 | Category         | Description                                            | Path                                      |
 | ---------------- | ------------------------------------------------------ | ----------------------------------------- |
@@ -40,7 +41,7 @@ Visual design documentation for designers and developers. View in Storybook unde
 ## Usage
 
 ```tsx
-import { Button, Card, CardContent, Input, cn } from "@repo/ui";
+import { Button, Card, CardContent, Input, cn } from '@repo/ui'
 ```
 
 ## Adding Components
@@ -55,4 +56,6 @@ After adding, export from `src/index.ts` and update this file.
 
 ## TODO
 
-- [ ] **Visual regression testing** — Unit tests catch behavior but not layout regressions (e.g., icon positioning, spacing changes). Set up Loki for local Storybook visual testing. See: https://loki.js.org/
+- [ ] **Visual regression testing** — Unit tests catch behavior but not layout regressions (e.g.,
+      icon positioning, spacing changes). Set up Loki for local Storybook visual testing. See:
+      https://loki.js.org/

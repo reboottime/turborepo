@@ -1,0 +1,30 @@
+/* =============================================================================
+   DRAWER ANIMATION OVERRIDES
+   Smooth, subtle transitions following Mantine patterns
+   ============================================================================= */
+
+/* Drawer slide - smooth ease for both enter and exit */
+[data-vaul-drawer] {
+  transition: transform 0.2s ease !important;
+}
+
+/* Overlay fade */
+[data-vaul-overlay] {
+  transition: opacity 0.2s ease !important;
+}
+
+/* =============================================================================
+   DRAWER HEADER SCROLL SHADOW
+   Shows elevation when body content is scrolled
+   ============================================================================= */
+
+[data-drawer-header] {
+  position: relative;
+  z-index: 1;
+  transition: box-shadow 0.15s ease-out;
+}
+
+/* Shadow applied via JS when scrolled */
+[data-drawer-header][data-scrolled='true'] {
+  box-shadow: var(--shadow-sm);
+}

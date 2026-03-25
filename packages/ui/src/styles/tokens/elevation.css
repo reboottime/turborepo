@@ -9,14 +9,16 @@
   --shadow-md: 0 4px 6px rgba(0, 0, 0, 0.1), 0 2px 4px rgba(0, 0, 0, 0.06);
   --shadow-lg: 0 10px 15px rgba(0, 0, 0, 0.1), 0 4px 6px rgba(0, 0, 0, 0.05);
   --shadow-xl: 0 20px 25px rgba(0, 0, 0, 0.1), 0 8px 10px rgba(0, 0, 0, 0.04);
-  --shadow-focus: 0 0 0 3px rgba(37, 99, 235, 0.2);
+  --shadow-focus: 0 0 0 3px light-dark(rgba(9, 105, 218, 0.2), rgba(88, 166, 255, 0.2));
 
   /* Z-Index Hierarchy
-     base < sticky < dialog < dropdown/popover < toast
+     base < sticky < overlay < drawer/dialog < dropdown/popover < toast
      Dropdowns must be above dialogs since they can appear inside dialogs
      Tailwind v4: --z-* prefix generates z-* utilities (e.g., --z-dialog → z-dialog) */
   --z-base: 0;
   --z-sticky: 20;
+  --z-overlay: 30;
+  --z-drawer: 40;
   --z-dialog: 40;
   --z-dropdown: 50;
   --z-toast: 60;

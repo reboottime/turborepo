@@ -14,6 +14,31 @@
   animation: checkComplete var(--duration-fast) var(--ease-spring);
 }
 
+.animate-toast-enter {
+  animation: toast-enter var(--duration-base) var(--ease-out) forwards;
+}
+
+.animate-toast-exit {
+  animation: toast-exit 200ms var(--ease-in) forwards;
+}
+
+/* Reduced motion preference */
+@media (prefers-reduced-motion: reduce) {
+  .animate-toast-enter,
+  .animate-toast-exit {
+    animation: none;
+  }
+
+  .animate-toast-enter {
+    opacity: 1;
+  }
+
+  .animate-toast-exit {
+    opacity: 0;
+    transition: opacity var(--duration-fast) var(--ease-out);
+  }
+}
+
 /* =============================================================================
    MICRO-INTERACTIONS
    ============================================================================= */
@@ -34,4 +59,51 @@
 .interactive-lift:active {
   transform: translateY(0);
   box-shadow: var(--shadow-xs);
+}
+
+/* =============================================================================
+   EXPAND ANIMATIONS
+   ============================================================================= */
+
+.animate-expand-in {
+  animation: expand-in var(--duration-fast) var(--ease-out) forwards;
+}
+
+.animate-slot-enter {
+  animation: slot-enter var(--duration-fast) var(--ease-out) both;
+}
+
+/* Staggered delay utility for slot cards */
+.stagger-1 {
+  animation-delay: calc(var(--stagger-fast) * 1);
+}
+.stagger-2 {
+  animation-delay: calc(var(--stagger-fast) * 2);
+}
+.stagger-3 {
+  animation-delay: calc(var(--stagger-fast) * 3);
+}
+.stagger-4 {
+  animation-delay: calc(var(--stagger-fast) * 4);
+}
+.stagger-5 {
+  animation-delay: calc(var(--stagger-fast) * 5);
+}
+.stagger-6 {
+  animation-delay: calc(var(--stagger-fast) * 6);
+}
+.stagger-7 {
+  animation-delay: calc(var(--stagger-fast) * 7);
+}
+.stagger-8 {
+  animation-delay: calc(var(--stagger-fast) * 8);
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .animate-expand-in,
+  .animate-slot-enter {
+    animation: none;
+    opacity: 1;
+    transform: none;
+  }
 }

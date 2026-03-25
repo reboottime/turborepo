@@ -1,6 +1,7 @@
 # Dialog Best Practices
 
-Guidelines for using the Dialog component effectively, based on patterns from Material UI, Radix UI, Chakra UI, and shadcn/ui.
+Guidelines for using the Dialog component effectively, based on patterns from Material UI, Radix UI,
+Chakra UI, and shadcn/ui.
 
 ## Size Selection
 
@@ -50,13 +51,20 @@ Use the compound components in this order:
 
 ## Scrollable Content
 
-For long content, use `DialogBody` with a max-height:
+For long content, use `DialogBody` which handles scrolling automatically:
 
 ```tsx
-<DialogBody className="max-h-64">{/* Long scrollable content */}</DialogBody>
+<DialogBody>{/* Long scrollable content */}</DialogBody>
 ```
 
-The dialog itself is constrained to `85vh` max-height with `overflow-y-auto`.
+The dialog is constrained to `85vh` max-height. `DialogBody` scrolls independently while
+header/footer stay fixed. When scrolled, `DialogHeader` shows a shadow to indicate more content
+above (handled via `styles/components/dialog.css`).
+
+### Minimal Dialogs (No Body)
+
+For simple confirmation dialogs without `DialogBody`, header/footer borders are automatically hidden
+via CSS `:has()` selectors.
 
 ## Mobile Behavior
 
@@ -139,7 +147,7 @@ The dialog itself is constrained to `85vh` max-height with `overflow-y-auto`.
 
 ## Design Tokens
 
-The dialog uses these CSS custom properties (customizable in `styles.css`):
+The dialog uses these CSS custom properties (defined in `styles/tokens/components.css`):
 
 ```css
 --dialog-width-sm: 384px;
