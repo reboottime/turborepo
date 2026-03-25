@@ -4,9 +4,12 @@
    ============================================================================= */
 
 @layer components {
-  /* Base structure and appearance for all form fields */
+  /* Base structure and appearance for all form fields
+     - items-center: vertically centers inline content (icons, addon elements)
+     - leading-*: consistent text spacing across browsers/fonts
+     - transition-colors: smooth state changes (focus, hover, error) */
   .form-field-base {
-    @apply flex h-10 w-full rounded-[var(--radius-md)] border border-border-default
+    @apply flex items-center h-10 w-full rounded-[var(--radius-md)] border border-border-default
            bg-surface-base px-3 py-2 text-[length:var(--font-size-sm)]
            leading-[var(--line-height-sm)] transition-colors duration-[var(--duration-fast)]
            placeholder:text-text-secondary;
