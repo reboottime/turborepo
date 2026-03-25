@@ -55,7 +55,7 @@ const DrawerOverlay = forwardRef<
   <VaulDrawer.Overlay
     ref={ref}
     className={cn(
-      'fixed inset-0 z-drawer bg-[var(--color-overlay-backdrop)]',
+      'fixed inset-0 z-drawer bg-[var(--color-overlay-backdrop)] backdrop-blur-[var(--overlay-blur)]',
       'touch-none',
       className
     )}

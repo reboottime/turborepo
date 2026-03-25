@@ -157,3 +157,10 @@ The dialog uses these CSS custom properties (defined in `styles/tokens/component
 --dialog-max-height: 85vh;
 --dialog-mobile-margin: 1rem;
 ```
+
+Overlay tokens (defined in `styles/tokens/colors.css`):
+
+```css
+--color-overlay-backdrop: rgb(0 0 0 / 0.6);
+--overlay-blur: 4px; /* inspired by Mantine UI */
+```

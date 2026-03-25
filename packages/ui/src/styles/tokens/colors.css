@@ -50,4 +50,5 @@
 
   /* Overlays & Backdrops */
   --color-overlay-backdrop: rgb(0 0 0 / 0.6);
+  --overlay-blur: 4px;
 }

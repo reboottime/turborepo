@@ -241,6 +241,8 @@ Drawers use border radius on the **inner edge only** (the side facing content).
 Uses design system tokens:
 
 - `--color-overlay-backdrop` - Overlay background
+- `--overlay-blur` - Backdrop blur effect (inspired by
+  [Mantine UI](https://mantine.dev/core/overlay/))
 - `--z-dialog` - Z-index layering
 - `--color-border-muted` - Handle indicator color
 - `--shadow-sm` - Header scroll shadow (via `drawer.css`)
