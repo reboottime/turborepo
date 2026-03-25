@@ -1,96 +1,70 @@
-import type { Meta, StoryObj } from "@storybook/react";
-import { Button } from ".";
+import type { Meta, StoryObj } from '@storybook/react'
+import { Button } from '.'
 
 const meta: Meta<typeof Button> = {
-  title: "Components/Button",
+  title: 'Components/Button',
   component: Button,
   argTypes: {
     variant: {
-      control: "select",
-      options: ["default", "destructive", "outline", "ghost", "link"],
+      control: 'select',
+      options: ['default', 'destructive', 'outline', 'ghost', 'link'],
     },
     size: {
-      control: "select",
-      options: ["sm", "default", "lg"],
+      control: 'select',
+      options: ['sm', 'default', 'lg'],
     },
-    fullWidth: { control: "boolean" },
-    disabled: { control: "boolean" },
-    children: { control: "text" },
+    fullWidth: { control: 'boolean' },
+    disabled: { control: 'boolean' },
+    children: { control: 'text' },
   },
   args: {
-    children: "Button",
+    children: 'Button',
   },
-};
+}
 
-export default meta;
-type Story = StoryObj<typeof meta>;
+export default meta
+type Story = StoryObj<typeof meta>
 
-export const Default: Story = {};
+// Playground — all props controllable
+export const Playground: Story = {}
 
-export const Outline: Story = {
-  args: { variant: "outline" },
-};
+// Variants — all visual states grouped (variant × size matrix + disabled)
+export const Variants: Story = {
+  render: () => (
+    <div className="flex flex-col gap-6">
+      {(['default', 'destructive', 'outline', 'ghost', 'link'] as const).map((variant) => (
+        <div key={variant} className="flex items-center gap-3">
+          <span className="w-24 text-xs text-text-secondary">{variant}</span>
+          <Button variant={variant} size="sm">
+            sm
+          </Button>
+          <Button variant={variant} size="default">
+            default
+          </Button>
+          <Button variant={variant} size="lg">
+            lg
+          </Button>
+          <Button variant={variant} disabled>
+            disabled
+          </Button>
+        </div>
+      ))}
+    </div>
+  ),
+}
 
-export const Ghost: Story = {
-  args: { variant: "ghost" },
-};
-
-export const Link: Story = {
-  args: { variant: "link", children: "Learn more" },
-};
-
-export const Destructive: Story = {
-  args: { variant: "destructive", children: "Delete" },
-};
-
-export const Small: Story = {
-  args: { size: "sm" },
-};
-
-export const Large: Story = {
-  args: { size: "lg" },
-};
-
+// Feature stories — one per meaningful state
 export const Disabled: Story = {
   args: { disabled: true },
-};
+}
 
 export const FullWidth: Story = {
   args: { fullWidth: true },
   decorators: [
     (Story) => (
-      <div style={{ width: "300px" }}>
+      <div className="w-[300px]">
         <Story />
       </div>
     ),
   ],
-};
-
-export const AllVariants: Story = {
-  render: () => (
-    <div style={{ display: "flex", flexDirection: "column", gap: "1.5rem" }}>
-      {(["default", "destructive", "outline", "ghost", "link"] as const).map(
-        (variant) => (
-          <div
-            key={variant}
-            style={{ display: "flex", gap: "0.75rem", alignItems: "center" }}
-          >
-            <span
-              style={{ width: "5rem", fontSize: "0.75rem", color: "#737373" }}
-            >
-              {variant}
-            </span>
-            {(["sm", "default", "lg"] as const).map((size) => (
-              <Button key={size} variant={variant} size={size}>
-                {size}
-              </Button>
-            ))}
-            <Button variant={variant} disabled>
-              disabled
-            </Button>
-          </div>
-        ),
-      )}
-    </div>
-  ),
-};
+}
