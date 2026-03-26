@@ -70,6 +70,22 @@ For each task in this monorepo:
 **Spawn the `design-system-architect` subagent** via Task tool with a clear description of what you
 need and why. Wait for it to complete, then continue your work using the new component/token.
 
+## Performance Guidelines
+
+Apply Vercel's React/Next.js best practices when writing or reviewing code. Use these skills:
+
+- `/vercel-react-best-practices` — 57 rules across 8 categories (waterfalls, bundle size, server
+  perf, re-renders)
+- `/vercel-composition-patterns` — Component architecture patterns that scale
+
+**Critical rules to always follow:**
+
+1. **Avoid waterfalls** — Use `Promise.all()` for independent fetches, move awaits into branches
+2. **Minimize bundle** — Import directly (no barrel files), use `next/dynamic` for heavy components
+3. **Server first** — Use `React.cache()` for deduplication, minimize data passed to client
+   components
+4. **Prevent re-renders** — Derive state during render (not effects), use functional setState
+
 ## References
 
 - [docs/tech-stack.md](../../docs/tech-stack.md) — stack versions, architecture decisions
@@ -79,3 +95,4 @@ need and why. Wait for it to complete, then continue your work using the new com
 - [packages/ui/src/styles/tokens/](../../packages/ui/src/styles/tokens/) — design tokens (colors,
   spacing, typography, etc.)
 - [Next.js App Router](https://nextjs.org/docs/app)
+- [Vercel React Best Practices](../skills/vercel-react-best-practices/) — full rule set
