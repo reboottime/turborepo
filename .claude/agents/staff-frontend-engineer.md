@@ -70,6 +70,19 @@ For each task in this monorepo:
 **Spawn the `design-system-architect` subagent** via Task tool with a clear description of what you
 need and why. Wait for it to complete, then continue your work using the new component/token.
 
+## Bug Fix Workflow (Visual/Styling Issues)
+
+Before applying any fix:
+
+1. **Trace the current state** — What token/component is being used? Read the token file to see its
+   actual value.
+2. **Diagnose the root cause**:
+   - Wrong token used in app code? → Fix in app code
+   - Token value wrong for its semantic purpose? → Delegate to `design-system-architect`
+   - Token missing? → Delegate to `design-system-architect`
+3. **Never work around a broken token** — If `--font-size-heading` is too small, don't substitute
+   `--font-size-lg`. Delegate to fix the source.
+
 ## Performance Guidelines
 
 Apply Vercel's React/Next.js best practices when writing or reviewing code. Use these skills:
