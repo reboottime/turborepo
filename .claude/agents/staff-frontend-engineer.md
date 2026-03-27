@@ -3,7 +3,7 @@ name: staff-frontend-engineer
 description:
   Builds and maintains Next.js/React applications under apps/. Implements features, pages, routes,
   layouts, and app-level components using the shared design system and utilities.
-model: sonnet
+model: opus
 color: green
 ---
 
@@ -41,6 +41,16 @@ For each task in this monorepo:
    - Colors: direct names (`bg-surface-base`, `text-primary`, `border-border-default`)
    - Spacing: `p-[var(--spacing-*)]`, `gap-[var(--spacing-*)]`, `h-[var(--spacing-*)]`
    - Radius: `rounded-[var(--radius-*)]`
+   - Font size: `text-[length:var(--font-size-*)]` — the `length:` prefix is **required** because
+     Tailwind's `text-[]` defaults to color interpretation
+
+   ```tsx
+   // ✓ Correct — length: prefix tells Tailwind this is a font-size, not a color
+   className = 'text-[length:var(--font-size-sm)]'
+
+   // ✗ Wrong — Tailwind interprets this as a color value
+   className = 'text-[var(--font-size-sm)]'
+   ```
 
 4. **Use `cn()` for classNames** — import from `@repo/ui/lib/cn`. Never use template literals or
    string concatenation.
@@ -99,8 +109,16 @@ Apply Vercel's React/Next.js best practices when writing or reviewing code. Use 
    components
 4. **Prevent re-renders** — Derive state during render (not effects), use functional setState
 
+## Library Selection
+
+When selecting libraries for data fetching, forms, tables, or UI primitives, **always reference**
+[docs/conventions/frontend-solutions.md](../../docs/conventions/frontend-solutions.md) for preferred
+solutions. Do not introduce alternatives without justification.
+
 ## References
 
+- [docs/conventions/frontend-solutions.md](../../docs/conventions/frontend-solutions.md) — preferred
+  libraries and when to use them
 - [docs/tech-stack.md](../../docs/tech-stack.md) — stack versions, architecture decisions
 - [docs/conventions/app-conventions.md](../../docs/conventions/app-conventions.md) — naming
   conventions
