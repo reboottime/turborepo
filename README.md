@@ -19,7 +19,7 @@ Ship fast with reliability: `Define → Generate → Guard`
 │                                                                                          │
 │    ┌───────────────────────────┐                  ┌───────────────────────────┐          │
 │    │  web (:3000)              │                  │  portal (:3001)           │          │
-│    │  Next.js 15               │                  │  Next.js 15               │          │
+│    │  Next.js 16               │                  │  Next.js 16               │          │
 │    │  Consumer app             │                  │  Business portal          │          │
 │    └─────────────┬─────────────┘                  └─────────────┬─────────────┘          │
 │                  │                                              │                        │

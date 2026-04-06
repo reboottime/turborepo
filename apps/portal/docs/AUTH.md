@@ -2,7 +2,7 @@
 
 ## Overview
 
-The portal app implements route protection using Next.js middleware and a React Context-based auth system. Authentication tokens are obtained from a backend API and stored in localStorage.
+The portal app implements route protection using Next.js proxy (formerly middleware, renamed in Next.js 16) and a React Context-based auth system. Authentication tokens are obtained from a backend API and stored in localStorage.
 
 ## Implementation
 
@@ -19,8 +19,8 @@ The portal app implements route protection using Next.js middleware and a React 
    - `login()` method calls `/auth/login` endpoint
    - Sets Authorization header on all authenticated requests
 
-3. **Middleware** (`middleware.ts`)
-   - Server-side route protection
+3. **Proxy** (`proxy.ts`)
+   - Server-side route protection (Next.js 16 renamed `middleware.ts` → `proxy.ts`)
    - Checks for `portal_token_exists` sync cookie (cannot access localStorage)
    - Handles redirects based on auth state
 

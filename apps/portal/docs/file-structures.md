@@ -15,7 +15,7 @@ app/
       _lib/               # Page-scoped utils (types, mock data)
 lib/
   auth-context.tsx        # Auth context provider
-middleware.ts             # Route protection (redirect unauthenticated → /login)
+proxy.ts                  # Route protection (redirect unauthenticated → /login)
 specs/                    # UX wireframes / feature specs
 e2e/
   seed.spec.ts            # Test data setup
